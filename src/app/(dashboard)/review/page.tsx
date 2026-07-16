@@ -328,7 +328,7 @@ function ReviewContent() {
                     style={{ background: activeTab === 'gaps' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'gaps' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'gaps' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
                     onClick={() => setActiveTab('gaps')}
                 >
-                    Knowledge Gaps
+                    Investigación Pendiente
                 </button>
             </div>
 
@@ -444,7 +444,7 @@ function ReviewContent() {
                                     activeTab === 'relaciones' ? 'Relación Jurídica Inferida' :
                                         activeTab === 'hallazgos' ? 'Hallazgo Jurídico Detectado' :
                                             activeTab === 'cambios' ? 'Revisión de Impacto Normativo' :
-                                                'Brecha de Conocimiento Detectada'}
+                                                'Línea de Investigación Pendiente'}
                             </h3>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -594,7 +594,7 @@ function ReviewContent() {
                                 {activeTab === 'gaps' && (
                                     <>
                                         <div className="form-group">
-                                            <label className="form-label">Tema de la Brecha</label>
+                                            <label className="form-label">Tema a Investigar</label>
                                             <input
                                                 type="text"
                                                 value={formData.topic || ''}
@@ -614,7 +614,7 @@ function ReviewContent() {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Tipo de Brecha</label>
+                                            <label className="form-label">Origen de la Duda</label>
                                             <input
                                                 type="text"
                                                 value={formData.gap_type || ''}
