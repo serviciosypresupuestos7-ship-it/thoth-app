@@ -6,7 +6,14 @@ export default function LoginPage({
     searchParams: { error?: string }
 }) {
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', margin: 0, padding: 0, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', margin: 0, padding: 0, overflow: 'hidden', position: 'relative' }}>
+            {/* Moving Text Banner */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, background: 'var(--primary)', color: 'var(--bg-dark)', padding: '0.5rem', zIndex: 20, overflow: 'hidden', whiteSpace: 'nowrap', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '1px solid var(--border-color)' }}>
+                <div className="marquee-text">
+                    Conocimiento construido exclusivamente a partir de fuentes oficiales. BOE · EUR-Lex · AESIA · AEPD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Conocimiento construido exclusivamente a partir de fuentes oficiales. BOE · EUR-Lex · AESIA · AEPD
+                </div>
+            </div>
+
             {/* Left Side - Image */}
             <div className="login-image-container">
                 <div style={{
@@ -26,7 +33,7 @@ export default function LoginPage({
             </div>
 
             {/* Right Side - Login Form */}
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'var(--bg-dark)', padding: '2rem' }}>
+            <div style={{ width: '100%', maxWidth: '500px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'var(--bg-dark)', padding: '2rem', zIndex: 10, borderLeft: '1px solid var(--border-color)' }}>
                 <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '420px' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                         <div className="logo-icon" style={{ margin: '0 auto 1.5rem auto', width: '4rem', height: '4rem', fontSize: '2rem' }}>T</div>
