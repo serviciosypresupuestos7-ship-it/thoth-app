@@ -35,26 +35,30 @@ function ReviewContent() {
 
     const fetchDomains = async () => {
         try {
-            const { data, error } = await supabase.from('legal_domains').select('id, display_name');
-            if (error) throw error;
-            if (data && data.length > 0) {
-                setDomains(data);
-                if (!domains.find(d => d.id === domain)) {
-                    setDomain(data[0].id);
-                }
-            } else {
-                // Fallback
-                setDomains([
-                    { id: 'ai_literacy', display_name: 'Alfabetización en IA' },
-                    { id: 'autonomos', display_name: 'Normativa para Autónomos' }
-                ]);
+            const allDomains = [
+                { id: 'civil', display_name: 'Civil' },
+                { id: 'mercantil', display_name: 'Mercantil' },
+                { id: 'laboral', display_name: 'Laboral' },
+                { id: 'fiscal', display_name: 'Fiscal' },
+                { id: 'penal', display_name: 'Penal' },
+                { id: 'administrativo', display_name: 'Administrativo' },
+                { id: 'procesal', display_name: 'Procesal' },
+                { id: 'constitucional', display_name: 'Constitucional' },
+                { id: 'ue', display_name: 'Unión Europea' },
+                { id: 'proteccion_datos', display_name: 'Protección de Datos' },
+                { id: 'ai_literacy', display_name: 'Inteligencia Artificial' },
+                { id: 'autonomos', display_name: 'Autónomos' },
+                { id: 'empresas', display_name: 'Empresas' },
+                { id: 'contratacion', display_name: 'Contratación Pública' },
+                { id: 'prevencion', display_name: 'Prevención de Riesgos' },
+                { id: 'consumo', display_name: 'Consumo' },
+            ];
+            setDomains(allDomains);
+            if (!allDomains.find(d => d.id === domain)) {
+                setDomain('ai_literacy');
             }
         } catch (err) {
             console.error('Error fetching domains:', err);
-            setDomains([
-                { id: 'ai_literacy', display_name: 'Alfabetización en IA' },
-                { id: 'autonomos', display_name: 'Normativa para Autónomos' }
-            ]);
         }
     };
 
