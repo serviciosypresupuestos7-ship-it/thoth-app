@@ -27,6 +27,25 @@ export default function HomePage() {
 
   const fetchStats = async () => {
     setLoading(true);
+    const allDomains = [
+      { id: 'civil', display_name: 'Civil' },
+      { id: 'mercantil', display_name: 'Mercantil' },
+      { id: 'laboral', display_name: 'Laboral' },
+      { id: 'fiscal', display_name: 'Fiscal' },
+      { id: 'penal', display_name: 'Penal' },
+      { id: 'administrativo', display_name: 'Administrativo' },
+      { id: 'procesal', display_name: 'Procesal' },
+      { id: 'constitucional', display_name: 'Constitucional' },
+      { id: 'ue', display_name: 'Unión Europea' },
+      { id: 'proteccion_datos', display_name: 'Protección de Datos' },
+      { id: 'ai_literacy', display_name: 'Inteligencia Artificial' },
+      { id: 'autonomos', display_name: 'Autónomos' },
+      { id: 'empresas', display_name: 'Empresas' },
+      { id: 'contratacion', display_name: 'Contratación Pública' },
+      { id: 'prevencion', display_name: 'Prevención de Riesgos' },
+      { id: 'consumo', display_name: 'Consumo' },
+    ];
+
     try {
       // Fetch domains
       const { data: dbDomains, error: domainsError } = await supabase
@@ -36,26 +55,6 @@ export default function HomePage() {
       if (domainsError) throw domainsError;
 
       const statsData: DomainStats[] = [];
-
-      // List of all desired domains to show breadth
-      const allDomains = [
-        { id: 'civil', display_name: 'Civil' },
-        { id: 'mercantil', display_name: 'Mercantil' },
-        { id: 'laboral', display_name: 'Laboral' },
-        { id: 'fiscal', display_name: 'Fiscal' },
-        { id: 'penal', display_name: 'Penal' },
-        { id: 'administrativo', display_name: 'Administrativo' },
-        { id: 'procesal', display_name: 'Procesal' },
-        { id: 'constitucional', display_name: 'Constitucional' },
-        { id: 'ue', display_name: 'Unión Europea' },
-        { id: 'proteccion_datos', display_name: 'Protección de Datos' },
-        { id: 'ai_literacy', display_name: 'Inteligencia Artificial' },
-        { id: 'autonomos', display_name: 'Autónomos' },
-        { id: 'empresas', display_name: 'Empresas' },
-        { id: 'contratacion', display_name: 'Contratación Pública' },
-        { id: 'prevencion', display_name: 'Prevención de Riesgos' },
-        { id: 'consumo', display_name: 'Consumo' },
-      ];
 
       for (const domainDef of allDomains) {
         // Check if it exists in DB
@@ -127,7 +126,18 @@ export default function HomePage() {
     } catch (err: any) {
       console.error('Error fetching stats:', err);
       // Fallback
-      setStats([]);
+      const fallbackStats = allDomains.map(d => ({
+        id: d.id,
+        display_name: d.display_name,
+        documents_count: 0,
+        concepts_count: 0,
+        relationships_count: 0,
+        findings_count: 0,
+        pending_count: 0,
+        health_score: 0,
+        status_indicator: 'gray' as const
+      }));
+      setStats(fallbackStats);
     } finally {
       setLoading(false);
     }
