@@ -8,7 +8,7 @@ export default function LoginPage({
     return (
         <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', margin: 0, padding: 0, overflow: 'hidden' }}>
             {/* Left Side - Image */}
-            <div style={{ flex: 1, position: 'relative', display: 'none', '@media (min-width: 768px)': { display: 'block' } } as React.CSSProperties}>
+            <div className="login-image-container">
                 <div style={{
                     position: 'absolute',
                     top: 0, left: 0, right: 0, bottom: 0,

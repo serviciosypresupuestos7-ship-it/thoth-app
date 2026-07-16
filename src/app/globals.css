@@ -442,4 +442,5 @@ h4 {
   justify-content: space-between;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 0.75rem;
-}
+}. l o g i n - i m a g e - c o n t a i n e r   {   f l e x :   1 ;   p o s i t i o n :   r e l a t i v e ;   d i s p l a y :   n o n e ;   }   @ m e d i a   ( m i n - w i d t h :   7 6 8 p x )   {   . l o g i n - i m a g e - c o n t a i n e r   {   d i s p l a y :   b l o c k ;   }   }  
+ 
