@@ -28,19 +28,19 @@ export default function SearchPage() {
         setLoading(true);
         setError(null);
         setAnswer(
-        "**Normativa aplicable**\n" +
-        "- AI Act (Art. 4, Art. 14)\n\n" +
-        "**Obligaciones detectadas**\n" +
-        "- Es obligatorio que los sistemas de IA de alto riesgo sean supervisados por personas físicas para prevenir riesgos legales.\n" +
-        "- Los responsables del despliegue deben garantizar un nivel suficiente de alfabetización en IA de su personal.\n\n" +
-        "**Riesgos jurídicos**\n" +
-        "- Aceptación automática de resultados generados por IA que puedan contener errores jurídicos o plazos incorrectos.\n\n" +
-        "**Recomendaciones**\n" +
-        "- No enviar contratos generados por IA directamente. Establecer un proceso de revisión humana obligatoria.\n\n" +
-        "**THOTH ha detectado además:**\n" +
-        "- Existe una guía publicada por la Comisión Europea sobre la supervisión humana en sistemas de IA de alto riesgo.\n\n" +
-        "*Durante el análisis se han identificado 2 obligaciones, 1 riesgo jurídico, 2 fuentes oficiales aplicables y 1 guía complementaria relevante.*"
-    );
+            "**Normativa aplicable**\n" +
+            "- AI Act (Art. 4, Art. 14)\n\n" +
+            "**Obligaciones detectadas**\n" +
+            "- Es obligatorio que los sistemas de IA de alto riesgo sean supervisados por personas físicas para prevenir riesgos legales.\n" +
+            "- Los responsables del despliegue deben garantizar un nivel suficiente de alfabetización en IA de su personal.\n\n" +
+            "**Riesgos jurídicos**\n" +
+            "- Aceptación automática de resultados generados por IA que puedan contener errores jurídicos o plazos incorrectos.\n\n" +
+            "**Recomendaciones**\n" +
+            "- No enviar contratos generados por IA directamente. Establecer un proceso de revisión humana obligatoria.\n\n" +
+            "**THOTH ha detectado además:**\n" +
+            "- Existe una guía publicada por la Comisión Europea sobre la supervisión humana en sistemas de IA de alto riesgo.\n\n" +
+            "*Durante el análisis se han identificado 2 obligaciones, 1 riesgo jurídico, 2 fuentes oficiales aplicables y 1 guía complementaria relevante.*"
+        );
         setResults([]);
 
         try {
@@ -106,21 +106,7 @@ export default function SearchPage() {
             </div>
 
             <form onSubmit={handleSearch} className="search-box">
-                <select
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                    className="form-select"
-                    style={{ width: 'auto', minWidth: '200px' }}
-                >
-                    <option value="ai_literacy">Alfabetización en IA</option>
-                    <option value="autonomos">Normativa para Autónomos</option>
-                </select>
-                <textarea
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Describe tu problema detalladamente (ej. 'Tengo un cliente que no me paga desde hace 6 meses y quiero saber qué opciones legales tengo como autónomo...')"
-                    className="form-input"
-                    style={{ flex: 1, minHeight: '100px', resize: 'vertical' }}
+                style={{ flex: 1, minHeight: '100px', resize: 'vertical' }}
                 />
                 <button type="submit" disabled={loading} className="btn btn-primary">
                     {loading ? 'Consultando Conocimiento...' : 'Consultar'}
