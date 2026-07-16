@@ -12,6 +12,7 @@ interface DomainStats {
   findings_count: number;
   pending_count: number;
   health_score: number;
+  status_indicator: 'green' | 'yellow' | 'red' | 'gray';
 }
 
 export default function HomePage() {
@@ -28,7 +29,7 @@ export default function HomePage() {
     setLoading(true);
     try {
       // Fetch domains
-      const { data: domains, error: domainsError } = await supabase
+      const { data: dbDomains, error: domainsError } = await supabase
         .from('legal_domains')
         .select('*');
 
@@ -36,91 +37,97 @@ export default function HomePage() {
 
       const statsData: DomainStats[] = [];
 
-      for (const domain of domains || []) {
-        // Count documents
-        const { count: docsCount, error: docsError } = await supabase
-          .from('legal_documents')
-          .select('*', { count: 'exact', head: true })
-          .eq('domain_id', domain.id);
+      // List of all desired domains to show breadth
+      const allDomains = [
+        { id: 'civil', display_name: 'Civil' },
+        { id: 'mercantil', display_name: 'Mercantil' },
+        { id: 'laboral', display_name: 'Laboral' },
+        { id: 'fiscal', display_name: 'Fiscal' },
+        { id: 'penal', display_name: 'Penal' },
+        { id: 'administrativo', display_name: 'Administrativo' },
+        { id: 'procesal', display_name: 'Procesal' },
+        { id: 'constitucional', display_name: 'Constitucional' },
+        { id: 'ue', display_name: 'Unión Europea' },
+        { id: 'proteccion_datos', display_name: 'Protección de Datos' },
+        { id: 'ai_literacy', display_name: 'Inteligencia Artificial' },
+        { id: 'autonomos', display_name: 'Autónomos' },
+        { id: 'empresas', display_name: 'Empresas' },
+        { id: 'contratacion', display_name: 'Contratación Pública' },
+        { id: 'prevencion', display_name: 'Prevención de Riesgos' },
+        { id: 'consumo', display_name: 'Consumo' },
+      ];
 
-        // Count concepts
-        const { count: conceptsCount, error: conceptsError } = await supabase
-          .from('legal_concepts')
-          .select('*', { count: 'exact', head: true })
-          .eq('domain_id', domain.id);
+      for (const domainDef of allDomains) {
+        // Check if it exists in DB
+        const dbDomain = (dbDomains || []).find(d => d.id === domainDef.id);
 
-        // Count relationships (mocked for now since we don't have domain_id on relationships directly)
-        const relationshipsCount = Math.floor((conceptsCount || 0) * 1.5);
+        if (dbDomain) {
+          // Count documents
+          const { count: docsCount } = await supabase
+            .from('legal_documents')
+            .select('*', { count: 'exact', head: true })
+            .eq('domain_id', dbDomain.id);
 
-        // Count findings (opportunities)
-        const { count: findingsCount, error: findingsError } = await supabase
-          .from('legal_opportunities')
-          .select('*', { count: 'exact', head: true }); // Mocked domain filter
+          // Count concepts
+          const { count: conceptsCount } = await supabase
+            .from('legal_concepts')
+            .select('*', { count: 'exact', head: true })
+            .eq('domain_id', dbDomain.id);
 
-        // Count pending
-        const pendingCount = 5; // Mocked
+          // Mock relationships and findings for now
+          const relationshipsCount = Math.floor((conceptsCount || 0) * 1.5);
+          const findingsCount = Math.floor((conceptsCount || 0) * 0.2);
 
-        // Health score
-        const healthScore = domain.id === 'ai_literacy' ? 93 : 61; // Mocked
+          // Mock pending count
+          const pendingCount = dbDomain.id === 'ai_literacy' ? 5 : (dbDomain.id === 'autonomos' ? 12 : 0);
 
-        statsData.push({
-          id: domain.id,
-          display_name: domain.display_name,
-          documents_count: docsCount || 0,
-          concepts_count: conceptsCount || 0,
-          relationships_count: relationshipsCount,
-          findings_count: findingsCount || 0,
-          pending_count: pendingCount,
-          health_score: healthScore,
-        });
+          // Determine health and status
+          let healthScore = 100;
+          let status_indicator: 'green' | 'yellow' | 'red' | 'gray' = 'green';
+
+          if (docsCount === 0) {
+            healthScore = 0;
+            status_indicator = 'gray';
+          } else if (pendingCount > 10) {
+            healthScore = 65;
+            status_indicator = 'red';
+          } else if (pendingCount > 0) {
+            healthScore = 85;
+            status_indicator = 'yellow';
+          }
+
+          statsData.push({
+            id: dbDomain.id,
+            display_name: dbDomain.display_name || domainDef.display_name,
+            documents_count: docsCount || 0,
+            concepts_count: conceptsCount || 0,
+            relationships_count: relationshipsCount,
+            findings_count: findingsCount,
+            pending_count: pendingCount,
+            health_score: healthScore,
+            status_indicator
+          });
+        } else {
+          // Empty domain
+          statsData.push({
+            id: domainDef.id,
+            display_name: domainDef.display_name,
+            documents_count: 0,
+            concepts_count: 0,
+            relationships_count: 0,
+            findings_count: 0,
+            pending_count: 0,
+            health_score: 0,
+            status_indicator: 'gray'
+          });
+        }
       }
 
       setStats(statsData);
     } catch (err: any) {
       console.error('Error fetching stats:', err);
-      // Fallback for local testing without Supabase connection
-      setStats([
-        {
-          id: 'ai_literacy',
-          display_name: 'Alfabetización en IA',
-          documents_count: 34,
-          concepts_count: 846,
-          relationships_count: 1254,
-          findings_count: 78,
-          pending_count: 5,
-          health_score: 93,
-        },
-        {
-          id: 'autonomos',
-          display_name: 'Autónomos',
-          documents_count: 12,
-          concepts_count: 312,
-          relationships_count: 450,
-          findings_count: 24,
-          pending_count: 18,
-          health_score: 85,
-        },
-        {
-          id: 'laboral',
-          display_name: 'Laboral',
-          documents_count: 45,
-          concepts_count: 1120,
-          relationships_count: 2100,
-          findings_count: 145,
-          pending_count: 32,
-          health_score: 78,
-        },
-        {
-          id: 'fiscal',
-          display_name: 'Fiscal',
-          documents_count: 8,
-          concepts_count: 156,
-          relationships_count: 210,
-          findings_count: 12,
-          pending_count: 45,
-          health_score: 61,
-        }
-      ]);
+      // Fallback
+      setStats([]);
     } finally {
       setLoading(false);
     }
@@ -147,6 +154,26 @@ export default function HomePage() {
       setMessage({ text: `Error al actualizar: ${err.message}`, type: 'error' });
     } finally {
       setProcessingDomain(null);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'green': return 'var(--success)';
+      case 'yellow': return 'var(--warning)';
+      case 'red': return 'var(--danger)';
+      case 'gray': return 'var(--text-muted)';
+      default: return 'var(--text-muted)';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'green': return 'Actualizado';
+      case 'yellow': return 'Pendiente';
+      case 'red': return 'Requiere revisión';
+      case 'gray': return 'En preparación';
+      default: return 'Desconocido';
     }
   };
 
@@ -222,7 +249,7 @@ export default function HomePage() {
       </div>
 
       <h2 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-        Dominios de Conocimiento
+        Dominios Activos
       </h2>
 
       {loading ? (
@@ -230,65 +257,70 @@ export default function HomePage() {
           Cargando dominios...
         </div>
       ) : (
-        <div className="grid">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
           {stats.map((domain) => (
-            <div key={domain.id} className="card" style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1.4rem', color: '#fff' }}>{domain.display_name}</h3>
-                {domain.pending_count > 0 && (
-                  <span className="badge badge-danger" style={{ fontSize: '0.8rem' }}>{domain.pending_count} Pendientes</span>
-                )}
-              </div>
+            <div key={domain.id} className="card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
 
-              {/* Health Indicator */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Salud del dominio</span>
-                  <span style={{ fontSize: '0.85rem', color: domain.health_score > 80 ? 'var(--success)' : 'var(--warning)', fontWeight: 'bold' }}>{domain.health_score}%</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{ width: `${domain.health_score}%`, height: '100%', background: domain.health_score > 80 ? 'var(--success)' : 'var(--warning)' }}></div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                  {domain.health_score > 80 ? 'Actualizado, validado y sin conflictos.' : 'Cambios u oportunidades pendientes de validar.'}
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1.1rem', color: '#fff', margin: 0 }}>{domain.display_name}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: getStatusColor(domain.status_indicator) }}></div>
+                  <span style={{ fontSize: '0.75rem', color: getStatusColor(domain.status_indicator), fontWeight: 'bold', textTransform: 'uppercase' }}>
+                    {getStatusText(domain.status_indicator)}
+                  </span>
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '1rem 0', flex: 1 }}>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Normativa Analizada</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#fff' }}>{domain.documents_count}</div>
+              {/* Metrics (Compact) */}
+              {domain.status_indicator !== 'gray' ? (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1rem', flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Normas:</span>
+                    <span style={{ color: '#fff', fontWeight: 'bold' }}>{domain.documents_count}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Conceptos:</span>
+                    <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{domain.concepts_count}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Relaciones:</span>
+                    <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{domain.relationships_count}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Hallazgos:</span>
+                    <span style={{ color: 'var(--success)', fontWeight: 'bold' }}>{domain.findings_count}</span>
+                  </div>
                 </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Conceptos</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.concepts_count}</div>
+              ) : (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', fontStyle: 'italic', marginBottom: '1rem' }}>
+                  Sin conocimiento cargado
                 </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Relaciones</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.relationships_count}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hallazgos</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--success)' }}>{domain.findings_count}</div>
-                </div>
-              </div>
+              )}
 
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between' }}>
-                <span>Actualizado:</span>
-                <span style={{ color: '#fff' }}>16/07/2026 08:30</span>
-              </div>
+              {/* Footer */}
+              {domain.status_indicator !== 'gray' && (
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                  Última actualización: 16/07/2026
+                </div>
+              )}
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
-                <a href={`/review?domain=${domain.id}`} className="btn btn-secondary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}>
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <a
+                  href={domain.status_indicator !== 'gray' ? `/review?domain=${domain.id}` : '#'}
+                  className={`btn btn-secondary ${domain.status_indicator === 'gray' ? 'disabled' : ''}`}
+                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center', padding: '0.4rem', fontSize: '0.85rem', opacity: domain.status_indicator === 'gray' ? 0.5 : 1, pointerEvents: domain.status_indicator === 'gray' ? 'none' : 'auto' }}
+                >
                   Validar
                 </a>
                 <button
                   onClick={() => handleProcessDomain(domain.id)}
                   disabled={processingDomain !== null}
                   className="btn btn-primary"
-                  style={{ flex: 1.2 }}
+                  style={{ flex: 1, padding: '0.4rem', fontSize: '0.85rem' }}
                 >
-                  {processingDomain === domain.id ? 'Buscando...' : 'Buscar cambios'}
+                  {processingDomain === domain.id ? '...' : 'Actualizar'}
                 </button>
               </div>
             </div>
