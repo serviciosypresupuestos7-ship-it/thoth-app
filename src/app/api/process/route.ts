@@ -40,20 +40,22 @@ export async function POST(request: Request) {
         }
 
         let openaiKey = process.env.OPENAI_API_KEY || '';
+        let anthropicKey = '';
+        let groqKey = '';
+        let geminiKey = '';
         let preferredModel = 'gpt-4o-mini';
 
         const { data: settings } = await supabase
             .from('tenant_settings')
-            .select('openai_api_key, preferred_model')
+            .select('openai_api_key, anthropic_api_key, groq_api_key, gemini_api_key, preferred_model')
             .eq('tenant_id', user.id)
             .single();
 
-        if (settings?.openai_api_key) {
-            openaiKey = settings.openai_api_key;
-        }
-        if (settings?.preferred_model) {
-            preferredModel = settings.preferred_model;
-        }
+        if (settings?.openai_api_key) openaiKey = settings.openai_api_key;
+        if (settings?.anthropic_api_key) anthropicKey = settings.anthropic_api_key;
+        if (settings?.groq_api_key) groqKey = settings.groq_api_key;
+        if (settings?.gemini_api_key) geminiKey = settings.gemini_api_key;
+        if (settings?.preferred_model) preferredModel = settings.preferred_model;
 
         const { domain } = await request.json();
         if (!domain) {
@@ -88,51 +90,105 @@ export async function POST(request: Request) {
             let interp: any;
             let exercise: any;
 
-            if (!openaiKey) {
+            if (!openaiKey && !anthropicKey && !groqKey && !geminiKey) {
                 // Mock mode
                 interp = getMockInterpretation(chunkText);
                 exercise = getMockExercise(chunkText, title, section);
             } else {
                 try {
                     const promptInterp = `Analiza el siguiente fragmento de texto oficial y clasifícalo jurídicamente:\n\nDocumento: ${title}\nSección: ${section}\nTexto:\n${chunkText}`;
-                    const resInterp = await fetch('https://api.openai.com/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            Authorization: `Bearer ${openaiKey}`,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: preferredModel,
-                            messages: [
-                                { role: 'system', content: 'Eres un experto legal. Responde únicamente en formato JSON.' },
-                                { role: 'user', content: promptInterp },
-                            ],
-                            response_format: { type: 'json_object' },
-                        }),
-                    });
-                    const dataInterp = await resInterp.json();
-                    interp = JSON.parse(dataInterp.choices[0].message.content);
+                    const promptEx = `A partir del siguiente fragmento legal y su clasificación, genera una propuesta de ejercicio práctico de entrenamiento para empleados:\n\nDocumento: ${title}\nSección: ${section}\nTexto:\n${chunkText}\n\nGenera un escenario práctico realista.`;
 
-                    const promptEx = `A partir del siguiente fragmento legal y su clasificación, genera una propuesta de ejercicio práctico de entrenamiento para empleados:\n\nDocumento: ${title}\nSección: ${section}\nTexto:\n${chunkText}\n\nClasificación:\n${JSON.stringify(interp)}\n\nGenera un escenario práctico realista. Responde únicamente en formato JSON.`;
-                    const resEx = await fetch('https://api.openai.com/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            Authorization: `Bearer ${openaiKey}`,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: preferredModel,
-                            messages: [
-                                { role: 'system', content: 'Eres un experto en formación empresarial. Responde únicamente en formato JSON.' },
-                                { role: 'user', content: promptEx },
-                            ],
-                            response_format: { type: 'json_object' },
-                        }),
-                    });
-                    const dataEx = await resEx.json();
-                    exercise = JSON.parse(dataEx.choices[0].message.content);
+                    if (preferredModel.startsWith('claude-')) {
+                        // Anthropic API
+                        const resInterp = await fetch('https://api.anthropic.com/v1/messages', {
+                            method: 'POST',
+                            headers: {
+                                'x-api-key': anthropicKey,
+                                'anthropic-version': '2023-06-01',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model: preferredModel,
+                                max_tokens: 1024,
+                                system: 'Eres un experto legal. Responde únicamente en formato JSON con las claves: category, legal_status, applies_to, risk_level, confidence.',
+                                messages: [{ role: 'user', content: promptInterp }]
+                            })
+                        });
+                        const dataInterp = await resInterp.json();
+                        if (dataInterp.error) throw new Error(dataInterp.error.message);
+                        interp = JSON.parse(dataInterp.content[0].text);
+
+                        const resEx = await fetch('https://api.anthropic.com/v1/messages', {
+                            method: 'POST',
+                            headers: {
+                                'x-api-key': anthropicKey,
+                                'anthropic-version': '2023-06-01',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model: preferredModel,
+                                max_tokens: 1024,
+                                system: 'Eres un experto en formación empresarial. Responde únicamente en formato JSON con las claves: legal_requirement, plain_language, department, job_role, task, risk, required_skill, exercise_type, difficulty, evidence.',
+                                messages: [{ role: 'user', content: promptEx + `\n\nClasificación:\n${JSON.stringify(interp)}` }]
+                            })
+                        });
+                        const dataEx = await resEx.json();
+                        if (dataEx.error) throw new Error(dataEx.error.message);
+                        exercise = JSON.parse(dataEx.content[0].text);
+                    } else {
+                        // OpenAI compatible API (OpenAI, Groq, Gemini)
+                        let apiUrl = 'https://api.openai.com/v1/chat/completions';
+                        let apiKey = openaiKey;
+
+                        if (preferredModel.startsWith('llama') || preferredModel.startsWith('mixtral')) {
+                            apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                            apiKey = groqKey;
+                        } else if (preferredModel.startsWith('gemini')) {
+                            apiUrl = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
+                            apiKey = geminiKey;
+                        }
+
+                        const resInterp = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${apiKey}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                model: preferredModel,
+                                messages: [
+                                    { role: 'system', content: 'Eres un experto legal. Responde únicamente en formato JSON.' },
+                                    { role: 'user', content: promptInterp },
+                                ],
+                                response_format: { type: 'json_object' },
+                            }),
+                        });
+                        const dataInterp = await resInterp.json();
+                        if (dataInterp.error) throw new Error(dataInterp.error.message);
+                        interp = JSON.parse(dataInterp.choices[0].message.content);
+
+                        const resEx = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${apiKey}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                model: preferredModel,
+                                messages: [
+                                    { role: 'system', content: 'Eres un experto en formación empresarial. Responde únicamente en formato JSON.' },
+                                    { role: 'user', content: promptEx + `\n\nClasificación:\n${JSON.stringify(interp)}` },
+                                ],
+                                response_format: { type: 'json_object' },
+                            }),
+                        });
+                        const dataEx = await resEx.json();
+                        if (dataEx.error) throw new Error(dataEx.error.message);
+                        exercise = JSON.parse(dataEx.choices[0].message.content);
+                    }
                 } catch (err) {
-                    console.error('Error calling OpenAI, falling back to mock:', err);
+                    console.error('Error calling AI, falling back to mock:', err);
                     interp = getMockInterpretation(chunkText);
                     exercise = getMockExercise(chunkText, title, section);
                 }
@@ -172,7 +228,7 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json({
-            message: `Se procesaron ${processedCount} fragmentos correctamente. Mode: ${openaiKey ? 'OpenAI' : 'Mock/Offline'}`,
+            message: `Se procesaron ${processedCount} fragmentos correctamente. Mode: ${preferredModel}`,
         });
     } catch (error: any) {
         console.error('API process error:', error);

@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
 export default function SettingsPage() {
     const [openaiKey, setOpenaiKey] = useState('');
     const [anthropicKey, setAnthropicKey] = useState('');
+    const [groqKey, setGroqKey] = useState('');
+    const [geminiKey, setGeminiKey] = useState('');
     const [preferredModel, setPreferredModel] = useState('gpt-4o-mini');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -34,6 +36,8 @@ export default function SettingsPage() {
             if (data) {
                 setOpenaiKey(data.openai_api_key || '');
                 setAnthropicKey(data.anthropic_api_key || '');
+                setGroqKey(data.groq_api_key || '');
+                setGeminiKey(data.gemini_api_key || '');
                 setPreferredModel(data.preferred_model || 'gpt-4o-mini');
             }
         } catch (err: any) {
@@ -63,6 +67,8 @@ export default function SettingsPage() {
                 tenant_id: user.id,
                 openai_api_key: openaiKey,
                 anthropic_api_key: anthropicKey,
+                groq_api_key: groqKey,
+                gemini_api_key: geminiKey,
                 preferred_model: preferredModel,
                 updated_at: new Date().toISOString()
             };
@@ -134,6 +140,15 @@ export default function SettingsPage() {
                             <option value="claude-3-5-sonnet-20240620">Claude 3.5 Sonnet (Excelente razonamiento)</option>
                             <option value="claude-3-haiku-20240307">Claude 3 Haiku (Rápido)</option>
                         </optgroup>
+                        <optgroup label="Groq (Ultra-rápido)">
+                            <option value="llama3-70b-8192">Llama 3 70B (Open Source de alto rendimiento)</option>
+                            <option value="llama3-8b-8192">Llama 3 8B (Extremadamente rápido)</option>
+                            <option value="mixtral-8x7b-32768">Mixtral 8x7B (Ventana de contexto grande)</option>
+                        </optgroup>
+                        <optgroup label="Google">
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Contexto masivo)</option>
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Rápido y eficiente)</option>
+                        </optgroup>
                     </select>
                     <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>
                         Este modelo se utilizará para la generación de respuestas en las consultas y para la extracción de conocimiento.
@@ -155,7 +170,7 @@ export default function SettingsPage() {
                     </small>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: '2rem' }}>
+                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
                     <label className="form-label">Anthropic API Key</label>
                     <input
                         type="password"
@@ -167,6 +182,36 @@ export default function SettingsPage() {
                     />
                     <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>
                         Requerida si seleccionas un modelo de Anthropic (Claude).
+                    </small>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="form-label">Groq API Key</label>
+                    <input
+                        type="password"
+                        value={groqKey}
+                        onChange={(e) => setGroqKey(e.target.value)}
+                        placeholder="gsk_..."
+                        className="form-input"
+                        style={{ width: '100%' }}
+                    />
+                    <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>
+                        Requerida si seleccionas un modelo de Groq (Llama 3, Mixtral).
+                    </small>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '2rem' }}>
+                    <label className="form-label">Google Gemini API Key</label>
+                    <input
+                        type="password"
+                        value={geminiKey}
+                        onChange={(e) => setGeminiKey(e.target.value)}
+                        placeholder="AIza..."
+                        className="form-input"
+                        style={{ width: '100%' }}
+                    />
+                    <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>
+                        Requerida si seleccionas un modelo de Google (Gemini 1.5).
                     </small>
                 </div>
 

@@ -58,21 +58,23 @@ export async function POST(request: Request) {
         const tenantId = session?.user?.id || 'anonymous';
 
         let openaiKey = process.env.OPENAI_API_KEY || '';
+        let anthropicKey = '';
+        let groqKey = '';
+        let geminiKey = '';
         let preferredModel = 'gpt-4o-mini';
 
         if (tenantId !== 'anonymous') {
             const { data: settings } = await supabase
                 .from('tenant_settings')
-                .select('openai_api_key, preferred_model')
+                .select('openai_api_key, anthropic_api_key, groq_api_key, gemini_api_key, preferred_model')
                 .eq('tenant_id', tenantId)
                 .single();
 
-            if (settings?.openai_api_key) {
-                openaiKey = settings.openai_api_key;
-            }
-            if (settings?.preferred_model) {
-                preferredModel = settings.preferred_model;
-            }
+            if (settings?.openai_api_key) openaiKey = settings.openai_api_key;
+            if (settings?.anthropic_api_key) anthropicKey = settings.anthropic_api_key;
+            if (settings?.groq_api_key) groqKey = settings.groq_api_key;
+            if (settings?.gemini_api_key) geminiKey = settings.gemini_api_key;
+            if (settings?.preferred_model) preferredModel = settings.preferred_model;
         }
 
         const hash = hashQuestion(normalized_question, tenantId);
@@ -124,7 +126,7 @@ export async function POST(request: Request) {
             });
         }
 
-        // 1. Generate query embedding
+        // 1. Generate query embedding (Always uses OpenAI for embeddings)
         const queryEmbedding = await getOpenAIEmbedding(query, openaiKey);
         if (!queryEmbedding) {
             return NextResponse.json({ error: 'Failed to generate query embedding' }, { status: 500 });
@@ -225,25 +227,63 @@ export async function POST(request: Request) {
 
         const prompt = `Eres Thoth, un estratega legal experto. El usuario te presentará un problema o situación. Tu objetivo es proponer soluciones creativas y rigurosas basadas ÚNICAMENTE en el corpus legal recuperado a continuación y en el conocimiento derivado aprobado por expertos. Presta especial atención a las oportunidades aprobadas (beneficios, excepciones). Si el contexto no contiene la información necesaria, indícalo de forma educada.\n\nContexto Oficial:\n${officialContext}\n\nConocimiento Derivado (Aprobado):\n${derivedContext || 'Ninguno.'}\n\nProblema del usuario: ${query}\n\nPropuesta de Solución Estratégica:`;
 
-        // 5. Call OpenAI to generate answer based on context
-        const resChat = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${openaiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: preferredModel,
-                messages: [
-                    { role: 'system', content: 'Eres un estratega legal riguroso que propone soluciones basadas únicamente en las fuentes proporcionadas.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.3
-            })
-        });
+        // 5. Call AI to generate answer based on context
+        let answer = '';
 
-        const dataChat = await resChat.json();
-        const answer = dataChat.choices[0].message.content;
+        if (preferredModel.startsWith('claude-')) {
+            // Anthropic API
+            const resChat = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'x-api-key': anthropicKey,
+                    'anthropic-version': '2023-06-01',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: preferredModel,
+                    max_tokens: 1024,
+                    system: 'Eres un estratega legal riguroso que propone soluciones basadas únicamente en las fuentes proporcionadas.',
+                    messages: [
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3
+                })
+            });
+            const dataChat = await resChat.json();
+            if (dataChat.error) throw new Error(dataChat.error.message);
+            answer = dataChat.content[0].text;
+        } else {
+            // OpenAI compatible API (OpenAI, Groq, Gemini)
+            let apiUrl = 'https://api.openai.com/v1/chat/completions';
+            let apiKey = openaiKey;
+
+            if (preferredModel.startsWith('llama') || preferredModel.startsWith('mixtral')) {
+                apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                apiKey = groqKey;
+            } else if (preferredModel.startsWith('gemini')) {
+                apiUrl = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
+                apiKey = geminiKey;
+            }
+
+            const resChat = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: preferredModel,
+                    messages: [
+                        { role: 'system', content: 'Eres un estratega legal riguroso que propone soluciones basadas únicamente en las fuentes proporcionadas.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3
+                })
+            });
+            const dataChat = await resChat.json();
+            if (dataChat.error) throw new Error(dataChat.error.message);
+            answer = dataChat.choices[0].message.content;
+        }
 
         // Register Scenario
         if (questionId) {
