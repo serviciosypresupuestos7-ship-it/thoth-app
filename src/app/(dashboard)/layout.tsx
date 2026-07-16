@@ -30,6 +30,9 @@ export default function DashboardLayout({
                     <Link href="/review" className={`nav-link ${pathname === '/review' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/review' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/review' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/review' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
                         ✅ Validación
                     </Link>
+                    <Link href="/settings" className={`nav-link ${pathname === '/settings' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/settings' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/settings' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/settings' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        ⚙️ Configuración
+                    </Link>
                 </nav>
                 <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
                     <form action="/auth/signout" method="post">

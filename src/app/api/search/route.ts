@@ -36,7 +36,6 @@ export async function POST(request: Request) {
     try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-        const openaiKey = process.env.OPENAI_API_KEY || '';
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         const { query, domain } = await request.json();
@@ -57,6 +56,24 @@ export async function POST(request: Request) {
         // For now, we'll use a placeholder or get it from the session if available.
         const { data: { session } } = await supabase.auth.getSession();
         const tenantId = session?.user?.id || 'anonymous';
+
+        let openaiKey = process.env.OPENAI_API_KEY || '';
+        let preferredModel = 'gpt-4o-mini';
+
+        if (tenantId !== 'anonymous') {
+            const { data: settings } = await supabase
+                .from('tenant_settings')
+                .select('openai_api_key, preferred_model')
+                .eq('tenant_id', tenantId)
+                .single();
+
+            if (settings?.openai_api_key) {
+                openaiKey = settings.openai_api_key;
+            }
+            if (settings?.preferred_model) {
+                preferredModel = settings.preferred_model;
+            }
+        }
 
         const hash = hashQuestion(normalized_question, tenantId);
 
@@ -216,7 +233,7 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'gpt-4o-mini',
+                model: preferredModel,
                 messages: [
                     { role: 'system', content: 'Eres un estratega legal riguroso que propone soluciones basadas únicamente en las fuentes proporcionadas.' },
                     { role: 'user', content: prompt }
@@ -234,7 +251,7 @@ export async function POST(request: Request) {
                 const { data: scenario } = await supabase.from('legal_scenarios').insert({
                     description: `Respuesta a pregunta: ${anonymized_question.substring(0, 50)}...`,
                     question_id: questionId,
-                    model_version: 'gpt-4o-mini',
+                    model_version: preferredModel,
                     status: 'active'
                 }).select('id').single();
 

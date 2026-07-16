@@ -29,7 +29,6 @@ function getMockExercise(chunkText: string, title: string, section: string) {
 
 export async function POST(request: Request) {
     try {
-        const openaiKey = process.env.OPENAI_API_KEY || '';
         const batchSize = parseInt(process.env.PROCESS_BATCH_SIZE || '5', 10);
 
         // Initialise Supabase client with user session
@@ -38,6 +37,22 @@ export async function POST(request: Request) {
 
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        let openaiKey = process.env.OPENAI_API_KEY || '';
+        let preferredModel = 'gpt-4o-mini';
+
+        const { data: settings } = await supabase
+            .from('tenant_settings')
+            .select('openai_api_key, preferred_model')
+            .eq('tenant_id', user.id)
+            .single();
+
+        if (settings?.openai_api_key) {
+            openaiKey = settings.openai_api_key;
+        }
+        if (settings?.preferred_model) {
+            preferredModel = settings.preferred_model;
         }
 
         const { domain } = await request.json();
@@ -87,7 +102,7 @@ export async function POST(request: Request) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            model: 'gpt-4o-mini',
+                            model: preferredModel,
                             messages: [
                                 { role: 'system', content: 'Eres un experto legal. Responde únicamente en formato JSON.' },
                                 { role: 'user', content: promptInterp },
@@ -106,7 +121,7 @@ export async function POST(request: Request) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            model: 'gpt-4o-mini',
+                            model: preferredModel,
                             messages: [
                                 { role: 'system', content: 'Eres un experto en formación empresarial. Responde únicamente en formato JSON.' },
                                 { role: 'user', content: promptEx },
