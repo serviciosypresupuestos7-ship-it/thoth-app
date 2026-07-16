@@ -1,8 +1,15 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const pathname = usePathname();
+
     return (
         <div className="app-container">
             <aside className="sidebar">
@@ -10,14 +17,23 @@ export default function DashboardLayout({
                     <div className="logo-icon">T</div>
                     <div className="logo-text">THOTH</div>
                 </div>
-                <nav className="nav-links" style={{ flex: 1 }}>
-                    <a href="/" className="nav-link">🏠 Inicio</a>
-                    <a href="/search" className="nav-link">💬 Consultas</a>
-                    <a href="/review" className="nav-link">✅ Validación</a>
+                <nav className="sidebar-nav" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '2rem' }}>
+                    <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        🏠 Inicio
+                    </Link>
+                    <Link href="/activity" className={`nav-link ${pathname === '/activity' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/activity' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/activity' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/activity' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        🧠 Actividad
+                    </Link>
+                    <Link href="/search" className={`nav-link ${pathname === '/search' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/search' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/search' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/search' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        💬 Consultas
+                    </Link>
+                    <Link href="/review" className={`nav-link ${pathname === '/review' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/review' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/review' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/review' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        ✅ Validación
+                    </Link>
                 </nav>
                 <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
                     <form action="/auth/signout" method="post">
-                        <button type="submit" className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'transparent', cursor: 'pointer', color: 'var(--error)' }}>
+                        <button type="submit" className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'transparent', cursor: 'pointer', color: 'var(--danger)', padding: '0.75rem 1rem', border: 'none', fontSize: '1rem' }}>
                             🚪 Cerrar Sesión
                         </button>
                     </form>
