@@ -350,22 +350,89 @@ function ReviewContent() {
                         </div>
 
                         {/* Right Panel: Editable Exercise */}
-                        Rechazar
-                    </button>
-                    <button
-                        onClick={() => handleSaveStatus('approved')}
-                        disabled={saving}
-                        className="btn btn-success"
-                    >
-                        {saving ? 'Guardando...' : 'Aprobar y Publicar'}
-                    </button>
-                </div>
+                        <div className="exercise-panel">
+                            <h3 style={{ fontSize: '1.2rem', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                                Elementos Jurídicos Identificados
+                            </h3>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+                                <div style={{ borderLeft: '3px solid var(--primary)', paddingLeft: '1rem' }}>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Obligaciones</h4>
+                                    <textarea
+                                        name="plain_language"
+                                        value={formData.plain_language || ''}
+                                        onChange={handleInputChange}
+                                        rows={3}
+                                        className="form-textarea"
+                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                    />
+                                </div>
+
+                                <div style={{ borderLeft: '3px solid var(--warning)', paddingLeft: '1rem' }}>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Riesgos Jurídicos</h4>
+                                    <textarea
+                                        name="risk"
+                                        value={formData.risk || ''}
+                                        onChange={handleInputChange}
+                                        rows={2}
+                                        className="form-textarea"
+                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                    />
+                                </div>
+
+                                <div style={{ borderLeft: '3px solid var(--success)', paddingLeft: '1rem' }}>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Aplicación Práctica</h4>
+                                    <input
+                                        type="text"
+                                        name="task"
+                                        value={formData.task || ''}
+                                        onChange={handleInputChange}
+                                        className="form-input"
+                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                    />
+                                </div>
+
+                                <div style={{ borderLeft: '3px solid #8b5cf6', paddingLeft: '1rem' }}>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Conceptos Relacionados</h4>
+                                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Supervisión humana</span>
+                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Alfabetización en IA</span>
+                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Riesgo alto</span>
+                                    </div>
+                                </div>
+
+                                <div style={{ borderLeft: '3px solid #64748b', paddingLeft: '1rem' }}>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Observaciones del Revisor</h4>
+                                    <textarea
+                                        placeholder="Añadir notas internas o matices legales..."
+                                        rows={2}
+                                        className="form-textarea"
+                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="action-bar">
+                                <button
+                                    onClick={() => handleSaveStatus('rejected')}
+                                    disabled={saving}
+                                    className="btn btn-danger"
+                                >
+                                    Rechazar
+                                </button>
+                                <button
+                                    onClick={() => handleSaveStatus('approved')}
+                                    disabled={saving}
+                                    className="btn btn-success"
+                                >
+                                    {saving ? 'Guardando...' : 'Aprobar y Publicar'}
+                                </button>
+                            </div>
                         </div>
-                    </div >
-                </div >
-            )
-}
-        </div >
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 
