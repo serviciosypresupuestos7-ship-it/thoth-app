@@ -170,10 +170,10 @@ export default function HomePage() {
     <div>
       <div style={{ marginBottom: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto 3rem auto' }}>
         <h1 className="title-gradient" style={{ fontSize: '3rem', marginBottom: '1rem', lineHeight: '1.2' }}>
-          Fábrica de Conocimiento Jurídico
+          THOTH convierte legislación en conocimiento jurídico utilizable.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>
-          THOTH lee normativa oficial, la transforma en conocimiento estructurado, mantiene ese conocimiento actualizado y ayuda a resolver problemas reales utilizando únicamente información oficial validada.
+          THOTH no busca leyes. Descubre qué normas son realmente relevantes para resolver un problema jurídico. Analiza la normativa, identifica automáticamente derechos, obligaciones y plazos, y la transforma en una red de conocimiento estructurado.
         </p>
       </div>
 
@@ -184,7 +184,7 @@ export default function HomePage() {
       )}
 
       <h2 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-        Dominios de Inteligencia Jurídica
+        Estado del conocimiento jurídico
       </h2>
 
       {loading ? (
@@ -229,7 +229,7 @@ export default function HomePage() {
                   className="btn btn-primary"
                   style={{ flex: 1.2 }}
                 >
-                  {processingDomain === domain.id ? 'Analizando...' : 'Extraer Conocimiento'}
+                  {processingDomain === domain.id ? 'Analizando...' : 'Sincronizar normativa'}
                 </button>
               </div>
             </div>

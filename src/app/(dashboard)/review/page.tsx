@@ -97,11 +97,11 @@ function ReviewContent() {
                     chunk_id: 'chunk-1',
                     domain_id: 'ai_literacy',
                     legal_requirement: 'Garantizar la supervisión humana de los sistemas de IA',
-                    plain_language: 'El trabajador no debe aceptar ciegamente las respuestas de la IA. Debe verificar la información antes de tomar decisiones.',
+                    plain_language: 'Obligación de establecer medidas de control humano sobre los sistemas de IA de alto riesgo para evitar decisiones automatizadas sin supervisión.',
                     department: 'Administración',
                     job_role: 'Administrativo',
-                    task: 'Redactar un correo a un cliente con plazos de entrega',
-                    risk: 'La IA inventa plazos de entrega incorrectos y se envía información falsa al cliente.',
+                    task: 'Uso de IA para redactar contratos o comunicaciones vinculantes.',
+                    risk: 'Aceptación automática de resultados generados por IA que puedan contener errores jurídicos o plazos incorrectos.',
                     required_skill: 'Verificación de datos generados por IA',
                     exercise_type: 'simulation',
                     difficulty: 'basic',
@@ -120,11 +120,11 @@ function ReviewContent() {
                     chunk_id: 'chunk-2',
                     domain_id: 'ai_literacy',
                     legal_requirement: 'Promover la alfabetización en IA entre el personal',
-                    plain_language: 'La empresa debe capacitar a sus empleados para que usen la IA de forma segura, ética y eficiente.',
+                    plain_language: 'Obligación de capacitar al personal en el uso seguro, ético y eficiente de los sistemas de inteligencia artificial.',
                     department: 'Recursos Humanos',
                     job_role: 'Gestor de Formación',
-                    task: 'Diseñar el plan de formación anual de la plantilla',
-                    risk: 'Los empleados usan herramientas de IA sin conocer sus limitaciones, exponiendo datos confidenciales.',
+                    task: 'Diseño e implementación de planes de formación corporativa.',
+                    risk: 'Uso indebido de herramientas de IA por desconocimiento de sus limitaciones, exponiendo datos confidenciales o vulnerando el RGPD.',
                     required_skill: 'Diseño de planes de capacitación en competencias digitales',
                     exercise_type: 'simulation',
                     difficulty: 'intermediate',
@@ -237,7 +237,7 @@ function ReviewContent() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Validación</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Supervisa y aprueba el conocimiento extraído por la IA.</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Toda propuesta es revisada por un experto antes de incorporarse al conocimiento validado del sistema.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <label className="form-label" style={{ margin: 0 }}>Dominio:</label>
@@ -352,7 +352,7 @@ function ReviewContent() {
                         {/* Right Panel: Editable Exercise */}
                         <div className="exercise-panel">
                             <h3 style={{ fontSize: '1.2rem', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
-                                Propuesta de Entrenamiento (IA)
+                                THOTH ha identificado los siguientes elementos jurídicos
                             </h3>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -390,7 +390,7 @@ function ReviewContent() {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label">Explicación en Lenguaje Sencillo</label>
+                                <label className="form-label">Interpretación jurídica</label>
                                 <textarea
                                     name="plain_language"
                                     value={formData.plain_language || ''}
@@ -401,7 +401,7 @@ function ReviewContent() {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label">Tarea Laboral Cotidiana</label>
+                                <label className="form-label">Aplicación práctica</label>
                                 <input
                                     type="text"
                                     name="task"
@@ -412,7 +412,7 @@ function ReviewContent() {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label">Riesgo Práctico</label>
+                                <label className="form-label">Riesgos jurídicos</label>
                                 <textarea
                                     name="risk"
                                     value={formData.risk || ''}
