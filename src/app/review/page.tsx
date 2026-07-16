@@ -236,8 +236,8 @@ function ReviewContent() {
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
-                    <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Revisión Humana</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Valida y edita las propuestas de entrenamiento generadas por la IA.</p>
+                    <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Validación</h1>
+                    <p style={{ color: 'var(--text-secondary)' }}>Supervisa y aprueba el conocimiento extraído por la IA.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <label className="form-label" style={{ margin: 0 }}>Dominio:</label>
@@ -251,6 +251,22 @@ function ReviewContent() {
                         <option value="autonomos">Normativa para Autónomos</option>
                     </select>
                 </div>
+            </div>
+
+            {/* Tabs Navigation */}
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', overflowX: 'auto' }}>
+                {['Conceptos pendientes', 'Relaciones pendientes', 'Oportunidades pendientes', 'Cambios BOE', 'Knowledge Gaps'].map((tab, idx) => (
+                    <button
+                        key={tab}
+                        className={`nav-link ${idx === 0 ? 'active' : ''}`}
+                        style={{ background: idx === 0 ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: idx === 0 ? '1px solid var(--border-color)' : '1px solid transparent', color: idx === 0 ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                        onClick={() => {
+                            if (idx !== 0) alert('Esta sección se implementará en la próxima actualización del panel de validación.');
+                        }}
+                    >
+                        {tab}
+                    </button>
+                ))}
             </div>
 
             {loading ? (
