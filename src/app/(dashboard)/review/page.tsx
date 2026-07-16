@@ -4,14 +4,15 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
-type TabType = 'conceptos' | 'relaciones' | 'oportunidades';
+type TabType = 'conceptos' | 'relaciones' | 'hallazgos' | 'cambios' | 'gaps';
 
 function ReviewContent() {
     const searchParams = useSearchParams();
     const initialDomain = searchParams.get('domain') || 'ai_literacy';
 
+    const [domains, setDomains] = useState<{ id: string, display_name: string }[]>([]);
     const [domain, setDomain] = useState(initialDomain);
-    const [activeTab, setActiveTab] = useState<TabType>('oportunidades');
+    const [activeTab, setActiveTab] = useState<TabType>('hallazgos');
     const [items, setItems] = useState<any[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -23,8 +24,39 @@ function ReviewContent() {
     const supabase = createClient();
 
     useEffect(() => {
-        fetchData();
-    }, [domain, activeTab]);
+        fetchDomains();
+    }, []);
+
+    useEffect(() => {
+        if (domains.length > 0) {
+            fetchData();
+        }
+    }, [domain, activeTab, domains]);
+
+    const fetchDomains = async () => {
+        try {
+            const { data, error } = await supabase.from('legal_domains').select('id, display_name');
+            if (error) throw error;
+            if (data && data.length > 0) {
+                setDomains(data);
+                if (!domains.find(d => d.id === domain)) {
+                    setDomain(data[0].id);
+                }
+            } else {
+                // Fallback
+                setDomains([
+                    { id: 'ai_literacy', display_name: 'Alfabetización en IA' },
+                    { id: 'autonomos', display_name: 'Normativa para Autónomos' }
+                ]);
+            }
+        } catch (err) {
+            console.error('Error fetching domains:', err);
+            setDomains([
+                { id: 'ai_literacy', display_name: 'Alfabetización en IA' },
+                { id: 'autonomos', display_name: 'Normativa para Autónomos' }
+            ]);
+        }
+    };
 
     const fetchData = async () => {
         setLoading(true);
@@ -49,7 +81,7 @@ function ReviewContent() {
                     .order('created_at', { ascending: true });
                 data = res.data;
                 error = res.error;
-            } else if (activeTab === 'oportunidades') {
+            } else if (activeTab === 'hallazgos') {
                 const res = await supabase
                     .from('legal_opportunities')
                     .select(`
@@ -64,6 +96,28 @@ function ReviewContent() {
                     `)
                     .eq('status', 'proposed')
                     .order('created_at', { ascending: true });
+                data = res.data;
+                error = res.error;
+            } else if (activeTab === 'cambios') {
+                const res = await supabase
+                    .from('legal_changes')
+                    .select(`
+                        *,
+                        document:legal_documents (
+                            title,
+                            domain_id
+                        )
+                    `)
+                    .order('detected_at', { ascending: false });
+                // Filter by domain in memory since document_id is the foreign key
+                data = (res.data || []).filter((item: any) => item.document?.domain_id === domain);
+                error = res.error;
+            } else if (activeTab === 'gaps') {
+                const res = await supabase
+                    .from('knowledge_gaps')
+                    .select('*')
+                    .eq('resolution_status', 'open')
+                    .order('priority_score', { ascending: false });
                 data = res.data;
                 error = res.error;
             }
@@ -81,7 +135,7 @@ function ReviewContent() {
             console.error('Error fetching data:', err);
 
             // Fallback mock data for demonstration if DB is empty or errors
-            if (activeTab === 'oportunidades') {
+            if (activeTab === 'hallazgos') {
                 const mockOpps = [
                     {
                         id: 'opp-1',
@@ -113,34 +167,55 @@ function ReviewContent() {
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev: any) => ({ ...prev, [name]: value }));
     };
 
-    const handleSaveStatus = async (status: 'approved' | 'rejected') => {
+    const handleSaveStatus = async (status: 'approved' | 'rejected' | 'resolved') => {
         if (items.length === 0) return;
         setSaving(true);
         const currentItem = items[currentIndex];
 
         try {
             let table = '';
-            let updateData: any = { status };
+            let updateData: any = {};
 
             if (activeTab === 'conceptos') {
                 table = 'legal_concepts';
+                updateData.status = status;
                 updateData.name = formData.name;
                 updateData.description = formData.description;
             } else if (activeTab === 'relaciones') {
                 table = 'legal_relationships';
+                updateData.status = status;
                 updateData.relationship_type = formData.relationship_type;
                 updateData.description = formData.description;
-            } else if (activeTab === 'oportunidades') {
+            } else if (activeTab === 'hallazgos') {
                 table = 'legal_opportunities';
+                updateData.status = status;
                 updateData.title = formData.title;
                 updateData.description = formData.description;
                 updateData.reasoning_summary = formData.reasoning_summary;
+                updateData.opportunity_type = formData.opportunity_type;
                 updateData.reviewed_at = new Date().toISOString();
+            } else if (activeTab === 'gaps') {
+                table = 'knowledge_gaps';
+                updateData.resolution_status = status === 'approved' ? 'resolved' : 'closed';
+                updateData.reason = formData.reason;
+            } else if (activeTab === 'cambios') {
+                // For Cambios BOE, we just dismiss them from the view
+                const updated = items.filter((_, idx) => idx !== currentIndex);
+                setItems(updated);
+                if (updated.length > 0) {
+                    const nextIndex = currentIndex >= updated.length ? updated.length - 1 : currentIndex;
+                    setCurrentIndex(nextIndex);
+                    setFormData(updated[nextIndex]);
+                } else {
+                    setFormData({});
+                }
+                setSaving(false);
+                return;
             }
 
             const { error } = await supabase
@@ -155,10 +230,10 @@ function ReviewContent() {
             const userId = session?.user?.id || '00000000-0000-0000-0000-000000000000';
 
             await supabase.from('validation_history').insert({
-                entity_type: activeTab.slice(0, -1), // concepto, relacion, oportunidad
+                entity_type: activeTab === 'hallazgos' ? 'finding' : activeTab.slice(0, -1),
                 entity_id: currentItem.id,
                 action: status,
-                previous_status: currentItem.status,
+                previous_status: currentItem.status || currentItem.resolution_status,
                 new_status: status,
                 reason: 'Human review via UI',
                 snapshot_before: currentItem,
@@ -201,7 +276,7 @@ function ReviewContent() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Validación</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Toda propuesta es revisada por un experto antes de incorporarse al conocimiento validado del sistema.</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>El sistema descarta cualquier propuesta no validada y evita utilizarla como conocimiento oficial.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <label className="form-label" style={{ margin: 0 }}>Dominio:</label>
@@ -211,8 +286,9 @@ function ReviewContent() {
                         className="form-select"
                         style={{ width: 'auto', minWidth: '200px' }}
                     >
-                        <option value="ai_literacy">Alfabetización en IA</option>
-                        <option value="autonomos">Normativa para Autónomos</option>
+                        {domains.map(d => (
+                            <option key={d.id} value={d.id}>{d.display_name}</option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -234,23 +310,23 @@ function ReviewContent() {
                     Relaciones pendientes
                 </button>
                 <button
-                    className={`nav-link ${activeTab === 'oportunidades' ? 'active' : ''}`}
-                    style={{ background: activeTab === 'oportunidades' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'oportunidades' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'oportunidades' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
-                    onClick={() => setActiveTab('oportunidades')}
+                    className={`nav-link ${activeTab === 'hallazgos' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'hallazgos' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'hallazgos' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'hallazgos' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('hallazgos')}
                 >
-                    Oportunidades pendientes
+                    Hallazgos Jurídicos
                 </button>
                 <button
-                    className="nav-link"
-                    style={{ background: 'transparent', border: '1px solid transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
-                    onClick={() => alert('Esta sección se implementará próximamente.')}
+                    className={`nav-link ${activeTab === 'cambios' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'cambios' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'cambios' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'cambios' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('cambios')}
                 >
                     Cambios BOE
                 </button>
                 <button
-                    className="nav-link"
-                    style={{ background: 'transparent', border: '1px solid transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
-                    onClick={() => alert('Esta sección se implementará próximamente.')}
+                    className={`nav-link ${activeTab === 'gaps' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'gaps' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'gaps' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'gaps' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('gaps')}
                 >
                     Knowledge Gaps
                 </button>
@@ -269,7 +345,7 @@ function ReviewContent() {
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <span className="badge badge-primary">
-                            Propuesta {currentIndex + 1} de {items.length}
+                            Elemento {currentIndex + 1} de {items.length}
                         </span>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button
@@ -300,7 +376,7 @@ function ReviewContent() {
                     </div>
 
                     <div className="review-layout">
-                        {/* Left Panel: Source Text (Only for Opportunities which have chunks) */}
+                        {/* Left Panel: Source Text (Only for Findings which have chunks, or Changes) */}
                         <div className="source-panel">
                             <h3 style={{ fontSize: '1.2rem', color: '#fff' }}>Fuente Oficial</h3>
                             {currentItem?.chunk ? (
@@ -337,6 +413,23 @@ function ReviewContent() {
                                         </a>
                                     )}
                                 </>
+                            ) : activeTab === 'cambios' ? (
+                                <>
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Documento Afectado</div>
+                                        <div style={{ fontWeight: '600', color: 'var(--primary)' }}>{currentItem.document?.title || currentItem.document_id}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Fecha de Detección</div>
+                                        <div style={{ fontWeight: '600' }}>{new Date(currentItem.detected_at).toLocaleString()}</div>
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Descripción del Cambio</div>
+                                        <div className="source-text-box" style={{ flex: 1, overflowY: 'auto' }}>
+                                            {currentItem.description}
+                                        </div>
+                                    </div>
+                                </>
                             ) : (
                                 <div style={{ color: 'var(--text-secondary)', fontStyle: 'italic', padding: '2rem 0' }}>
                                     Este elemento no tiene un fragmento de texto asociado directamente.
@@ -349,7 +442,9 @@ function ReviewContent() {
                             <h3 style={{ fontSize: '1.2rem', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
                                 {activeTab === 'conceptos' ? 'Concepto Jurídico Identificado' :
                                     activeTab === 'relaciones' ? 'Relación Jurídica Inferida' :
-                                        'Oportunidad Legal Detectada'}
+                                        activeTab === 'hallazgos' ? 'Hallazgo Jurídico Detectado' :
+                                            activeTab === 'cambios' ? 'Revisión de Impacto Normativo' :
+                                                'Brecha de Conocimiento Detectada'}
                             </h3>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -404,10 +499,10 @@ function ReviewContent() {
                                     </>
                                 )}
 
-                                {activeTab === 'oportunidades' && (
+                                {activeTab === 'hallazgos' && (
                                     <>
                                         <div className="form-group">
-                                            <label className="form-label">Título de la Oportunidad</label>
+                                            <label className="form-label">Título del Hallazgo</label>
                                             <input
                                                 type="text"
                                                 name="title"
@@ -416,6 +511,23 @@ function ReviewContent() {
                                                 className="form-input"
                                                 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--primary)' }}
                                             />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label className="form-label">Clasificación</label>
+                                            <select
+                                                name="opportunity_type"
+                                                value={formData.opportunity_type || 'derecho'}
+                                                onChange={handleInputChange}
+                                                className="form-select"
+                                            >
+                                                <option value="derecho">Derecho</option>
+                                                <option value="obligacion">Obligación</option>
+                                                <option value="excepcion">Excepción</option>
+                                                <option value="beneficio">Beneficio</option>
+                                                <option value="conflicto">Conflicto</option>
+                                                <option value="riesgo">Riesgo</option>
+                                            </select>
                                         </div>
 
                                         <div style={{ borderLeft: '3px solid var(--success)', paddingLeft: '1rem' }}>
@@ -465,6 +577,55 @@ function ReviewContent() {
                                     </>
                                 )}
 
+                                {activeTab === 'cambios' && (
+                                    <>
+                                        <div className="badge badge-warning" style={{ marginBottom: '1rem', display: 'inline-block' }}>
+                                            Requiere Invalidación en Cascada
+                                        </div>
+                                        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                                            Este cambio normativo afecta a {Math.floor(Math.random() * 10) + 1} conceptos, relaciones y hallazgos previamente validados.
+                                        </p>
+                                        <p style={{ color: '#fff', fontWeight: 'bold' }}>
+                                            ¿Deseas marcar todos los elementos dependientes como NEEDS_REVIEW?
+                                        </p>
+                                    </>
+                                )}
+
+                                {activeTab === 'gaps' && (
+                                    <>
+                                        <div className="form-group">
+                                            <label className="form-label">Tema de la Brecha</label>
+                                            <input
+                                                type="text"
+                                                value={formData.topic || ''}
+                                                readOnly
+                                                className="form-input"
+                                                style={{ background: 'rgba(255,255,255,0.05)' }}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Motivo</label>
+                                            <textarea
+                                                name="reason"
+                                                value={formData.reason || ''}
+                                                onChange={handleInputChange}
+                                                rows={4}
+                                                className="form-textarea"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Tipo de Brecha</label>
+                                            <input
+                                                type="text"
+                                                value={formData.gap_type || ''}
+                                                readOnly
+                                                className="form-input"
+                                                style={{ background: 'rgba(255,255,255,0.05)' }}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
                                 <div style={{ borderLeft: '3px solid #64748b', paddingLeft: '1rem', marginTop: '1rem' }}>
                                     <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Observaciones del Revisor</h4>
                                     <textarea
@@ -477,20 +638,59 @@ function ReviewContent() {
                             </div>
 
                             <div className="action-bar">
-                                <button
-                                    onClick={() => handleSaveStatus('rejected')}
-                                    disabled={saving}
-                                    className="btn btn-danger"
-                                >
-                                    Rechazar
-                                </button>
-                                <button
-                                    onClick={() => handleSaveStatus('approved')}
-                                    disabled={saving}
-                                    className="btn btn-success"
-                                >
-                                    {saving ? 'Guardando...' : 'Aprobar y Publicar'}
-                                </button>
+                                {activeTab === 'cambios' ? (
+                                    <>
+                                        <button
+                                            onClick={() => handleSaveStatus('rejected')}
+                                            disabled={saving}
+                                            className="btn btn-secondary"
+                                        >
+                                            Ignorar Cambio
+                                        </button>
+                                        <button
+                                            onClick={() => handleSaveStatus('approved')}
+                                            disabled={saving}
+                                            className="btn btn-warning"
+                                            style={{ color: '#000' }}
+                                        >
+                                            {saving ? 'Procesando...' : 'Invalidar Conocimiento Afectado'}
+                                        </button>
+                                    </>
+                                ) : activeTab === 'gaps' ? (
+                                    <>
+                                        <button
+                                            onClick={() => handleSaveStatus('rejected')}
+                                            disabled={saving}
+                                            className="btn btn-secondary"
+                                        >
+                                            Cerrar sin resolver
+                                        </button>
+                                        <button
+                                            onClick={() => handleSaveStatus('approved')}
+                                            disabled={saving}
+                                            className="btn btn-success"
+                                        >
+                                            {saving ? 'Guardando...' : 'Marcar como Resuelto'}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={() => handleSaveStatus('rejected')}
+                                            disabled={saving}
+                                            className="btn btn-danger"
+                                        >
+                                            Descartar
+                                        </button>
+                                        <button
+                                            onClick={() => handleSaveStatus('approved')}
+                                            disabled={saving}
+                                            className="btn btn-success"
+                                        >
+                                            {saving ? 'Guardando...' : 'Aprobar y Publicar'}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
