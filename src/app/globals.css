@@ -1,32 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Negro Ebano */
-  --bg-dark: #1A1A1A;
-  /* Azul Profundo con opacidad para tarjetas */
-  --bg-card: rgba(30, 78, 140, 0.4);
-  --bg-card-hover: rgba(30, 78, 140, 0.6);
-  /* Dorado Viejo para bordes */
-  --border-color: rgba(201, 162, 39, 0.3);
-  --border-color-hover: rgba(201, 162, 39, 0.6);
+  /* Fondo Oscuro Cibernético */
+  --bg-dark: #050508;
+  /* Azul Neón con opacidad para tarjetas */
+  --bg-card: rgba(0, 240, 255, 0.03);
+  --bg-card-hover: rgba(0, 240, 255, 0.08);
+  /* Azul Neón para bordes */
+  --border-color: rgba(0, 240, 255, 0.2);
+  --border-color-hover: rgba(0, 240, 255, 0.5);
 
-  /* Dorado Viejo */
-  --primary: #C9A227;
-  --primary-hover: #e0b838;
-  --primary-glow: rgba(201, 162, 39, 0.3);
+  /* Azul Neón Principal */
+  --primary: #00f0ff;
+  --primary-hover: #33f3ff;
+  --primary-glow: rgba(0, 240, 255, 0.4);
 
-  /* Blanco Marfil */
-  --text-primary: #F5F2E8;
-  --text-secondary: #d1cebc;
-  --text-muted: #a3a08f;
+  /* Blanco Marfil/Cian Claro */
+  --text-primary: #e0f7fa;
+  --text-secondary: #80deea;
+  --text-muted: #4dd0e1;
 
-  /* Azul Profundo para elementos secundarios/éxito */
-  --success: #1E4E8C;
-  --success-glow: rgba(30, 78, 140, 0.3);
-  --error: #ef4444;
-  --error-glow: rgba(239, 68, 68, 0.2);
-  --warning: #f59e0b;
-  --warning-glow: rgba(245, 158, 11, 0.2);
+  /* Colores de estado */
+  --success: #00e676;
+  --success-glow: rgba(0, 230, 118, 0.3);
+  --error: #ff1744;
+  --error-glow: rgba(255, 23, 68, 0.2);
+  --warning: #ffea00;
+  --warning-glow: rgba(255, 234, 0, 0.2);
 
   --font-sans: 'Outfit', sans-serif;
   --font-mono: 'Space Grotesk', sans-serif;
@@ -56,8 +56,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(255, 107, 0, 0.03) 0%, transparent 50%);
+    radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.03) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
