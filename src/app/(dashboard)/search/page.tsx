@@ -29,17 +29,17 @@ export default function SearchPage() {
         setError(null);
         setAnswer(
             "**Normativa aplicable**\n" +
-            "- AI Act (Art. 4, Art. 14)\n\n" +
+            "✅ Ley de Sociedades de Capital\n" +
+            "✅ Código Civil\n" +
+            "🏺 Código de Comercio (1885)\n\n" +
+            "**Análisis del caso**\n" +
+            "Para resolver tu problema he utilizado el Código de Comercio de 1885 porque sigue vigente y resulta aplicable a este caso, ya que regula específicamente las obligaciones mercantiles entre socios.\n\n" +
             "**Obligaciones detectadas**\n" +
-            "- Es obligatorio que los sistemas de IA de alto riesgo sean supervisados por personas físicas para prevenir riesgos legales.\n" +
-            "- Los responsables del despliegue deben garantizar un nivel suficiente de alfabetización en IA de su personal.\n\n" +
-            "**Riesgos jurídicos**\n" +
-            "- Aceptación automática de resultados generados por IA que puedan contener errores jurídicos o plazos incorrectos.\n\n" +
-            "**Recomendaciones**\n" +
-            "- No enviar contratos generados por IA directamente. Establecer un proceso de revisión humana obligatoria.\n\n" +
-            "**THOTH ha detectado además:**\n" +
-            "- Existe una guía publicada por la Comisión Europea sobre la supervisión humana en sistemas de IA de alto riesgo.\n\n" +
-            "*Durante el análisis se han identificado 2 obligaciones, 1 riesgo jurídico, 2 fuentes oficiales aplicables y 1 guía complementaria relevante.*"
+            "- El socio incumplidor debe responder de los daños y perjuicios causados a la masa común (Art. 170 Código de Comercio).\n" +
+            "- Se requiere un requerimiento formal previo para constituir en mora al socio (Art. 63 Código de Comercio).\n\n" +
+            "**Opciones legales**\n" +
+            "- Exigir el cumplimiento forzoso del contrato.\n" +
+            "- Solicitar la rescisión del contrato social con indemnización de daños y perjuicios."
         );
         setResults([]);
 
@@ -66,29 +66,35 @@ export default function SearchPage() {
             // Fallback mock search for local testing
             setTimeout(() => {
                 setAnswer(
-                    `Según la normativa analizada para el dominio de **${domain === 'ai_literacy' ? 'Alfabetización en IA' : 'Autónomos'}**, se establece lo siguiente:\n\n` +
-                    `1. **Supervisión Humana**: Es obligatorio que los sistemas de IA de alto riesgo sean supervisados por personas físicas para prevenir riesgos (Art. 14 AI Act).\n` +
-                    `2. **Capacitación**: Los responsables del despliegue deben garantizar un nivel suficiente de alfabetización en IA de su personal (Art. 4 AI Act).\n\n` +
-                    `*Esta respuesta ha sido generada de forma sintética para la demostración local.*`
+                    "**Normativa aplicable**\n" +
+                    "✅ Ley de Sociedades de Capital\n" +
+                    "✅ Código Civil\n" +
+                    "🏺 Código de Comercio (1885)\n\n" +
+                    "**Análisis del caso**\n" +
+                    "Para resolver tu problema he utilizado el Código de Comercio de 1885 porque sigue vigente y resulta aplicable a este caso, ya que regula específicamente las obligaciones mercantiles entre socios.\n\n" +
+                    "**Obligaciones detectadas**\n" +
+                    "- El socio incumplidor debe responder de los daños y perjuicios causados a la masa común (Art. 170 Código de Comercio).\n" +
+                    "- Se requiere un requerimiento formal previo para constituir en mora al socio (Art. 63 Código de Comercio).\n\n" +
+                    "*Esta respuesta ha sido generada de forma sintética para la demostración local.*"
                 );
                 setResults([
                     {
                         id: 'chunk-1',
-                        title: 'Reglamento Europeo de IA',
-                        section: 'Artículo 14. Supervisión humana',
-                        text: 'Los sistemas de IA de alto riesgo se diseñarán y desarrollarán de manera que puedan ser supervisados eficazmente por personas físicas durante el período en que estén en uso.',
-                        url: 'https://eur-lex.europa.eu/...',
-                        authority: 'Unión Europea - EUR-Lex',
-                        similarity: 0.89
+                        title: 'Código de Comercio (1885)',
+                        section: 'Artículo 170',
+                        text: 'Si dentro del plazo convenido algún socio no aportare a la masa común la porción de capital a que se hubiere obligado, la compañía podrá optar entre proceder ejecutivamente contra sus bienes para hacer efectiva la porción del capital que hubiere dejado de entregar, o rescindir el contrato en cuanto al socio remiso, reteniendo las cantidades que le correspondan en la masa social.',
+                        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-1885-6627',
+                        authority: 'España - BOE',
+                        similarity: 0.92
                     },
                     {
                         id: 'chunk-2',
-                        title: 'Reglamento Europeo de IA',
-                        section: 'Artículo 4. Alfabetización en materia de IA',
-                        text: 'Los proveedores y los responsables del despliegue de sistemas de IA adoptarán medidas para garantizar, en la medida de lo posible, un nivel suficiente de alfabetización en materia de IA de su personal...',
-                        url: 'https://eur-lex.europa.eu/...',
-                        authority: 'Unión Europea - EUR-Lex',
-                        similarity: 0.82
+                        title: 'Ley de Sociedades de Capital',
+                        section: 'Artículo 82',
+                        text: 'El socio que incumpla la obligación de desembolso incurrirá en mora. En caso de mora, la sociedad podrá reclamar el cumplimiento de la obligación de desembolso con abono del interés legal y de los daños y perjuicios causados.',
+                        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2010-10544',
+                        authority: 'España - BOE',
+                        similarity: 0.85
                     }
                 ]);
                 setLoading(false);
@@ -168,13 +174,19 @@ export default function SearchPage() {
                                 <div key={result.id} className="search-result-card">
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <h4 style={{ fontSize: '1.1rem', color: '#fff' }}>
+                                            {result.title.includes('1885') ? '🏺 ' : '📄 '}
                                             {result.title} — <span style={{ color: 'var(--primary)' }}>{result.section}</span>
                                         </h4>
-                                        {result.similarity && (
-                                            <span className="badge badge-primary">
-                                                {result.similarity > 0.85 ? "Fuente principal" : "Fuente complementaria"}
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            <span className="badge badge-success" style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#4ade80', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                                                Estado: Vigente
                                             </span>
-                                        )}
+                                            {result.similarity && (
+                                                <span className="badge badge-primary">
+                                                    {result.similarity > 0.85 ? "Fuente principal" : "Fuente complementaria"}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                     <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-secondary)', borderLeft: '2px solid var(--primary)', paddingLeft: '1rem' }}>
                                         {result.text}
