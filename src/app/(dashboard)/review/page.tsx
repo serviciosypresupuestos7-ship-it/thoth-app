@@ -4,147 +4,108 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
-interface Exercise {
-    id: string;
-    chunk_id: string;
-    domain_id: string;
-    legal_requirement: string;
-    plain_language: string;
-    department: string;
-    job_role: string;
-    task: string;
-    risk: string;
-    required_skill: string;
-    exercise_type: string;
-    difficulty: string;
-    evidence: string;
-    review_status: string;
-    chunk?: {
-        text: string;
-        title: string;
-        section: string;
-        authority: string;
-        url: string;
-    };
-}
+type TabType = 'conceptos' | 'relaciones' | 'oportunidades';
 
 function ReviewContent() {
     const searchParams = useSearchParams();
     const initialDomain = searchParams.get('domain') || 'ai_literacy';
 
     const [domain, setDomain] = useState(initialDomain);
-    const [exercises, setExercises] = useState<Exercise[]>([]);
+    const [activeTab, setActiveTab] = useState<TabType>('oportunidades');
+    const [items, setItems] = useState<any[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
     // Editable form fields
-    const [formData, setFormData] = useState<Partial<Exercise>>({});
+    const [formData, setFormData] = useState<any>({});
 
     const supabase = createClient();
 
     useEffect(() => {
-        fetchExercises();
-    }, [domain]);
+        fetchData();
+    }, [domain, activeTab]);
 
-    const fetchExercises = async () => {
+    const fetchData = async () => {
         setLoading(true);
         try {
-            // Fetch exercises with chunk relation
-            const { data, error } = await supabase
-                .from('training_exercises')
-                .select(`
-          *,
-          chunk:legal_chunks (
-            text,
-            title,
-            section,
-            authority,
-            url
-          )
-        `)
-                .eq('domain_id', domain)
-                .eq('review_status', 'pending')
-                .order('created_at', { ascending: true });
+            let data: any[] | null = [];
+            let error = null;
+
+            if (activeTab === 'conceptos') {
+                const res = await supabase
+                    .from('legal_concepts')
+                    .select('*')
+                    .eq('domain_id', domain)
+                    .eq('status', 'proposed')
+                    .order('created_at', { ascending: true });
+                data = res.data;
+                error = res.error;
+            } else if (activeTab === 'relaciones') {
+                const res = await supabase
+                    .from('legal_relationships')
+                    .select('*')
+                    .eq('status', 'proposed')
+                    .order('created_at', { ascending: true });
+                data = res.data;
+                error = res.error;
+            } else if (activeTab === 'oportunidades') {
+                const res = await supabase
+                    .from('legal_opportunities')
+                    .select(`
+                        *,
+                        chunk:legal_chunks (
+                            text,
+                            title,
+                            section,
+                            authority,
+                            url
+                        )
+                    `)
+                    .eq('status', 'proposed')
+                    .order('created_at', { ascending: true });
+                data = res.data;
+                error = res.error;
+            }
 
             if (error) throw error;
 
-            // Map the response to our interface
-            const mapped = (data || []).map((item: any) => ({
-                ...item,
-                chunk: item.chunk ? {
-                    text: item.chunk.text,
-                    title: item.chunk.title,
-                    section: item.chunk.section,
-                    authority: item.chunk.authority,
-                    url: item.chunk.url
-                } : undefined
-            })) as Exercise[];
-
-            setExercises(mapped);
+            setItems(data || []);
             setCurrentIndex(0);
-            if (mapped.length > 0) {
-                setFormData(mapped[0]);
+            if (data && data.length > 0) {
+                setFormData(data[0]);
             } else {
                 setFormData({});
             }
         } catch (err: any) {
-            console.error('Error fetching exercises:', err);
-            // Fallback mock data
-            const mockExercises: Exercise[] = [
-                {
-                    id: 'ex-1',
-                    chunk_id: 'chunk-1',
-                    domain_id: 'ai_literacy',
-                    legal_requirement: 'Garantizar la supervisión humana de los sistemas de IA',
-                    plain_language: 'Obligación de establecer medidas de control humano sobre los sistemas de IA de alto riesgo para evitar decisiones automatizadas sin supervisión.',
-                    department: 'Administración',
-                    job_role: 'Administrativo',
-                    task: 'Uso de IA para redactar contratos o comunicaciones vinculantes.',
-                    risk: 'Aceptación automática de resultados generados por IA que puedan contener errores jurídicos o plazos incorrectos.',
-                    required_skill: 'Verificación de datos generados por IA',
-                    exercise_type: 'simulation',
-                    difficulty: 'basic',
-                    evidence: 'El trabajador identifica y corrige el dato falso en el borrador del correo.',
-                    review_status: 'pending',
-                    chunk: {
-                        text: '## Artículo 14. Supervisión humana\n1. Los sistemas de IA de alto riesgo se diseñarán y desarrollarán de manera que puedan ser supervisados eficazmente por personas físicas durante el período en que estén en uso.\n2. La supervisión humana tendrá por objeto prevenir o minimizar los riesgos para la salud, la seguridad o los derechos fundamentales...',
-                        title: 'Reglamento Europeo de IA',
-                        section: 'Artículo 14',
-                        authority: 'Unión Europea - EUR-Lex',
-                        url: 'https://eur-lex.europa.eu/...'
-                    }
-                },
-                {
-                    id: 'ex-2',
-                    chunk_id: 'chunk-2',
-                    domain_id: 'ai_literacy',
-                    legal_requirement: 'Promover la alfabetización en IA entre el personal',
-                    plain_language: 'Obligación de capacitar al personal en el uso seguro, ético y eficiente de los sistemas de inteligencia artificial.',
-                    department: 'Recursos Humanos',
-                    job_role: 'Gestor de Formación',
-                    task: 'Diseño e implementación de planes de formación corporativa.',
-                    risk: 'Uso indebido de herramientas de IA por desconocimiento de sus limitaciones, exponiendo datos confidenciales o vulnerando el RGPD.',
-                    required_skill: 'Diseño de planes de capacitación en competencias digitales',
-                    exercise_type: 'simulation',
-                    difficulty: 'intermediate',
-                    evidence: 'El gestor incluye un módulo obligatorio sobre uso seguro de IA en el plan de formación.',
-                    review_status: 'pending',
-                    chunk: {
-                        text: '## Artículo 4. Alfabetización en materia de inteligencia artificial\nLos proveedores y los responsables del despliegue de sistemas de IA adoptarán medidas para garantizar, en la medida de lo posible, un nivel suficiente de alfabetización en materia de IA de su personal y de otras personas que se encarguen de la explotación y el uso de sistemas de IA...',
-                        title: 'Reglamento Europeo de IA',
-                        section: 'Artículo 4',
-                        authority: 'Unión Europea - EUR-Lex',
-                        url: 'https://eur-lex.europa.eu/...'
-                    }
-                }
-            ].filter(ex => ex.domain_id === domain);
+            console.error('Error fetching data:', err);
 
-            setExercises(mockExercises);
-            setCurrentIndex(0);
-            if (mockExercises.length > 0) {
-                setFormData(mockExercises[0]);
+            // Fallback mock data for demonstration if DB is empty or errors
+            if (activeTab === 'oportunidades') {
+                const mockOpps = [
+                    {
+                        id: 'opp-1',
+                        title: 'Bonificación por Supervisión Humana',
+                        description: 'Posible reducción de cuotas si se implementa un sistema de supervisión humana certificada.',
+                        opportunity_type: 'beneficio',
+                        reasoning_summary: 'El artículo 14 exige supervisión humana. Implementarla proactivamente puede calificar para subvenciones de digitalización segura.',
+                        conditions: ['Certificación ISO', 'Auditoría anual'],
+                        limitations: ['Solo aplicable a PYMES'],
+                        conflicts: [],
+                        status: 'proposed',
+                        chunk: {
+                            text: '## Artículo 14. Supervisión humana\n1. Los sistemas de IA de alto riesgo se diseñarán y desarrollarán de manera que puedan ser supervisados eficazmente por personas físicas durante el período en que estén en uso.',
+                            title: 'Reglamento Europeo de IA',
+                            section: 'Artículo 14',
+                            authority: 'Unión Europea - EUR-Lex',
+                            url: 'https://eur-lex.europa.eu/...'
+                        }
+                    }
+                ];
+                setItems(mockOpps);
+                setFormData(mockOpps[0]);
             } else {
+                setItems([]);
                 setFormData({});
             }
         } finally {
@@ -152,58 +113,62 @@ function ReviewContent() {
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev: any) => ({ ...prev, [name]: value }));
     };
 
     const handleSaveStatus = async (status: 'approved' | 'rejected') => {
-        if (exercises.length === 0) return;
+        if (items.length === 0) return;
         setSaving(true);
-        const currentEx = exercises[currentIndex];
+        const currentItem = items[currentIndex];
 
         try {
-            const updateData = {
-                legal_requirement: formData.legal_requirement,
-                plain_language: formData.plain_language,
-                department: formData.department,
-                job_role: formData.job_role,
-                task: formData.task,
-                risk: formData.risk,
-                required_skill: formData.required_skill,
-                exercise_type: formData.exercise_type,
-                difficulty: formData.difficulty,
-                evidence: formData.evidence,
-                review_status: status,
-                reviewed_at: new Date().toISOString(),
-            };
+            let table = '';
+            let updateData: any = { status };
+
+            if (activeTab === 'conceptos') {
+                table = 'legal_concepts';
+                updateData.name = formData.name;
+                updateData.description = formData.description;
+            } else if (activeTab === 'relaciones') {
+                table = 'legal_relationships';
+                updateData.relationship_type = formData.relationship_type;
+                updateData.description = formData.description;
+            } else if (activeTab === 'oportunidades') {
+                table = 'legal_opportunities';
+                updateData.title = formData.title;
+                updateData.description = formData.description;
+                updateData.reasoning_summary = formData.reasoning_summary;
+                updateData.reviewed_at = new Date().toISOString();
+            }
 
             const { error } = await supabase
-                .from('training_exercises')
+                .from(table)
                 .update(updateData)
-                .eq('id', currentEx.id);
+                .eq('id', currentItem.id);
 
             if (error) throw error;
 
             // Phase 10: Log to immutable validation_history
             const { data: { session } } = await supabase.auth.getSession();
-            const userId = session?.user?.id || '00000000-0000-0000-0000-000000000000'; // Fallback for local testing if no auth
+            const userId = session?.user?.id || '00000000-0000-0000-0000-000000000000';
 
             await supabase.from('validation_history').insert({
-                entity_type: 'exercise',
-                entity_id: currentEx.id,
+                entity_type: activeTab.slice(0, -1), // concepto, relacion, oportunidad
+                entity_id: currentItem.id,
                 action: status,
-                previous_status: currentEx.review_status,
+                previous_status: currentItem.status,
                 new_status: status,
                 reason: 'Human review via UI',
-                snapshot_before: currentEx,
-                snapshot_after: { ...currentEx, ...updateData },
+                snapshot_before: currentItem,
+                snapshot_after: { ...currentItem, ...updateData },
                 user_id: userId
             });
 
             // Remove from current list
-            const updated = exercises.filter((_, idx) => idx !== currentIndex);
-            setExercises(updated);
+            const updated = items.filter((_, idx) => idx !== currentIndex);
+            setItems(updated);
 
             if (updated.length > 0) {
                 const nextIndex = currentIndex >= updated.length ? updated.length - 1 : currentIndex;
@@ -213,11 +178,10 @@ function ReviewContent() {
                 setFormData({});
             }
         } catch (err) {
-            console.error('Error updating exercise status:', err);
-            // Local fallback simulation
-            alert(`[Simulación Local] Ejercicio marcado como ${status.toUpperCase()}`);
-            const updated = exercises.filter((_, idx) => idx !== currentIndex);
-            setExercises(updated);
+            console.error('Error updating status:', err);
+            alert(`[Simulación Local] Elemento marcado como ${status.toUpperCase()}`);
+            const updated = items.filter((_, idx) => idx !== currentIndex);
+            setItems(updated);
             if (updated.length > 0) {
                 const nextIndex = currentIndex >= updated.length ? updated.length - 1 : currentIndex;
                 setCurrentIndex(nextIndex);
@@ -230,7 +194,7 @@ function ReviewContent() {
         }
     };
 
-    const currentExercise = exercises[currentIndex];
+    const currentItem = items[currentIndex];
 
     return (
         <div>
@@ -255,41 +219,64 @@ function ReviewContent() {
 
             {/* Tabs Navigation */}
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', overflowX: 'auto' }}>
-                {['Conceptos pendientes', 'Relaciones pendientes', 'Oportunidades pendientes', 'Cambios BOE', 'Knowledge Gaps'].map((tab, idx) => (
-                    <button
-                        key={tab}
-                        className={`nav-link ${idx === 0 ? 'active' : ''}`}
-                        style={{ background: idx === 0 ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: idx === 0 ? '1px solid var(--border-color)' : '1px solid transparent', color: idx === 0 ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
-                        onClick={() => {
-                            if (idx !== 0) alert('Esta sección se implementará en la próxima actualización del panel de validación.');
-                        }}
-                    >
-                        {tab}
-                    </button>
-                ))}
+                <button
+                    className={`nav-link ${activeTab === 'conceptos' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'conceptos' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'conceptos' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'conceptos' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('conceptos')}
+                >
+                    Conceptos pendientes
+                </button>
+                <button
+                    className={`nav-link ${activeTab === 'relaciones' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'relaciones' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'relaciones' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'relaciones' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('relaciones')}
+                >
+                    Relaciones pendientes
+                </button>
+                <button
+                    className={`nav-link ${activeTab === 'oportunidades' ? 'active' : ''}`}
+                    style={{ background: activeTab === 'oportunidades' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'oportunidades' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'oportunidades' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('oportunidades')}
+                >
+                    Oportunidades pendientes
+                </button>
+                <button
+                    className="nav-link"
+                    style={{ background: 'transparent', border: '1px solid transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => alert('Esta sección se implementará próximamente.')}
+                >
+                    Cambios BOE
+                </button>
+                <button
+                    className="nav-link"
+                    style={{ background: 'transparent', border: '1px solid transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}
+                    onClick={() => alert('Esta sección se implementará próximamente.')}
+                >
+                    Knowledge Gaps
+                </button>
             </div>
 
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-secondary)' }}>
-                    Cargando propuestas de entrenamiento...
+                    Cargando propuestas...
                 </div>
-            ) : exercises.length === 0 ? (
+            ) : items.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '5rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
                     <h3 style={{ fontSize: '1.5rem', color: '#fff', marginBottom: '0.5rem' }}>¡Todo al día!</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>No hay propuestas de entrenamiento pendientes de revisión para este dominio.</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>No hay elementos pendientes de revisión en esta categoría.</p>
                 </div>
             ) : (
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <span className="badge badge-primary">
-                            Propuesta {currentIndex + 1} de {exercises.length}
+                            Propuesta {currentIndex + 1} de {items.length}
                         </span>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button
                                 onClick={() => {
                                     const prev = currentIndex - 1;
                                     setCurrentIndex(prev);
-                                    setFormData(exercises[prev]);
+                                    setFormData(items[prev]);
                                 }}
                                 disabled={currentIndex === 0}
                                 className="btn btn-secondary"
@@ -301,9 +288,9 @@ function ReviewContent() {
                                 onClick={() => {
                                     const next = currentIndex + 1;
                                     setCurrentIndex(next);
-                                    setFormData(exercises[next]);
+                                    setFormData(items[next]);
                                 }}
-                                disabled={currentIndex === exercises.length - 1}
+                                disabled={currentIndex === items.length - 1}
                                 className="btn btn-secondary"
                                 style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
                             >
@@ -313,95 +300,172 @@ function ReviewContent() {
                     </div>
 
                     <div className="review-layout">
-                        {/* Left Panel: Source Text */}
+                        {/* Left Panel: Source Text (Only for Opportunities which have chunks) */}
                         <div className="source-panel">
                             <h3 style={{ fontSize: '1.2rem', color: '#fff' }}>Fuente Oficial</h3>
-                            <div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Documento</div>
-                                <div style={{ fontWeight: '600', color: 'var(--primary)' }}>{currentExercise?.chunk?.title}</div>
-                            </div>
-                            <div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Sección / Artículo</div>
-                                <div style={{ fontWeight: '600' }}>{currentExercise?.chunk?.section}</div>
-                            </div>
-                            <div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Organismo</div>
-                                <div>{currentExercise?.chunk?.authority}</div>
-                            </div>
+                            {currentItem?.chunk ? (
+                                <>
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Documento</div>
+                                        <div style={{ fontWeight: '600', color: 'var(--primary)' }}>{currentItem.chunk.title}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Sección / Artículo</div>
+                                        <div style={{ fontWeight: '600' }}>{currentItem.chunk.section}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Organismo</div>
+                                        <div>{currentItem.chunk.authority}</div>
+                                    </div>
 
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Texto del Fragmento</div>
-                                <div className="source-text-box" style={{ flex: 1, overflowY: 'auto' }}>
-                                    {currentExercise?.chunk?.text}
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Texto del Fragmento</div>
+                                        <div className="source-text-box" style={{ flex: 1, overflowY: 'auto' }}>
+                                            {currentItem.chunk.text}
+                                        </div>
+                                    </div>
+
+                                    {currentItem.chunk.url && (
+                                        <a
+                                            href={currentItem.chunk.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-secondary"
+                                            style={{ fontSize: '0.85rem', padding: '0.5rem', textAlign: 'center' }}
+                                        >
+                                            Ver Fuente Oficial ↗
+                                        </a>
+                                    )}
+                                </>
+                            ) : (
+                                <div style={{ color: 'var(--text-secondary)', fontStyle: 'italic', padding: '2rem 0' }}>
+                                    Este elemento no tiene un fragmento de texto asociado directamente.
                                 </div>
-                            </div>
-
-                            {currentExercise?.chunk?.url && (
-                                <a
-                                    href={currentExercise.chunk.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn btn-secondary"
-                                    style={{ fontSize: '0.85rem', padding: '0.5rem', textAlign: 'center' }}
-                                >
-                                    Ver Fuente Oficial ↗
-                                </a>
                             )}
                         </div>
 
-                        {/* Right Panel: Editable Exercise */}
+                        {/* Right Panel: Editable Form based on Tab */}
                         <div className="exercise-panel">
                             <h3 style={{ fontSize: '1.2rem', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                                Elementos Jurídicos Identificados
+                                {activeTab === 'conceptos' ? 'Concepto Jurídico Identificado' :
+                                    activeTab === 'relaciones' ? 'Relación Jurídica Inferida' :
+                                        'Oportunidad Legal Detectada'}
                             </h3>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
-                                <div style={{ borderLeft: '3px solid var(--primary)', paddingLeft: '1rem' }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Obligaciones</h4>
-                                    <textarea
-                                        name="plain_language"
-                                        value={formData.plain_language || ''}
-                                        onChange={handleInputChange}
-                                        rows={3}
-                                        className="form-textarea"
-                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
-                                    />
-                                </div>
 
-                                <div style={{ borderLeft: '3px solid var(--warning)', paddingLeft: '1rem' }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Riesgos Jurídicos</h4>
-                                    <textarea
-                                        name="risk"
-                                        value={formData.risk || ''}
-                                        onChange={handleInputChange}
-                                        rows={2}
-                                        className="form-textarea"
-                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
-                                    />
-                                </div>
+                                {activeTab === 'conceptos' && (
+                                    <>
+                                        <div className="form-group">
+                                            <label className="form-label">Nombre del Concepto</label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.name || ''}
+                                                onChange={handleInputChange}
+                                                className="form-input"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Descripción Legal</label>
+                                            <textarea
+                                                name="description"
+                                                value={formData.description || ''}
+                                                onChange={handleInputChange}
+                                                rows={4}
+                                                className="form-textarea"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
-                                <div style={{ borderLeft: '3px solid var(--success)', paddingLeft: '1rem' }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Aplicación Práctica</h4>
-                                    <input
-                                        type="text"
-                                        name="task"
-                                        value={formData.task || ''}
-                                        onChange={handleInputChange}
-                                        className="form-input"
-                                        style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
-                                    />
-                                </div>
+                                {activeTab === 'relaciones' && (
+                                    <>
+                                        <div className="form-group">
+                                            <label className="form-label">Tipo de Relación</label>
+                                            <input
+                                                type="text"
+                                                name="relationship_type"
+                                                value={formData.relationship_type || ''}
+                                                onChange={handleInputChange}
+                                                className="form-input"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Justificación de la Relación</label>
+                                            <textarea
+                                                name="description"
+                                                value={formData.description || ''}
+                                                onChange={handleInputChange}
+                                                rows={4}
+                                                className="form-textarea"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
-                                <div style={{ borderLeft: '3px solid #8b5cf6', paddingLeft: '1rem' }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Conceptos Relacionados</h4>
-                                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Supervisión humana</span>
-                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Alfabetización en IA</span>
-                                        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c4b5fd' }}>Riesgo alto</span>
-                                    </div>
-                                </div>
+                                {activeTab === 'oportunidades' && (
+                                    <>
+                                        <div className="form-group">
+                                            <label className="form-label">Título de la Oportunidad</label>
+                                            <input
+                                                type="text"
+                                                name="title"
+                                                value={formData.title || ''}
+                                                onChange={handleInputChange}
+                                                className="form-input"
+                                                style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--primary)' }}
+                                            />
+                                        </div>
 
-                                <div style={{ borderLeft: '3px solid #64748b', paddingLeft: '1rem' }}>
+                                        <div style={{ borderLeft: '3px solid var(--success)', paddingLeft: '1rem' }}>
+                                            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Descripción</h4>
+                                            <textarea
+                                                name="description"
+                                                value={formData.description || ''}
+                                                onChange={handleInputChange}
+                                                rows={3}
+                                                className="form-textarea"
+                                                style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                            />
+                                        </div>
+
+                                        <div style={{ borderLeft: '3px solid var(--warning)', paddingLeft: '1rem' }}>
+                                            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Razonamiento Jurídico</h4>
+                                            <textarea
+                                                name="reasoning_summary"
+                                                value={formData.reasoning_summary || ''}
+                                                onChange={handleInputChange}
+                                                rows={3}
+                                                className="form-textarea"
+                                                style={{ background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', padding: '0.5rem' }}
+                                            />
+                                        </div>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                            <div style={{ borderLeft: '3px solid #8b5cf6', paddingLeft: '1rem' }}>
+                                                <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Condiciones</h4>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                    {(formData.conditions || []).map((cond: string, i: number) => (
+                                                        <div key={i} style={{ fontSize: '0.9rem', color: '#c4b5fd' }}>• {cond}</div>
+                                                    ))}
+                                                    {(!formData.conditions || formData.conditions.length === 0) && <span style={{ color: 'var(--text-muted)' }}>Ninguna</span>}
+                                                </div>
+                                            </div>
+                                            <div style={{ borderLeft: '3px solid var(--danger)', paddingLeft: '1rem' }}>
+                                                <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Limitaciones</h4>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                    {(formData.limitations || []).map((lim: string, i: number) => (
+                                                        <div key={i} style={{ fontSize: '0.9rem', color: 'var(--danger)' }}>• {lim}</div>
+                                                    ))}
+                                                    {(!formData.limitations || formData.limitations.length === 0) && <span style={{ color: 'var(--text-muted)' }}>Ninguna</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                <div style={{ borderLeft: '3px solid #64748b', paddingLeft: '1rem', marginTop: '1rem' }}>
                                     <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Observaciones del Revisor</h4>
                                     <textarea
                                         placeholder="Añadir notas internas o matices legales..."
