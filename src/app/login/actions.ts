@@ -19,7 +19,7 @@ export async function login(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/review')
+    redirect('/')
 }
 
 export async function signup(formData: FormData) {
@@ -33,9 +33,9 @@ export async function signup(formData: FormData) {
     const { error } = await supabase.auth.signUp(data)
 
     if (error) {
-        redirect('/login?error=Error al registrar usuario')
+        return redirect('/login?message=No se pudo registrar usuario');
     }
 
     revalidatePath('/', 'layout')
-    redirect('/review')
+    redirect('/')
 }

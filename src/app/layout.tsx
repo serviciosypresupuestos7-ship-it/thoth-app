@@ -21,9 +21,9 @@ export default function RootLayout({
               <div className="logo-text">THOTH</div>
             </div>
             <nav className="nav-links">
-              <a href="/" className="nav-link">Inicio</a>
+              <a href="/" className="nav-link">Panel de Control</a>
+              <a href="/search" className="nav-link">Búsqueda Estratégica</a>
               <a href="/review" className="nav-link">Revisión Humana</a>
-              <a href="/search" className="nav-link">Búsqueda RAG</a>
             </nav>
           </header>
           <main className="main-content">
