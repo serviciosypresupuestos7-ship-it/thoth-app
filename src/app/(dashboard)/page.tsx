@@ -191,10 +191,10 @@ export default function HomePage() {
     <div>
       <div style={{ marginBottom: '3rem', textAlign: 'center', maxWidth: '900px', margin: '0 auto 3rem auto' }}>
         <h1 className="title-gradient" style={{ fontSize: '3rem', marginBottom: '1rem', lineHeight: '1.2' }}>
-          THOTH automatiza la adquisición y organización del conocimiento jurídico oficial.
+          THOTH pre-procesa y organiza el conocimiento jurídico oficial.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>
-          El experto jurídico valida ese conocimiento antes de incorporarlo definitivamente al sistema. Todas las respuestas se fundamentan exclusivamente en conocimiento validado y enlazado con fuentes oficiales.
+          Tú tienes el control absoluto. THOTH actúa como tu asistente analítico, pero solo el conocimiento que tú validas se incorpora al motor de razonamiento.
         </p>
       </div>
 

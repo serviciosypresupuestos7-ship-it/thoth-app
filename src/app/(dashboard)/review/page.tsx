@@ -279,8 +279,8 @@ function ReviewContent() {
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
-                    <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Validación</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>El sistema descarta cualquier propuesta no validada y evita utilizarla como conocimiento oficial.</p>
+                    <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Validación Experta</h1>
+                    <p style={{ color: 'var(--text-secondary)' }}>THOTH propone, el experto dispone. Ningún conocimiento generado por IA se utiliza sin tu validación explícita.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <label className="form-label" style={{ margin: 0 }}>Dominio:</label>
@@ -304,21 +304,21 @@ function ReviewContent() {
                     style={{ background: activeTab === 'conceptos' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'conceptos' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'conceptos' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
                     onClick={() => setActiveTab('conceptos')}
                 >
-                    Conceptos pendientes
+                    Conceptos Propuestos por IA
                 </button>
                 <button
                     className={`nav-link ${activeTab === 'relaciones' ? 'active' : ''}`}
                     style={{ background: activeTab === 'relaciones' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'relaciones' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'relaciones' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
                     onClick={() => setActiveTab('relaciones')}
                 >
-                    Relaciones pendientes
+                    Relaciones Inferidas por IA
                 </button>
                 <button
                     className={`nav-link ${activeTab === 'hallazgos' ? 'active' : ''}`}
                     style={{ background: activeTab === 'hallazgos' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'hallazgos' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'hallazgos' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
                     onClick={() => setActiveTab('hallazgos')}
                 >
-                    Hallazgos Jurídicos
+                    Hallazgos Detectados por IA
                 </button>
                 <button
                     className={`nav-link ${activeTab === 'cambios' ? 'active' : ''}`}
@@ -332,7 +332,7 @@ function ReviewContent() {
                     style={{ background: activeTab === 'gaps' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: activeTab === 'gaps' ? '1px solid var(--border-color)' : '1px solid transparent', color: activeTab === 'gaps' ? '#fff' : 'var(--text-secondary)', cursor: 'pointer' }}
                     onClick={() => setActiveTab('gaps')}
                 >
-                    Investigación Pendiente
+                    Lagunas de Conocimiento
                 </button>
             </div>
 
