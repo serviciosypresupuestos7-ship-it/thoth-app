@@ -95,6 +95,46 @@ export default function HomePage() {
           chunks_count: 42,
           pending_exercises: 8,
           approved_exercises: 15,
+        },
+        {
+          id: 'laboral',
+          display_name: 'Normativa Laboral',
+          documents_count: 0,
+          chunks_count: 0,
+          pending_exercises: 0,
+          approved_exercises: 0,
+        },
+        {
+          id: 'fiscal',
+          display_name: 'Normativa Fiscal y Tributaria',
+          documents_count: 0,
+          chunks_count: 0,
+          pending_exercises: 0,
+          approved_exercises: 0,
+        },
+        {
+          id: 'empresa',
+          display_name: 'Derecho Societario y Mercantil',
+          documents_count: 0,
+          chunks_count: 0,
+          pending_exercises: 0,
+          approved_exercises: 0,
+        },
+        {
+          id: 'prevencion',
+          display_name: 'Prevención de Riesgos Laborales',
+          documents_count: 0,
+          chunks_count: 0,
+          pending_exercises: 0,
+          approved_exercises: 0,
+        },
+        {
+          id: 'proteccion_datos',
+          display_name: 'Protección de Datos (RGPD/LOPDGDD)',
+          documents_count: 0,
+          chunks_count: 0,
+          pending_exercises: 0,
+          approved_exercises: 0,
         }
       ]);
     } finally {
