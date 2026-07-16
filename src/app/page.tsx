@@ -128,12 +128,12 @@ export default function HomePage() {
 
   return (
     <div>
-      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-        <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-          Panel de Conocimiento Jurídico
+      <div style={{ marginBottom: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto 3rem auto' }}>
+        <h1 className="title-gradient" style={{ fontSize: '3rem', marginBottom: '1rem', lineHeight: '1.2' }}>
+          Fábrica de Conocimiento Jurídico
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
-          Gestiona, clasifica y genera ejercicios prácticos a partir de normativas oficiales.
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>
+          THOTH lee normativa oficial, la transforma en conocimiento estructurado, mantiene ese conocimiento actualizado y ayuda a resolver problemas reales utilizando únicamente información oficial validada.
         </p>
       </div>
 
@@ -144,12 +144,12 @@ export default function HomePage() {
       )}
 
       <h2 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-        Dominios de Conocimiento Activos
+        Dominios de Inteligencia Jurídica
       </h2>
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
-          Cargando estadísticas de dominios...
+          Sincronizando conocimiento...
         </div>
       ) : (
         <div className="grid">
@@ -157,31 +157,31 @@ export default function HomePage() {
             <div key={domain.id} className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <h3 style={{ fontSize: '1.25rem', color: '#fff' }}>{domain.display_name}</h3>
-                <span className="badge badge-primary">{domain.id}</span>
+                <span className="badge badge-primary">Activo</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '0.5rem 0' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '1rem 0' }}>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Documentos</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.documents_count}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Normas Base</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.documents_count}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Fragmentos (Chunks)</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.chunks_count}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fragmentos</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.chunks_count}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Ejercicios Pendientes</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--warning)' }}>{domain.pending_exercises}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Por Validar</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--warning)' }}>{domain.pending_exercises}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Ejercicios Aprobados</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>{domain.approved_exercises}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Conocimiento Aprobado</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--success)' }}>{domain.approved_exercises}</div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
                 <a href={`/review?domain=${domain.id}`} className="btn btn-secondary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}>
-                  Revisar
+                  Validar
                 </a>
                 <button
                   onClick={() => handleProcessDomain(domain.id)}
@@ -189,7 +189,7 @@ export default function HomePage() {
                   className="btn btn-primary"
                   style={{ flex: 1.2 }}
                 >
-                  {processingDomain === domain.id ? 'Procesando...' : 'Procesar IA'}
+                  {processingDomain === domain.id ? 'Analizando...' : 'Extraer Conocimiento'}
                 </button>
               </div>
             </div>

@@ -86,8 +86,10 @@ export default function SearchPage() {
     return (
         <div className="search-container">
             <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-                <h1 className="title-gradient" style={{ fontSize: '2rem' }}>Estratega Legal (Resolución de Problemas)</h1>
-                <p style={{ color: 'var(--text-secondary)' }}>Describe tu situación o problema. La IA buscará soluciones en la normativa vigente, incluyendo leyes antiguas u olvidadas que sigan siendo útiles.</p>
+                <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Consultas Jurídicas</h1>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
+                    Describe tu problema. THOTH buscará en la normativa oficial, conectará los conceptos y te propondrá una solución basada en el conocimiento validado.
+                </p>
             </div>
 
             <form onSubmit={handleSearch} className="search-box">
@@ -108,7 +110,7 @@ export default function SearchPage() {
                     style={{ flex: 1, minHeight: '100px', resize: 'vertical' }}
                 />
                 <button type="submit" disabled={loading} className="btn btn-primary">
-                    {loading ? 'Buscando...' : 'Preguntar'}
+                    {loading ? 'Consultando Conocimiento...' : 'Consultar'}
                 </button>
             </form>
 
@@ -120,7 +122,7 @@ export default function SearchPage() {
 
             {loading && (
                 <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
-                    Consultando el corpus legal y generando respuesta con IA...
+                    Construyendo respuesta a partir de fuentes oficiales...
                 </div>
             )}
 
@@ -139,7 +141,7 @@ export default function SearchPage() {
                     {/* Sources */}
                     <div>
                         <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
-                            Fuentes Citadas
+                            Fuentes Oficiales Citadas
                         </h3>
                         <div className="search-results">
                             {results.map((result) => (
