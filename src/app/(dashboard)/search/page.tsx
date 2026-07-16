@@ -106,7 +106,28 @@ export default function SearchPage() {
             </div>
 
             <form onSubmit={handleSearch} className="search-box">
-                style={{ flex: 1, minHeight: '100px', resize: 'vertical' }}
+                <select
+                    value={domain}
+                    onChange={(e) => setDomain(e.target.value)}
+                    className="form-select"
+                    style={{ width: 'auto', minWidth: '200px', background: 'rgba(255,255,255,0.05)' }}
+                >
+                    <option value="auto">✨ Detección Automática</option>
+                    <option disabled>──────────</option>
+                    <option value="ai_literacy">Alfabetización en IA</option>
+                    <option value="autonomos">Autónomos</option>
+                    <option value="laboral">Laboral</option>
+                    <option value="fiscal">Fiscal</option>
+                    <option value="empresa">Mercantil</option>
+                    <option value="prevencion">Prevención de Riesgos</option>
+                    <option value="proteccion_datos">Protección de Datos</option>
+                </select>
+                <textarea
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Describe tu problema detalladamente (ej. 'Tengo un cliente que no me paga desde hace 6 meses y quiero saber qué opciones legales tengo como autónomo...')"
+                    className="form-input"
+                    style={{ flex: 1, minHeight: '100px', resize: 'vertical' }}
                 />
                 <button type="submit" disabled={loading} className="btn btn-primary">
                     {loading ? 'Consultando Conocimiento...' : 'Consultar'}

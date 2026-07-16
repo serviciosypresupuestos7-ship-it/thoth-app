@@ -187,7 +187,7 @@ export default function HomePage() {
         Estado del conocimiento jurídico
       </h2>
 
-      
+
       {/* Novedades y Descubrimientos */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem', marginBottom: '3rem' }}>
         {/* Cambios Normativos */}
@@ -244,7 +244,7 @@ export default function HomePage() {
                 <span className="badge badge-primary">Activo</span>
               </div>
 
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '1rem 0' }}>
                 <div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Normas Base</div>
@@ -268,19 +268,6 @@ export default function HomePage() {
                 <span style={{ color: '#fff' }}>Hoy, 08:30</span>
               </div>
 
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fragmentos</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--primary)' }}>{domain.chunks_count}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Por Validar</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--warning)' }}>{domain.pending_exercises}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Conocimiento Aprobado</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--success)' }}>{domain.approved_exercises}</div>
-                </div>
-              </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
                 <a href={`/review?domain=${domain.id}`} className="btn btn-secondary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}>
