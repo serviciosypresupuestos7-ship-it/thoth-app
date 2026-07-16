@@ -14,7 +14,7 @@ interface SearchResult {
 }
 
 export default function SearchPage() {
-    const [domain, setDomain] = useState('ai_literacy');
+    const [domain, setDomain] = useState('auto');
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState<string | null>(null);
