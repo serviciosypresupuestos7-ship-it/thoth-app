@@ -1,0 +1,164 @@
+{
+  "name": "ai_literacy",
+  "display_name": "Alfabetización en IA y Normativa",
+  "allowed_domains": [
+    "eur-lex.europa.eu",
+    "digital-strategy.ec.europa.eu",
+    "aesia.digital.gob.es",
+    "www.aepd.es",
+    "aepd.es",
+    "www.boe.es",
+    "boe.es",
+    "www.congreso.es",
+    "congreso.es"
+  ],
+  "relevant_link_terms": [
+    "inteligencia artificial", "intelligence", "ai act", "artículo 4", "article 4",
+    "alfabetización", "literacy", "reglamento", "guía", "guide", "checklist",
+    "supervisión humana", "transparencia", "riesgo", "risk", "datos", "privacy",
+    "rgpd", "protección de datos", "sandbox", "documentación técnica",
+    "incidentes", "ciberseguridad", "alto riesgo", "high-risk"
+  ],
+  "seeds": [
+    {
+      "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=OJ:L_202401689",
+      "title": "Reglamento (UE) 2024/1689 de Inteligencia Artificial",
+      "authority": "Unión Europea - EUR-Lex",
+      "jurisdiction": "UE",
+      "document_type": "regulation",
+      "binding_level": "binding",
+      "topics": ["AI Act", "alfabetización en IA", "supervisión humana", "transparencia"],
+      "follow_links": false
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers",
+      "title": "AI literacy - Questions & Answers",
+      "authority": "Comisión Europea",
+      "jurisdiction": "UE",
+      "document_type": "official_faq",
+      "binding_level": "official_guidance",
+      "topics": ["artículo 4", "alfabetización en IA", "formación"],
+      "follow_links": true
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act",
+      "title": "Navigating the AI Act",
+      "authority": "Comisión Europea",
+      "jurisdiction": "UE",
+      "document_type": "official_faq",
+      "binding_level": "official_guidance",
+      "topics": ["AI Act", "aplicación", "alto riesgo"],
+      "follow_links": true
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "title": "Marco regulador europeo de IA",
+      "authority": "Comisión Europea",
+      "jurisdiction": "UE",
+      "document_type": "official_portal",
+      "binding_level": "official_information",
+      "topics": ["AI Act", "calendario", "aplicación"],
+      "follow_links": true
+    },
+    {
+      "url": "https://aesia.digital.gob.es/es/actualidad/recursos/guias-practicas-para-el-cumplimiento-del-ria",
+      "title": "Guías prácticas para el cumplimiento del RIA",
+      "authority": "AESIA",
+      "jurisdiction": "España",
+      "document_type": "official_guide_collection",
+      "binding_level": "non_binding_guidance",
+      "topics": ["guías AESIA", "checklist", "cumplimiento"],
+      "follow_links": true
+    },
+    {
+      "url": "https://aesia.digital.gob.es/es/actualidad/recursos/ria-articulo-4",
+      "title": "Preguntas y respuestas sobre el artículo 4",
+      "authority": "AESIA",
+      "jurisdiction": "España",
+      "document_type": "official_resource",
+      "binding_level": "official_information",
+      "topics": ["artículo 4", "alfabetización en IA"],
+      "follow_links": true
+    },
+    {
+      "url": "https://aesia.digital.gob.es/es/actualidad/recursos/20250821-alfabetizacion-en-ia",
+      "title": "Alfabetización en IA: recursos útiles y formativos",
+      "authority": "AESIA",
+      "jurisdiction": "España",
+      "document_type": "official_resource_collection",
+      "binding_level": "official_information",
+      "topics": ["alfabetización en IA", "recursos"],
+      "follow_links": true
+    },
+    {
+      "url": "https://www.aepd.es/guias-y-herramientas/guias",
+      "title": "Guías de la AEPD",
+      "authority": "AEPD",
+      "jurisdiction": "España",
+      "document_type": "official_guide_collection",
+      "binding_level": "official_guidance",
+      "topics": ["protección de datos", "IA", "RGPD"],
+      "follow_links": true
+    },
+    {
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-18911",
+      "title": "Real Decreto 729/2023 - Estatuto de AESIA",
+      "authority": "BOE",
+      "jurisdiction": "España",
+      "document_type": "royal_decree",
+      "binding_level": "binding",
+      "topics": ["AESIA", "gobernanza"],
+      "follow_links": false
+    },
+    {
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-22767",
+      "title": "Real Decreto 817/2023 - Sandbox regulatorio de IA",
+      "authority": "BOE",
+      "jurisdiction": "España",
+      "document_type": "royal_decree",
+      "binding_level": "binding",
+      "topics": ["sandbox", "alto riesgo", "cumplimiento"],
+      "follow_links": false
+    },
+    {
+      "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32016R0679",
+      "title": "Reglamento (UE) 2016/679 - RGPD",
+      "authority": "Unión Europea - EUR-Lex",
+      "jurisdiction": "UE",
+      "document_type": "regulation",
+      "binding_level": "binding",
+      "topics": ["protección de datos", "decisiones automatizadas", "privacidad"],
+      "follow_links": false
+    },
+    {
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673",
+      "title": "Ley Orgánica 3/2018 - LOPDGDD",
+      "authority": "BOE",
+      "jurisdiction": "España",
+      "document_type": "organic_law",
+      "binding_level": "binding",
+      "topics": ["protección de datos", "derechos digitales", "trabajadores"],
+      "follow_links": false
+    },
+    {
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430",
+      "title": "Estatuto de los Trabajadores",
+      "authority": "BOE",
+      "jurisdiction": "España",
+      "document_type": "royal_legislative_decree",
+      "binding_level": "binding",
+      "topics": ["trabajo", "algoritmos", "formación", "empleados"],
+      "follow_links": false
+    },
+    {
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758",
+      "title": "Ley 34/2002 - LSSI",
+      "authority": "BOE",
+      "jurisdiction": "España",
+      "document_type": "law",
+      "binding_level": "binding",
+      "topics": ["servicios digitales", "contratación electrónica", "cookies"],
+      "follow_links": false
+    }
+  ]
+}
