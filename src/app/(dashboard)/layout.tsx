@@ -24,7 +24,9 @@ export default function DashboardLayout({
                     <Link href="/activity" className={`nav-link ${pathname === '/activity' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/activity' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/activity' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/activity' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
                         🧠 Actividad
                     </Link>
-
+                    <Link href="/team" className={`nav-link ${pathname === '/team' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/team' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/team' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/team' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        👥 Equipo y Roles
+                    </Link>
                     <Link href="/competence" className={`nav-link ${pathname === '/competence' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/competence' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/competence' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/competence' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
                         📊 Competencia
                     </Link>
