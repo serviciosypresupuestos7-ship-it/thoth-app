@@ -27,8 +27,8 @@ export default function DashboardLayout({
                     <Link href="/search" className={`nav-link ${pathname === '/search' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/search' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/search' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/search' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
                         💬 Consultas
                     </Link>
-                    <Link href="/review" className={`nav-link ${pathname === '/review' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/review' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/review' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/review' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
-                        ✅ Validación
+                    <Link href="/competence" className={`nav-link ${pathname === '/competence' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/competence' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/competence' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/competence' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
+                        📊 Competencia
                     </Link>
                     <Link href="/settings" className={`nav-link ${pathname === '/settings' ? 'active' : ''}`} style={{ textDecoration: 'none', color: pathname === '/settings' ? '#fff' : 'var(--text-secondary)', padding: '0.75rem 1rem', borderRadius: '8px', background: pathname === '/settings' ? 'rgba(255, 107, 0, 0.1)' : 'transparent', border: pathname === '/settings' ? '1px solid var(--border-color)' : '1px solid transparent' }}>
                         ⚙️ Configuración
