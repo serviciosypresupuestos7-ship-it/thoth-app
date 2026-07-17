@@ -1,0 +1,23 @@
+Vercel CLI 56.3.1 (Node.js 22.18.0)
+Fetching aliases under oficinistaporhoras-gmailcoms-projects
+> aliases found under oficinistaporhoras-gmailcoms-projects [1s]
+  source                                                                        url                                                                         age    
+  thoth-ogtanykj6-oficinistaporhoras-gmailcoms-projects.vercel.app              thoth-app-oficinistaporhoras-gmailcoms-projects.vercel.app                   4m    
+  thoth-ogtanykj6-oficinistaporhoras-gmailcoms-projects.vercel.app              thoth-app-nine.vercel.app                                                    4m    
+  crm-7ltci1jdi-oficinistaporhoras-gmailcoms-projects.vercel.app                crm-oficinistaporhoras-gmailcoms-projects.vercel.app                        21d    
+  crm-7ltci1jdi-oficinistaporhoras-gmailcoms-projects.vercel.app                crm-mu-sepia.vercel.app                                                     21d    
+  paraventas-qgsd9lyet-oficinistaporhoras-gmailcoms-projects.vercel.app         paraventas.vercel.app                                                       24d    
+  secretarix-cloud-arwgiza25.vercel.app                                         secretarix-cloud.vercel.app                                                 31d    
+  secretarix-cloud-arwgiza25.vercel.app                                         secretarix-cloud-oficinistaporhoras-gmailcoms-projects.vercel.app           31d    
+  inmo-qwa3pg0vx-oficinistaporhoras-gmailcoms-projects.vercel.app               inmo-six.vercel.app                                                         57d    
+  inmo-qwa3pg0vx-oficinistaporhoras-gmailcoms-projects.vercel.app               inmo-oficinistaporhoras-gmailcoms-projects.vercel.app                       57d    
+  paraventas-qgsd9lyet-oficinistaporhoras-gmailcoms-projects.vercel.app         paraventas-oficinistaporhoras-gmailcoms-projects.vercel.app                 58d    
+  autotaller-plan-basico-n5tv1vev5.vercel.app                                   autotaller-plan-basico-oficinistaporhoras-gmailcoms-projects.vercel.app     60d    
+  autotaller-plan-basico-n5tv1vev5.vercel.app                                   autotaller-plan-basico.vercel.app                                           60d    
+  planbasico-3h0mbb1a6-oficinistaporhoras-gmailcoms-projects.vercel.app         planbasico-two.vercel.app                                                   60d    
+  planbasico-3h0mbb1a6-oficinistaporhoras-gmailcoms-projects.vercel.app         planbasico-oficinistaporhoras-gmailcoms-projects.vercel.app                 60d    
+  plan-premium-automocion-9xemu6eg4.vercel.app                                  plan-premium-automocion-oficinistaporhoras-gmailcoms-projects.vercel.app    61d    
+  plan-premium-automocion-9xemu6eg4.vercel.app                                  plan-premium-automocion.vercel.app                                          61d    
+  servecor-system-h2a71rjn9-oficinistaporhoras-gmailcoms-projects.vercel.app    servecor-system-oficinistaporhoras-gmailcoms-projects.vercel.app            89d    
+  servecor-system-h2a71rjn9-oficinistaporhoras-gmailcoms-projects.vercel.app    servecor-system.vercel.app                                                  89d    
+

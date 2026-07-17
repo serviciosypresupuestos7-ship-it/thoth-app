@@ -1,0 +1,15 @@
+Vercel CLI 56.3.1 (Node.js 22.18.0)
+
+  Directory       D:\proyectos antigravity\thoth-app
+
+Loading teams…
+  Team            ley34
+Searching for existing projects…
+
+✓ Linked          ley34/thoth-app
+
+Retrieving project…
+> Downloading a fresh `VERCEL_OIDC_TOKEN` for ley34/thoth-app
+Downloading
+
+✓ Updated         .env.local file

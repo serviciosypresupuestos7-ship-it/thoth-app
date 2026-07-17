@@ -1,0 +1,21 @@
+{
+  "domain": "ai_literacy",
+  "generated_at": "2026-07-17T20:07:48.744845+00:00",
+  "documents": 79,
+  "chunks": 2377,
+  "errors": 1,
+  "database": "D:\\proyectos antigravity\\thoth-app\\data-pipeline\\corpus_normativa\\ai_literacy\\corpus_ai_literacy.sqlite",
+  "documents_jsonl": "D:\\proyectos antigravity\\thoth-app\\data-pipeline\\corpus_normativa\\ai_literacy\\documents_ai_literacy.jsonl",
+  "chunks_jsonl": "D:\\proyectos antigravity\\thoth-app\\data-pipeline\\corpus_normativa\\ai_literacy\\chunks_ai_literacy.jsonl",
+  "allowed_domains": [
+    "aepd.es",
+    "aesia.digital.gob.es",
+    "boe.es",
+    "congreso.es",
+    "digital-strategy.ec.europa.eu",
+    "eur-lex.europa.eu",
+    "www.aepd.es",
+    "www.boe.es",
+    "www.congreso.es"
+  ]
+}

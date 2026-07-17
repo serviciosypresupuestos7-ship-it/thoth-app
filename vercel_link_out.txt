@@ -1,0 +1,22 @@
+Vercel CLI 56.3.1 (Node.js 22.18.0)
+
+  Directory       D:\proyectos antigravity\thoth-app
+
+Loading teams…
+  Team            oficinistaporhoras-gmailcoms-projects
+Searching for existing projects…
+Searching for existing projects…
+
+  Detected Next.js (Build Command: next build, Output Directory: Next.js default)
+
+✓ Created         oficinistaporhoras-gmailcoms-projects/thoth-app
+
+> Connecting GitHub repository: https://github.com/serviciosypresupuestos7-ship-it/thoth-app
+Error: Failed to link serviciosypresupuestos7-ship-it/thoth-app. You need to add a Login Connection to your GitHub account first. (400)
+Visit https://vercel.com/docs/accounts/create-an-account#login-methods-and-connections for more information.
+
+Retrieving project…
+> Downloading a fresh `VERCEL_OIDC_TOKEN` for oficinistaporhoras-gmailcoms-projects/thoth-app
+Downloading
+
+✓ Updated         .env.local file and added it to .gitignore
