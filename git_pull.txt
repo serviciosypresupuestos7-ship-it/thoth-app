@@ -1,0 +1,3 @@
+From https://github.com/serviciosypresupuestos7-ship-it/thoth-app
+ * branch            main       -> FETCH_HEAD
+Current branch main is up to date.

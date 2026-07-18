@@ -1,0 +1,8 @@
+Vercel CLI 56.3.1 (Node.js 22.18.0)
+Fetching aliases under ley34
+> aliases found under ley34 [983ms]
+  source                              url                                                           age    
+  thoth-xd0o32lqv-ley34.vercel.app    thoth-app-ley34.vercel.app                                     1d    
+  thoth-xd0o32lqv-ley34.vercel.app    thoth-app-serviciosypresupuestos7-ship-it-ley34.vercel.app     1d    
+  thoth-xd0o32lqv-ley34.vercel.app    thoth-app-rust.vercel.app                                      1d    
+
