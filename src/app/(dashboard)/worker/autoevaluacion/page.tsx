@@ -89,10 +89,10 @@ export default function AutoevaluacionPage() {
                 <div className="fade-in">
                     <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
                         <h1 className="title-gradient" style={{ fontSize: '2.2rem', marginBottom: '0.5rem' }}>
-                            Test de Autoevaluación 📝
+                            Formación Continua 🔄
                         </h1>
                         <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-                            Pon a prueba tus conocimientos sobre la normativa de IA. Este test es solo para practicar y no afecta a tu expediente oficial.
+                            La normativa europea exige un reciclaje constante. Completa este test periódico para mantener tu certificado de cumplimiento activo y actualizado.
                         </p>
                     </div>
 
