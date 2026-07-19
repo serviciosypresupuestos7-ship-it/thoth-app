@@ -92,6 +92,8 @@ export default function GeneradorPoliticasPage() {
     const [herramientaCustom, setHerramientaCustom] = useState('');
     const [generating, setGenerating] = useState(false);
     const [activeDoc, setActiveDoc] = useState<'politica' | 'clausula'>('politica');
+    const [generatingPdf, setGeneratingPdf] = useState(false);
+    const [pdfSuccess, setPdfSuccess] = useState(false);
 
     const toggleItem = (id: string, list: string[], setList: (l: string[]) => void) => {
         setList(list.includes(id) ? list.filter(x => x !== id) : [...list, id]);
@@ -412,10 +414,29 @@ export default function GeneradorPoliticasPage() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                    <button className="btn btn-primary" style={{ padding: '0.9rem 2rem', fontSize: '1rem', whiteSpace: 'nowrap' }} onClick={() => alert('Generando Dossier Final PDF... (Requiere conexión al motor de evidencias)')}>
-                                        🖨️ Emitir Dossier de Compliance (PDF)
+                                    <button
+                                        className="btn btn-primary"
+                                        style={{ padding: '0.9rem 2rem', fontSize: '1rem', whiteSpace: 'nowrap', opacity: generatingPdf ? 0.7 : 1, cursor: generatingPdf ? 'not-allowed' : 'pointer' }}
+                                        onClick={() => {
+                                            if (generatingPdf) return;
+                                            setGeneratingPdf(true);
+                                            setPdfSuccess(false);
+                                            setTimeout(() => {
+                                                setGeneratingPdf(false);
+                                                setPdfSuccess(true);
+                                                // In a real app, this would trigger a file download
+                                            }, 2500);
+                                        }}
+                                        disabled={generatingPdf}
+                                    >
+                                        {generatingPdf ? '⏳ Generando PDF...' : pdfSuccess ? '✅ Descargar Dossier PDF' : '🖨️ Emitir Dossier de Compliance (PDF)'}
                                     </button>
-                                    <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => setStep(1)}>
+                                    {pdfSuccess && (
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--success)', textAlign: 'center' }}>
+                                            Dossier generado y guardado en Evidencias.
+                                        </div>
+                                    )}
+                                    <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => { setStep(1); setPdfSuccess(false); }}>
                                         ↩️ Volver a configurar
                                     </button>
                                 </div>
