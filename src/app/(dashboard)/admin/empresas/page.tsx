@@ -39,13 +39,25 @@ export default function AdminEmpresasPage() {
     const handleAddCompany = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            let initialFeatures = { ...defaultFeatures };
+            if (newCompany.plan === 'Acreditado') {
+                initialFeatures = { ...initialFeatures, rutas_formativas: true, simulador_ia: true, certificados: true };
+            } else if (newCompany.plan === 'Control Equipo') {
+                initialFeatures = { ...initialFeatures, rutas_formativas: true, simulador_ia: true, certificados: true, panel_rrhh: true, asistente_legal: true, generador_temarios: true };
+            } else if (newCompany.plan === 'Escudo Digital') {
+                initialFeatures = { ...initialFeatures, asistente_legal: true };
+            } else if (newCompany.plan === 'Corporativo') {
+                initialFeatures = { ...initialFeatures, rutas_formativas: true, simulador_ia: true, certificados: true, panel_rrhh: true, asistente_legal: true, generador_temarios: true };
+            }
+
             const { error } = await supabase
                 .from('companies')
                 .insert([{
                     name: newCompany.name,
                     plan: newCompany.plan,
                     status: 'Activa',
-                    ai_consumption_percentage: 0
+                    ai_consumption_percentage: 0,
+                    features: initialFeatures
                 }]);
 
             if (error) throw error;
@@ -84,6 +96,52 @@ export default function AdminEmpresasPage() {
         }
     };
 
+    const [showModulesModal, setShowModulesModal] = useState(false);
+    const [selectedCompany, setSelectedCompany] = useState<any>(null);
+
+    const defaultFeatures = {
+        asistente_legal: false,
+        generador_temarios: false,
+        rutas_formativas: false,
+        simulador_ia: false,
+        certificados: false,
+        panel_rrhh: false
+    };
+
+    const handleOpenModules = (company: any) => {
+        setSelectedCompany({
+            ...company,
+            features: company.features || defaultFeatures
+        });
+        setShowModulesModal(true);
+    };
+
+    const handleToggleFeature = (featureKey: string) => {
+        setSelectedCompany({
+            ...selectedCompany,
+            features: {
+                ...selectedCompany.features,
+                [featureKey]: !selectedCompany.features[featureKey]
+            }
+        });
+    };
+
+    const handleSaveModules = async () => {
+        try {
+            const { error } = await supabase
+                .from('companies')
+                .update({ features: selectedCompany.features })
+                .eq('id', selectedCompany.id);
+
+            if (error) throw error;
+            setShowModulesModal(false);
+            fetchEmpresas();
+        } catch (error) {
+            console.error('Error saving modules:', error);
+            alert('Error al guardar los módulos');
+        }
+    };
+
     return (
         <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -92,7 +150,7 @@ export default function AdminEmpresasPage() {
                         Gestión de Empresas 🏢
                     </h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
-                        Panel de Superadministrador. Controla las cuentas, planes y consumo de IA de todos los clientes de THOTH.
+                        Panel de Superadministrador. Controla las cuentas, planes, consumo de IA y módulos activos de todos los clientes de THOTH.
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
@@ -155,7 +213,6 @@ export default function AdminEmpresasPage() {
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Plan</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Trabajadores</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Estado</th>
-                                <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Motor Editorial</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Consumo IA</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Coste Facturable</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500, textAlign: 'right' }}>Acciones</th>
@@ -163,9 +220,9 @@ export default function AdminEmpresasPage() {
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando empresas...</td></tr>
+                                <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando empresas...</td></tr>
                             ) : empresas.length === 0 ? (
-                                <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No hay empresas registradas.</td></tr>
+                                <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No hay empresas registradas.</td></tr>
                             ) : (
                                 empresas.map(emp => (
                                     <tr key={emp.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }} className="table-row-hover">
@@ -173,32 +230,6 @@ export default function AdminEmpresasPage() {
                                         <td style={{ padding: '1rem 1.5rem', color: 'var(--text-secondary)' }}>{emp.plan}</td>
                                         <td style={{ padding: '1rem 1.5rem', color: 'var(--primary)' }}>{Math.floor(Math.random() * 500) + 10}</td>
                                         <td style={{ padding: '1rem 1.5rem' }}>{getStatusBadge(emp.status)}</td>
-                                        <td style={{ padding: '1rem 1.5rem' }}>
-                                            <button
-                                                className={`btn ${emp.feature_editorial_engine ? 'btn-primary' : 'btn-secondary'}`}
-                                                style={{
-                                                    padding: '0.2rem 0.5rem',
-                                                    fontSize: '0.75rem',
-                                                    background: emp.feature_editorial_engine ? 'var(--primary)' : 'transparent',
-                                                    color: emp.feature_editorial_engine ? '#000' : 'var(--text-secondary)'
-                                                }}
-                                                onClick={async () => {
-                                                    try {
-                                                        const { error } = await supabase
-                                                            .from('companies')
-                                                            .update({ feature_editorial_engine: !emp.feature_editorial_engine })
-                                                            .eq('id', emp.id);
-                                                        if (error) throw error;
-                                                        fetchEmpresas();
-                                                    } catch (err) {
-                                                        console.error(err);
-                                                        alert('Error al actualizar Motor Editorial');
-                                                    }
-                                                }}
-                                            >
-                                                {emp.feature_editorial_engine ? 'ON' : 'OFF'}
-                                            </button>
-                                        </td>
                                         <td style={{ padding: '1rem 1.5rem' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                 <span style={{ color: emp.ai_consumption_percentage > 90 ? 'var(--error)' : 'var(--text-secondary)' }}>{emp.ai_consumption_percentage}%</span>
@@ -209,7 +240,7 @@ export default function AdminEmpresasPage() {
                                         </td>
                                         <td style={{ padding: '1rem 1.5rem', color: 'var(--warning)', fontWeight: 'bold' }}>${(Math.random() * 500).toFixed(2)}</td>
                                         <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => alert('Editar empresa en desarrollo')}>Editar</button>
+                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => handleOpenModules(emp)}>Módulos</button>
                                             {emp.status === 'Suspendida' ? (
                                                 <button className="btn btn-success" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => toggleStatus(emp.id, emp.status)}>Reactivar</button>
                                             ) : (
@@ -258,6 +289,50 @@ export default function AdminEmpresasPage() {
                                 <button type="submit" className="btn btn-primary">Crear Empresa</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Configurar Módulos */}
+            {showModulesModal && selectedCompany && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2rem' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>Configurar Módulos</h2>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Activa o desactiva las funcionalidades para <strong>{selectedCompany.name}</strong> ({selectedCompany.plan}).</p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                            {[
+                                { key: 'asistente_legal', label: 'Asistente Redactor Legal', desc: 'Generación de políticas y cláusulas con IA.' },
+                                { key: 'generador_temarios', label: 'Generador de Temarios', desc: 'Creación de cursos e índices estructurados.' },
+                                { key: 'rutas_formativas', label: 'Rutas Formativas', desc: 'Acceso a la plataforma de aprendizaje para workers.' },
+                                { key: 'simulador_ia', label: 'Simulador IA', desc: 'Entorno seguro de práctica de casos reales.' },
+                                { key: 'certificados', label: 'Certificados y Evidencias', desc: 'Emisión de PDFs inmutables de cumplimiento.' },
+                                { key: 'panel_rrhh', label: 'Panel de RRHH', desc: 'Dashboard de gestión de empleados y auditoría.' }
+                            ].map(mod => (
+                                <div key={mod.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div>
+                                        <div style={{ fontWeight: 500, fontSize: '1.1rem', marginBottom: '0.25rem' }}>{mod.label}</div>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{mod.desc}</div>
+                                    </div>
+                                    <button
+                                        className={`btn ${selectedCompany.features[mod.key] ? 'btn-primary' : 'btn-secondary'}`}
+                                        style={{
+                                            padding: '0.4rem 1rem',
+                                            background: selectedCompany.features[mod.key] ? 'var(--primary)' : 'transparent',
+                                            color: selectedCompany.features[mod.key] ? '#000' : 'var(--text-secondary)'
+                                        }}
+                                        onClick={() => handleToggleFeature(mod.key)}
+                                    >
+                                        {selectedCompany.features[mod.key] ? 'ACTIVADO' : 'DESACTIVADO'}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowModulesModal(false)}>Cancelar</button>
+                            <button type="button" className="btn btn-primary" onClick={handleSaveModules}>Guardar Configuración</button>
+                        </div>
                     </div>
                 </div>
             )}

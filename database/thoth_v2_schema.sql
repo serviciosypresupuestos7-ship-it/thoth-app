@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS companies (
     plan VARCHAR(50) DEFAULT 'Starter', -- Starter, Pro, Enterprise
     status VARCHAR(50) DEFAULT 'Activa', -- Activa, Prueba, Suspendida
     ai_consumption_percentage INTEGER DEFAULT 0,
+    features JSONB DEFAULT '{}'::jsonb, -- Toggles para activar/desactivar módulos por tenant
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
