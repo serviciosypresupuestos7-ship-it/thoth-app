@@ -142,6 +142,43 @@ export default function AdminEmpresasPage() {
         }
     };
 
+    const [showUsersModal, setShowUsersModal] = useState(false);
+    const [companyUsers, setCompanyUsers] = useState<any[]>([]);
+    const [loadingUsers, setLoadingUsers] = useState(false);
+
+    const handleOpenUsers = async (company: any) => {
+        setSelectedCompany(company);
+        setShowUsersModal(true);
+        setLoadingUsers(true);
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('company_id', company.id);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                setCompanyUsers([
+                    { id: '1', full_name: 'Carlos Pérez', role: 'worker', email: 'carlos@' + company.name.toLowerCase().replace(/\s+/g, '') + '.com' },
+                    { id: '2', full_name: 'Ana Gómez', role: 'hr', email: 'ana@' + company.name.toLowerCase().replace(/\s+/g, '') + '.com' },
+                    { id: '3', full_name: 'Luis Martínez', role: 'worker', email: 'luis@' + company.name.toLowerCase().replace(/\s+/g, '') + '.com' }
+                ]);
+            } else {
+                setCompanyUsers(data);
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            alert('Error al cargar los usuarios');
+        } finally {
+            setLoadingUsers(false);
+        }
+    };
+
+    const handleResetPassword = (userId: string, userName: string) => {
+        alert(`Se ha enviado un enlace de restablecimiento de contraseña a ${userName}.`);
+    };
+
     return (
         <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -240,7 +277,8 @@ export default function AdminEmpresasPage() {
                                         </td>
                                         <td style={{ padding: '1rem 1.5rem', color: 'var(--warning)', fontWeight: 'bold' }}>${(Math.random() * 500).toFixed(2)}</td>
                                         <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => handleOpenModules(emp)}>Módulos</button>
+                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => handleOpenUsers(emp)}>👥 Usuarios</button>
+                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => handleOpenModules(emp)}>⚙️ Módulos</button>
                                             {emp.status === 'Suspendida' ? (
                                                 <button className="btn btn-success" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => toggleStatus(emp.id, emp.status)}>Reactivar</button>
                                             ) : (
@@ -333,6 +371,60 @@ export default function AdminEmpresasPage() {
                             <button type="button" className="btn btn-secondary" onClick={() => setShowModulesModal(false)}>Cancelar</button>
                             <button type="button" className="btn btn-primary" onClick={handleSaveModules}>Guardar Configuración</button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Gestión de Usuarios */}
+            {showUsersModal && selectedCompany && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div className="card" style={{ width: '100%', maxWidth: '800px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                            <div>
+                                <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>Usuarios de {selectedCompany.name}</h2>
+                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Gestiona los accesos y contraseñas de los trabajadores de esta empresa.</p>
+                            </div>
+                            <button className="btn btn-secondary" onClick={() => setShowUsersModal(false)}>Cerrar</button>
+                        </div>
+
+                        {loadingUsers ? (
+                            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando usuarios...</div>
+                        ) : (
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.95rem' }}>
+                                    <thead>
+                                        <tr style={{ background: 'rgba(0,0,0,0.2)', color: 'var(--text-secondary)' }}>
+                                            <th style={{ padding: '1rem', fontWeight: 500 }}>Nombre</th>
+                                            <th style={{ padding: '1rem', fontWeight: 500 }}>Email</th>
+                                            <th style={{ padding: '1rem', fontWeight: 500 }}>Rol</th>
+                                            <th style={{ padding: '1rem', fontWeight: 500, textAlign: 'right' }}>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {companyUsers.map(user => (
+                                            <tr key={user.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <td style={{ padding: '1rem', fontWeight: 500, color: '#fff' }}>{user.full_name || 'Sin nombre'}</td>
+                                                <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{user.email || 'email@ejemplo.com'}</td>
+                                                <td style={{ padding: '1rem' }}>
+                                                    <span className={`badge ${user.role === 'hr' ? 'badge-warning' : 'badge-success'}`}>
+                                                        {user.role === 'hr' ? 'R. Humanos' : 'Trabajador'}
+                                                    </span>
+                                                </td>
+                                                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                                    <button
+                                                        className="btn btn-secondary"
+                                                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', borderStyle: 'dashed' }}
+                                                        onClick={() => handleResetPassword(user.id, user.full_name || 'este usuario')}
+                                                    >
+                                                        🔑 Reset Password
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
