@@ -430,7 +430,14 @@ Generado mediante THOTH AI Compliance Platform conforme al AI Act (Reg. UE 2024/
                                         onClick={() => {
                                             if (generatingPdf) return;
                                             if (pdfSuccess) {
-                                                alert('Iniciando descarga del Dossier de Cumplimiento (PDF)...');
+                                                // Minimal valid PDF base64
+                                                const pdfBase64 = "JVBERi0xLjQKMSAwIG9iago8PAovVGl0bGUgKERvc3NpZXIgVGhvdGgpCi9DcmVhdG9yIChUaG90aCkKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDMgMCBSCj4+CmVuZG9iagozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwovQ291bnQgMQovS2lkcyBbNCAwIFJdCj4+CmVuZG9iago0IDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMyAwIFIKL1Jlc291cmNlcyA8PAovRm9udCA8PAovRjEgNSAwIFIKPj4KPj4KL01lZGlhQm94IFswIDAgNTk1IDg0Ml0KL0NvbnRlbnRzIDYgMCBSCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9UeXBlIC9Gb250Ci9TdWJ0eXBlIC9UeXBlMQovQmFzZUZvbnQgL0hlbHZldGljYQo+PgplbmRvYmoKNiAwIG9iago8PAovTGVuZ3RoIDQ0Cj4+CnN0cmVhbQpCVAovRjEgMjQgVGYKMTAwIDcwMCBUZAooRG9zc2llciBkZSBDdW1wbGltaWVudG8gLSBUaG90aCkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA3NCAwMDAwMCBuIAowMDAwMDAwMTIyIDAwMDAwIG4gCjAwMDAwMDAxNzkgMDAwMDAgbiAKMDAwMDAwMDI4NCAwMDAwMCBuIAowMDAwMDAwMzczIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNwovUm9vdCAyIDAgUgo+PgpzdGFydHhyZWYKNDY4CiUlRU9GCg==";
+                                                const link = document.createElement('a');
+                                                link.href = `data:application/pdf;base64,${pdfBase64}`;
+                                                link.download = `Dossier_Cumplimiento_${nombreEmpresa || 'Empresa'}.pdf`;
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                document.body.removeChild(link);
                                                 return;
                                             }
                                             setGeneratingPdf(true);
