@@ -23,12 +23,41 @@ const datosProhibidos = [
     { id: 'datos_salud', label: 'Datos de salud o categorías especiales (RGPD Art. 9)' },
 ];
 
-function generatePoliticaTexto(herramientasSeleccionadas: string[], datosSeleccionados: string[], tieneRLT: boolean, usaIAenRRHH: boolean, nombreEmpresa: string): string {
-    const listaBlanca = herramientas.filter(h => herramientasSeleccionadas.includes(h.id)).map(h => h.label).join(', ');
-    const listaProhibida = datosProhibidos.filter(d => datosSeleccionados.includes(d.id)).map(d => `- ${d.label}`).join('\n');
-    const hoy = new Date().toLocaleDateString('es-ES');
+// --- COMPONENT ---
+export default function GeneradorPoliticasPage() {
+    const [step, setStep] = useState(1);
+    const [nombreEmpresa, setNombreEmpresa] = useState('');
+    const [herramientasSelected, setHerramientasSelected] = useState<string[]>(['chatgpt', 'copilot']);
+    const [customHerramientas, setCustomHerramientas] = useState<{ id: string, label: string, icon: string }[]>([]);
+    const [datosSelected, setDatosSelected] = useState<string[]>(['datos_clientes', 'codigo_fuente']);
+    const [tieneRLT, setTieneRLT] = useState(false);
+    const [usaIAenRRHH, setUsaIAenRRHH] = useState(false);
+    const [herramientaCustom, setHerramientaCustom] = useState('');
+    const [generating, setGenerating] = useState(false);
+    const [activeDoc, setActiveDoc] = useState<'politica' | 'clausula'>('politica');
+    const [generatingPdf, setGeneratingPdf] = useState(false);
+    const [pdfSuccess, setPdfSuccess] = useState(false);
 
-    return `POLÍTICA DE USO ACEPTABLE DE INTELIGENCIA ARTIFICIAL
+    const toggleItem = (id: string, list: string[], setList: (l: string[]) => void) => {
+        setList(list.includes(id) ? list.filter(x => x !== id) : [...list, id]);
+    };
+
+    const handleGenerate = () => {
+        setGenerating(true);
+        setTimeout(() => {
+            setGenerating(false);
+            setStep(3);
+        }, 2200);
+    };
+
+    const allHerramientas = [...herramientas, ...customHerramientas];
+
+    const generatePoliticaTexto = () => {
+        const listaBlanca = allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ');
+        const listaProhibida = datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => `- ${d.label}`).join('\n');
+        const hoy = new Date().toLocaleDateString('es-ES');
+
+        return `POLÍTICA DE USO ACEPTABLE DE INTELIGENCIA ARTIFICIAL
 ${nombreEmpresa || 'La Empresa'}
 Fecha de entrada en vigor: ${hoy}
 
@@ -57,13 +86,13 @@ ${tieneRLT ? `6. INFORMACIÓN A LOS REPRESENTANTES DE LOS TRABAJADORES (RLT)
 En cumplimiento del Art. 64 del Estatuto de los Trabajadores, la empresa informa a los representantes legales de los trabajadores sobre la implantación de sistemas de control basados en Inteligencia Artificial, sus parámetros y su impacto en las condiciones de trabajo.` : ''}
 
 VERSIÓN: 1.0 | GENERADO POR THOTH AI COMPLIANCE PLATFORM`;
-}
+    };
 
-function generateClausulaTexto(herramientasSeleccionadas: string[], datosSeleccionados: string[], nombreEmpresa: string): string {
-    const listaBlanca = herramientas.filter(h => herramientasSeleccionadas.includes(h.id)).map(h => h.label).join(', ');
-    const listaProhibida = datosProhibidos.filter(d => datosSeleccionados.includes(d.id)).map(d => d.label).join('; ');
+    const generateClausulaTexto = () => {
+        const listaBlanca = allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ');
+        const listaProhibida = datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => d.label).join('; ');
 
-    return `CLÁUSULA DE CONFIDENCIALIDAD Y USO DE INTELIGENCIA ARTIFICIAL
+        return `CLÁUSULA DE CONFIDENCIALIDAD Y USO DE INTELIGENCIA ARTIFICIAL
 (Anexo al Contrato de Trabajo)
 
 El/la trabajador/a, en el ejercicio de sus funciones para ${nombreEmpresa || 'la empresa'}, acepta y se compromete a:
@@ -79,36 +108,10 @@ El/la trabajador/a, en el ejercicio de sus funciones para ${nombreEmpresa || 'la
 El incumplimiento de esta cláusula facultará a la empresa para adoptar las medidas disciplinarias previstas en el Convenio Colectivo y en el Estatuto de los Trabajadores, sin perjuicio de las responsabilidades legales que pudieran derivarse.
 
 Generado mediante THOTH AI Compliance Platform conforme al AI Act (Reg. UE 2024/1689) y el RGPD (Reg. UE 2016/679).`;
-}
-
-// --- COMPONENT ---
-export default function GeneradorPoliticasPage() {
-    const [step, setStep] = useState(1);
-    const [nombreEmpresa, setNombreEmpresa] = useState('');
-    const [herramientasSelected, setHerramientasSelected] = useState<string[]>(['chatgpt', 'copilot']);
-    const [datosSelected, setDatosSelected] = useState<string[]>(['datos_clientes', 'codigo_fuente']);
-    const [tieneRLT, setTieneRLT] = useState(false);
-    const [usaIAenRRHH, setUsaIAenRRHH] = useState(false);
-    const [herramientaCustom, setHerramientaCustom] = useState('');
-    const [generating, setGenerating] = useState(false);
-    const [activeDoc, setActiveDoc] = useState<'politica' | 'clausula'>('politica');
-    const [generatingPdf, setGeneratingPdf] = useState(false);
-    const [pdfSuccess, setPdfSuccess] = useState(false);
-
-    const toggleItem = (id: string, list: string[], setList: (l: string[]) => void) => {
-        setList(list.includes(id) ? list.filter(x => x !== id) : [...list, id]);
     };
 
-    const handleGenerate = () => {
-        setGenerating(true);
-        setTimeout(() => {
-            setGenerating(false);
-            setStep(3);
-        }, 2200);
-    };
-
-    const politicaTexto = generatePoliticaTexto(herramientasSelected, datosSelected, tieneRLT, usaIAenRRHH, nombreEmpresa);
-    const clausulaTexto = generateClausulaTexto(herramientasSelected, datosSelected, nombreEmpresa);
+    const politicaTexto = generatePoliticaTexto();
+    const clausulaTexto = generateClausulaTexto();
 
     const stepLabels = ['Configurar', 'Generar Textos', 'Dossier PDF'];
 
@@ -181,7 +184,7 @@ export default function GeneradorPoliticasPage() {
                                 ¿Qué herramientas de IA usáis en la oficina? Selecciona las que están <strong style={{ color: 'var(--success)' }}>autorizadas oficialmente</strong>.
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem' }}>
-                                {herramientas.map(h => {
+                                {allHerramientas.map(h => {
                                     const sel = herramientasSelected.includes(h.id);
                                     return (
                                         <button
@@ -212,7 +215,14 @@ export default function GeneradorPoliticasPage() {
                                     onChange={e => setHerramientaCustom(e.target.value)}
                                     style={{ flex: 1 }}
                                 />
-                                <button className="btn btn-secondary" onClick={() => { if (herramientaCustom.trim()) { setHerramientasSelected([...herramientasSelected, herramientaCustom.trim()]); setHerramientaCustom(''); } }}>
+                                <button className="btn btn-secondary" onClick={() => {
+                                    if (herramientaCustom.trim()) {
+                                        const newId = 'custom_' + Date.now();
+                                        setCustomHerramientas([...customHerramientas, { id: newId, label: herramientaCustom.trim(), icon: '🔧' }]);
+                                        setHerramientasSelected([...herramientasSelected, newId]);
+                                        setHerramientaCustom('');
+                                    }
+                                }}>
                                     Añadir
                                 </button>
                             </div>
