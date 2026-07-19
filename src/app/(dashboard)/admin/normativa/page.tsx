@@ -6,46 +6,59 @@ export default function NormativaPage() {
     const [selectedNorma, setSelectedNorma] = useState<string | null>('ai-act');
     const [showModal, setShowModal] = useState(false);
     const [newNormaName, setNewNormaName] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const [normas, setNormas] = useState([
-        // NIVEL 1: Normativa Principal
-        { id: 'ai-act', nombre: 'Reglamento (UE) 2024/1689 (AI Act)', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
-        { id: 'carta-derechos', nombre: 'Carta de Derechos Fundamentales UE', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
-        { id: 'tfue', nombre: 'Tratado de Funcionamiento UE (TFUE)', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
+        // 1. Normativa vinculante
+        { id: 'ai-act', nombre: 'Reglamento (UE) 2024/1689 (AI Act)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'carta-derechos', nombre: 'Carta de los Derechos Fundamentales UE', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'tfue', nombre: 'Tratado de Funcionamiento UE (TFUE)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'rgpd', nombre: 'Reglamento (UE) 2016/679 (RGPD)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'eprivacy', nombre: 'Directiva 2002/58/CE (ePrivacy)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'data-act', nombre: 'Reglamento (UE) 2023/2854 (Data Act)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'dga', nombre: 'Reglamento (UE) 2022/868 (Data Governance Act)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'dsa', nombre: 'Reglamento (UE) 2022/2065 (DSA)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'dma', nombre: 'Reglamento (UE) 2022/1925 (DMA)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'nis2', nombre: 'Directiva (UE) 2022/2555 (NIS2)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'ens', nombre: 'Real Decreto 311/2022 (ENS)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'eidas2', nombre: 'Reglamento (UE) 2024/1183 (eIDAS 2)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'product-liability', nombre: 'Directiva (UE) 2024/2853 (Responsabilidad Productos)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'lopdgdd', nombre: 'Ley Orgánica 3/2018 (LOPDGDD)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'estatuto-trabajadores', nombre: 'RD Legislativo 2/2015 (Estatuto Trabajadores Art. 64)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
+        { id: 'estatuto-aesia', nombre: 'Real Decreto 729/2023 (Estatuto AESIA)', nivel: '1. Normativa vinculante', estado: 'Vigente' },
 
-        // NIVEL 2: Reglamentos Relacionados
-        { id: 'rgpd', nombre: 'RGPD (Reglamento General de Protección de Datos)', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
-        { id: 'nis2', nombre: 'Directiva NIS2 (Ciberseguridad)', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
-        { id: 'data-act', nombre: 'Data Act & Data Governance Act', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
-        { id: 'dsa-dma', nombre: 'Digital Services Act (DSA) & DMA', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
-        { id: 'product-liability', nombre: 'Product Liability Directive', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Borrador' },
+        // 2. Directrices oficiales no vinculantes
+        { id: 'faq-art4', nombre: 'FAQ Oficiales del Artículo 4 (Comisión Europea)', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
+        { id: 'guidelines-ai', nombre: 'Directrices sobre definición de sistema de IA', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
+        { id: 'ai-pact', nombre: 'Pacto Europeo de Inteligencia Artificial (AI Pact)', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
+        { id: 'aesia-recursos', nombre: 'Recursos y Guías AESIA (Art. 4, Transparencia)', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
+        { id: 'aepd-guias', nombre: 'Guías AEPD (Evaluación Impacto, Biometría)', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
+        { id: 'incibe-guias', nombre: 'Guías de Ciberseguridad INCIBE / CCN-CERT', nivel: '2. Directrices oficiales no vinculantes', estado: 'Vigente' },
 
-        // NIVEL 3: Comisión Europea
-        { id: 'faq-art4', nombre: 'FAQ Oficiales del Artículo 4', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
-        { id: 'guidelines-ai', nombre: 'Guidelines on AI System Definition', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
-        { id: 'ai-pact', nombre: 'AI Pact & Living Repository', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
+        // 3. Normas técnicas voluntarias
+        { id: 'iso-42001', nombre: 'ISO/IEC 42001:2023 (Gestión de IA)', nivel: '3. Normas técnicas voluntarias', estado: 'Vigente' },
+        { id: 'iso-23894', nombre: 'ISO/IEC 23894:2023 (Riesgos de IA)', nivel: '3. Normas técnicas voluntarias', estado: 'Vigente' },
+        { id: 'iso-27001', nombre: 'ISO/IEC 27001:2022 (Seguridad)', nivel: '3. Normas técnicas voluntarias', estado: 'Vigente' },
+        { id: 'iso-27701', nombre: 'ISO/IEC 27701:2025 (Privacidad)', nivel: '3. Normas técnicas voluntarias', estado: 'Vigente' },
 
-        // NIVEL 4: España (Nacional)
-        { id: 'aesia', nombre: 'Criterios y Guías AESIA', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
-        { id: 'aepd-ia', nombre: 'Guías AEPD sobre Inteligencia Artificial', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
-        { id: 'incibe', nombre: 'INCIBE & CCN-CERT (Ciberseguridad)', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
+        // 4. Marcos voluntarios internacionales
+        { id: 'nist-ai', nombre: 'NIST AI Risk Management Framework 1.0', nivel: '4. Marcos voluntarios internacionales', estado: 'Vigente' },
+        { id: 'ocde-ai', nombre: 'Principios de Inteligencia Artificial de la OCDE', nivel: '4. Marcos voluntarios internacionales', estado: 'Vigente' },
+        { id: 'unesco-ai', nombre: 'Recomendación sobre la Ética de la IA (UNESCO)', nivel: '4. Marcos voluntarios internacionales', estado: 'Vigente' },
+        { id: 'digcomp', nombre: 'Marco Europeo de Competencias Digitales (DigComp 3.0)', nivel: '4. Marcos voluntarios internacionales', estado: 'Vigente' },
 
-        // NIVEL 5: Normas Técnicas
-        { id: 'iso-42001', nombre: 'ISO/IEC 42001 (Gestión de IA)', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
-        { id: 'iso-27001', nombre: 'ISO 27001 & 27701 (Seguridad y Privacidad)', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
-        { id: 'nist-ai', nombre: 'NIST AI Risk Management Framework', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
+        // 5. Histórico o seguimiento
+        { id: 'ai-liability', nombre: 'AI Liability Directive (Propuesta Retirada)', nivel: '5. Histórico o seguimiento', estado: 'Borrador' },
     ]);
 
     const niveles = [
-        'Nivel 1: Normativa Principal',
-        'Nivel 2: Reglamentos Relacionados',
-        'Nivel 3: Comisión Europea',
-        'Nivel 4: España (Nacional)',
-        'Nivel 5: Normas Técnicas'
+        '1. Normativa vinculante',
+        '2. Directrices oficiales no vinculantes',
+        '3. Normas técnicas voluntarias',
+        '4. Marcos voluntarios internacionales',
+        '5. Histórico o seguimiento'
     ];
-
-    const [isUploading, setIsUploading] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const handleAddNorma = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,10 +70,8 @@ export default function NormativaPage() {
         setIsUploading(true);
 
         try {
-            // Read file content
             const text = await selectedFile.text();
 
-            // Send to ingest API
             const res = await fetch('/api/documents/ingest', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -79,7 +90,7 @@ export default function NormativaPage() {
             const newNorma = {
                 id: `norma-${Date.now()}`,
                 nombre: newNormaName,
-                nivel: 'Nivel 1: Normativa Principal', // Default, can be changed later
+                nivel: '1. Normativa vinculante',
                 estado: 'Vigente'
             };
 

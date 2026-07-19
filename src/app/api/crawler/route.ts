@@ -8,18 +8,49 @@ import crypto from 'crypto';
 export const maxDuration = 300; // 5 minutes max duration for Vercel
 
 const OFFICIAL_SOURCES = [
+    // 1. Normativa vinculante
     {
         id: 'ai-act',
         title: 'Reglamento (UE) 2024/1689 (AI Act)',
-        level: 'Nivel 1: Normativa Principal',
+        level: '1. Normativa vinculante',
         url: 'https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=OJ:L_202401689',
         type: 'html'
     },
     {
         id: 'rgpd',
-        title: 'Reglamento General de Protección de Datos (RGPD)',
-        level: 'Nivel 2: Reglamentos Relacionados',
+        title: 'Reglamento (UE) 2016/679 (RGPD)',
+        level: '1. Normativa vinculante',
         url: 'https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32016R0679',
+        type: 'html'
+    },
+    {
+        id: 'lopdgdd',
+        title: 'Ley Orgánica 3/2018 (LOPDGDD)',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673&p=20230509&tn=1',
+        type: 'html'
+    },
+    {
+        id: 'estatuto-trabajadores',
+        title: 'Estatuto de los Trabajadores (Art. 64.4.d)',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430',
+        type: 'html'
+    },
+
+    // 2. Directrices oficiales no vinculantes
+    {
+        id: 'faq-art4',
+        title: 'FAQ Oficiales del Artículo 4 (Comisión Europea)',
+        level: '2. Directrices oficiales no vinculantes',
+        url: 'https://digital-strategy.ec.europa.eu/es/policies/ai-act-faq', // Placeholder URL for crawler
+        type: 'html'
+    },
+    {
+        id: 'aesia-estatuto',
+        title: 'Estatuto AESIA',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2023-19911',
         type: 'html'
     }
 ];
