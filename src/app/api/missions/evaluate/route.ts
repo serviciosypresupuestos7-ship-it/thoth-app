@@ -81,7 +81,7 @@ ${contextText}
 
 Evalúa la respuesta del empleado. ¿Ha cumplido con la normativa? ¿Ha cometido algún error de privacidad o seguridad?
 Responde ÚNICAMENTE en formato JSON con las siguientes claves:
-- "ai_correction": Feedback constructivo para el empleado, citando la norma infringida o cumplida.
+- "ai_correction": Feedback constructivo para el empleado. Si el empleado comete un error, debes citar la norma infringida (ej. AI Act Art. 3 sobre Autonomía/Inferencia, o RGPD). Si acierta, refuérzalo.
 - "score": Un número del 0 al 100 indicando la calidad de la respuesta.
 - "passed": Booleano (true o false) indicando si el empleado ha superado la misión.
 - "evidence_used": Array de strings con los títulos de los documentos legales usados para la corrección.`;

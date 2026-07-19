@@ -19,6 +19,23 @@ Las empresas no compran cursos; compran **visibilidad, mitigación de riesgos y 
 
 El verdadero valor de THOTH a largo plazo no es la IA: **es el Dato**. El sistema genera un histórico inmutable que permite al CEO responder: *"¿Estamos mejor que hace seis meses? ¿Qué departamentos fallan más? ¿Cuánto tardamos en adaptarnos a una nueva ley?"*
 
+### 1.1. EL FUNDAMENTO LEGAL Y ARGUMENTO DE VENTA (AI ACT)
+
+El pilar absoluto de la alfabetización en THOTH es el **Reglamento Europeo de Inteligencia Artificial (AI Act)**. Antes de hablarle a un trabajador de prompts o herramientas, debe entender el marco legal que la **AESIA** (Agencia Española de Supervisión de la Inteligencia Artificial) utiliza para vigilar y sancionar.
+
+**La definición legal de "Sistema de IA" (Art. 3, apartado 1 del AI Act):**
+> *"Un sistema basado en una máquina diseñado para funcionar con niveles variables de autonomía y que puede presentar adaptabilidad tras el despliegue, y que, de forma explícita o implícita, infiere, a partir de la entrada que recibe, cómo generar salidas tales como predicciones, contenidos, recomendaciones o decisiones que pueden influir en entornos físicos o virtuales."*
+
+**🔍 Masticado en cristiano (Los 3 requisitos clave):**
+Para que la ley considere que el software de una empresa contiene una IA (y por tanto obligue a usar THOTH para protegerse), se tienen que cumplir estos tres requisitos:
+1. **Autonomía y Adaptabilidad:** El programa no sigue reglas fijas fijadas de antemano por un programador. El sistema aprende, se adapta y toma caminos propios.
+2. **Inferencia:** El sistema "deduce" o calcula probabilidades para llegar a una conclusión basándose en el contexto (ej. predecir comportamiento o resumir un texto legal).
+3. **Generación de Salidas (Outputs):** El resultado final se traduce en crear contenido (texto, imágenes, código), dar recomendaciones o tomar decisiones automatizadas.
+
+**💡 El Argumento de Venta Demoledor:**
+Muchos empresarios piensan: *"Bah, yo solo uso ChatGPT para redactar correos o un software básico de selección, eso no es IA corporativa"*.
+El argumento legal con THOTH es: *"Según el artículo 3 de la Ley de IA, si tu software infiere datos y genera contenido de forma autónoma, legalmente estás usando IA corporativa y estás obligado a registrar las evidencias y auditar a tu plantilla"*. Ahí es donde entra THOTH para salvarlos de la multa.
+
 ---
 
 ## 2. EL MOTOR DE COMPETENCIAS (CORE FLOW)

@@ -68,14 +68,16 @@ export async function POST(request: Request) {
 Basándote ÚNICAMENTE en el siguiente contexto legal:
 ${contextText}
 
-Genera una misión práctica. El empleado deberá leer la misión y escribir cómo actuaría.
+Genera una misión práctica estructurada. Debes empezar siempre por lo básico (alfabetización) y avanzar hacia la práctica.
+La misión debe incluir una breve introducción teórica que explique qué es un Sistema de IA según el Artículo 3 del AI Act (Autonomía, Inferencia, Generación de Salidas) y por qué la AESIA lo vigila, antes de plantear el escenario.
+
 Responde ÚNICAMENTE en formato JSON con las siguientes claves:
-- "title": Título corto de la misión (ej. "Redacción de correo con datos sensibles").
-- "description": El escenario detallado. Plantea una situación realista donde el empleado deba tomar una decisión o realizar la acción ("${action_name}") aplicando la normativa.
-- "related_laws": Array de strings con las leyes aplicables (ej. ["AI Act Art. 4", "RGPD Art. 5"]).
+- "title": Título corto de la misión (ej. "Introducción al AI Act y Redacción de correos").
+- "description": El contenido completo. Primero, una breve píldora teórica sobre el AI Act (Art. 3) y la AESIA. Segundo, el escenario detallado donde el empleado deba tomar una decisión o realizar la acción ("${action_name}") aplicando la normativa.
+- "related_laws": Array de strings con las leyes aplicables (ej. ["AI Act Art. 3", "RGPD Art. 5"]).
 - "difficulty": "basic", "medium", o "advanced".`;
 
-        const systemPrompt = 'Eres un experto en formación empresarial y cumplimiento normativo (AI Act, RGPD). Responde únicamente en formato JSON válido.';
+        const systemPrompt = 'Eres un experto legal en el Reglamento Europeo de Inteligencia Artificial (AI Act) y el RGPD, y un formador corporativo. Tu objetivo es alfabetizar a los trabajadores empezando siempre por los conceptos legales básicos (Definición de IA, AESIA) antes de evaluarles. Responde únicamente en formato JSON válido.';
 
         let missionData: any;
 
