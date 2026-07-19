@@ -87,6 +87,9 @@ export default function WorkerPanelPage() {
                             <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }}>El Camino Oficial</div>
                             <h2 style={{ fontSize: '2.2rem', margin: 0, fontWeight: 800 }}>Acceso a Cualificación</h2>
                             <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9, fontSize: '1.1rem' }}>Entra directo a tu misión activa. Sin rodeos.</p>
+                            <div style={{ marginTop: '1rem', display: 'inline-block', background: 'rgba(0,0,0,0.3)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600 }}>
+                                ⚠️ Paso 1: Prueba de Nivel Pendiente
+                            </div>
                         </div>
                         <div style={{ fontSize: '4rem' }}>🎯</div>
                     </Link>

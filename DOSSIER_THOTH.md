@@ -61,7 +61,11 @@ Marco Competencial Asignado al Puesto
 Competencias Requeridas (con Peso y Dependencias)
         │
         ▼
-Ruta Formativa (guiada o Express)
+[NUEVO] Diagnóstico Inicial Adaptativo (Prueba de Nivel)
+        │   ├── Nivel Alto ➔ Pasa directo a la Práctica
+        │   └── Nivel Bajo ➔ Despliega Alfabetización Completa
+        ▼
+Ruta de Cualificación (Alfabetización + Práctica)
         │
         ▼
 Misiones Prácticas → Simulador IA
