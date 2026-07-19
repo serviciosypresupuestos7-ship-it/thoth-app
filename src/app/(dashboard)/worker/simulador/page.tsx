@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function LaboratorioPage() {
+export default function SimuladorPage() {
     const [activeScenario, setActiveScenario] = useState<string | null>(null);
 
     const scenarios = [
@@ -17,7 +17,7 @@ export default function LaboratorioPage() {
         <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginBottom: '2.5rem' }}>
                 <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-                    Laboratorio IA 🤖
+                    Simulador IA 🤖
                 </h1>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
                     Tu espacio seguro para experimentar. Nada de lo que hagas aquí cuenta para tu evaluación de cumplimiento. Equivócate, prueba cosas nuevas y descubre cómo la IA puede ayudarte en tu día a día.
@@ -85,19 +85,33 @@ export default function LaboratorioPage() {
                             <div style={{ alignSelf: 'flex-start', background: 'rgba(30, 78, 140, 0.3)', padding: '1rem', borderRadius: '12px', maxWidth: '85%', border: '1px solid rgba(30, 78, 140, 0.5)' }}>
                                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>Hola. Estoy listo para ayudarte a redactar la respuesta. ¿Qué enfoque quieres que le demos al correo?</p>
                             </div>
+                            {/* Mock chat history to make it look like they did something */}
+                            <div style={{ alignSelf: 'flex-end', background: 'var(--primary)', color: '#000', padding: '1rem', borderRadius: '12px', maxWidth: '85%' }}>
+                                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>Redacta un correo pidiendo disculpas y ofreciendo un reemplazo, pero no admitas que el equipo salió roto de fábrica.</p>
+                            </div>
+                            <div style={{ alignSelf: 'flex-start', background: 'rgba(30, 78, 140, 0.3)', padding: '1rem', borderRadius: '12px', maxWidth: '85%', border: '1px solid rgba(30, 78, 140, 0.5)' }}>
+                                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>Aquí tienes el borrador:<br /><br />"Estimado cliente, lamentamos profundamente los inconvenientes que está experimentando. Nuestro objetivo es su satisfacción, por lo que procederemos a enviarle un equipo de reemplazo en las próximas 24 horas..."</p>
+                            </div>
                         </div>
 
                         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)' }}>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
                                 <textarea
-                                    placeholder="Escribe tu prompt aquí... Ej: Redacta un correo empático ofreciendo un reemplazo en 24h..."
+                                    placeholder="Escribe tu prompt aquí..."
                                     className="form-textarea"
                                     style={{ flex: 1, minHeight: '60px', resize: 'none' }}
                                 />
-                                <button className="btn btn-primary" style={{ padding: '0 1.5rem' }}>
+                                <button className="btn btn-secondary" style={{ padding: '0 1.5rem' }}>
                                     Enviar
                                 </button>
                             </div>
+                            <button
+                                className="btn btn-primary"
+                                style={{ width: '100%', padding: '0.75rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                                onClick={() => alert('¡Misión Completada!\n\nEl Motor de Evaluación de THOTH ha analizado tu chat.\n\n✅ Has mantenido un tono empático.\n✅ No has admitido culpa legal.\n✅ Has ofrecido una solución rápida.\n\nPuntuación: 92%\nCertificado emitido y guardado en tu perfil.')}
+                            >
+                                <span>🏁</span> Terminar Misión y Evaluar
+                            </button>
                         </div>
                     </div>
                 </div>

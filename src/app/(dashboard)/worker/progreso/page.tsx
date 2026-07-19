@@ -1,6 +1,42 @@
 ﻿'use client';
 
-export default function ProgresoPage() {
+import { useState, useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+export default function WorkerProgresoPage() {
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    const certRef = useRef<HTMLDivElement>(null);
+
+    const generateCertificate = async () => {
+        if (!certRef.current) return;
+        setIsGeneratingPDF(true);
+
+        try {
+            certRef.current.style.display = 'block';
+
+            const canvas = await html2canvas(certRef.current, {
+                scale: 2,
+                backgroundColor: '#ffffff'
+            });
+
+            certRef.current.style.display = 'none';
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape for certificates
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Certificado_IA_Thoth.pdf');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Hubo un error al generar el certificado.');
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
     return (
         <div style={{ padding: '1rem' }}>
             <div style={{ marginBottom: '2.5rem' }}>
@@ -8,135 +44,122 @@ export default function ProgresoPage() {
                     Tu Progreso 📈
                 </h1>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
-                    Analiza tu evolución, revisa tu historial de aprendizaje y compara tu rendimiento.
+                    Sigue tu evolución, revisa tus métricas y descarga tus certificados de competencia.
                 </p>
             </div>
 
-            {/* Top Stats */}
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginTop: '0', marginBottom: '2.5rem' }}>
-                <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>⏱️</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fff' }}>24h</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Tiempo de Estudio</div>
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⭐</div>
+                    <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: '0 0 0.5rem 0' }}>Puntuación Global</h3>
+                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>850</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>Top 15% de la empresa</p>
                 </div>
-                <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🎯</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)' }}>14</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Misiones Superadas</div>
+                <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
+                    <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: '0 0 0.5rem 0' }}>Misiones Completadas</h3>
+                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--success)' }}>24</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>+3 esta semana</p>
                 </div>
-                <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📝</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--warning)' }}>3</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Exámenes Aprobados</div>
-                </div>
-                <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🏆</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--success)' }}>Top 5%</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Ranking Empresa</div>
+                <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏱️</div>
+                    <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: '0 0 0.5rem 0' }}>Tiempo de Práctica</h3>
+                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--warning)' }}>12h</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>En el Simulador IA</p>
                 </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
-                {/* Left Column: Charts & History */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-                    {/* Evolución Chart (Simulated) */}
-                    <div className="card">
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Evolución de Competencias (Últimos 6 meses)</h3>
-                        <div style={{ height: '250px', display: 'flex', alignItems: 'flex-end', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                            {/* Simulated bars */}
-                            {[30, 45, 55, 60, 75, 85].map((val, i) => (
-                                <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div style={{ width: '100%', height: `${val}%`, background: i === 5 ? 'var(--primary)' : 'rgba(201, 162, 39, 0.3)', borderRadius: '4px 4px 0 0', transition: 'all 0.3s ease' }}></div>
-                                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Mes {i + 1}</span>
-                                </div>
-                            ))}
+                {/* Historial */}
+                <div className="card">
+                    <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem' }}>Historial de Actividad</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--success)', marginTop: '6px' }}></div>
+                            <div>
+                                <h4 style={{ margin: '0 0 0.25rem 0' }}>Misión Completada: Cliente Enfadado</h4>
+                                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Puntuación: 95/100. Excelente uso de la empatía.</p>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Hace 2 horas</span>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Historial Reciente */}
-                    <div className="card">
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Historial Reciente</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ display: 'flex', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ fontSize: '1.5rem' }}>🎯</div>
-                                <div>
-                                    <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>Misión: Redacción de correo sin exponer datos</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Completada con éxito • Puntuación: 95/100</p>
-                                </div>
-                                <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Ayer</div>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary)', marginTop: '6px' }}></div>
+                            <div>
+                                <h4 style={{ margin: '0 0 0.25rem 0' }}>Lectura: Guía AI Act</h4>
+                                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Documento leído y comprendido.</p>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Ayer</span>
                             </div>
-                            <div style={{ display: 'flex', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ fontSize: '1.5rem' }}>📝</div>
-                                <div>
-                                    <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>Examen: AI Act Conceptos Básicos</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Aprobado • Puntuación: 9/10</p>
-                                </div>
-                                <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Hace 3 días</div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <div style={{ fontSize: '1.5rem' }}>📖</div>
-                                <div>
-                                    <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>Lectura: Política Interna de Datos</h4>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>100% completado • 45 min de estudio</p>
-                                </div>
-                                <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Hace 1 semana</div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--warning)', marginTop: '6px' }}></div>
+                            <div>
+                                <h4 style={{ margin: '0 0 0.25rem 0' }}>Certificado Obtenido</h4>
+                                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Uso Seguro de IA (Nivel 1)</p>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Hace 1 semana</span>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                {/* Right Column: Badges & Ranking */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-                    {/* Insignias */}
-                    <div className="card">
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Insignias Obtenidas</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(201, 162, 39, 0.3)' }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🛡️</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>Guardián de Datos</div>
+                {/* Certificados */}
+                <div className="card" style={{ background: 'linear-gradient(145deg, rgba(30, 78, 140, 0.2) 0%, rgba(20, 20, 20, 0.8) 100%)' }}>
+                    <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem' }}>Tus Certificados</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <h4 style={{ margin: 0 }}>Uso Seguro de IA</h4>
+                                <span style={{ fontSize: '1.2rem' }}>🏆</span>
                             </div>
-                            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>👁️</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--success)' }}>Ojo Crítico</div>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.1)', opacity: 0.5 }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', filter: 'grayscale(1)' }}>⚡</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Prompt Master</div>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.1)', opacity: 0.5 }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', filter: 'grayscale(1)' }}>⚖️</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Legal Tech</div>
-                            </div>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 1rem 0' }}>Válido hasta: Dic 2026</p>
+                            <button
+                                className="btn btn-primary"
+                                style={{ width: '100%', fontSize: '0.85rem', padding: '0.4rem' }}
+                                onClick={generateCertificate}
+                                disabled={isGeneratingPDF}
+                            >
+                                {isGeneratingPDF ? 'Generando...' : 'Descargar PDF'}
+                            </button>
+                        </div>
+                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center' }}>
+                            <span style={{ fontSize: '1.5rem', opacity: 0.5 }}>🔒</span>
+                            <h4 style={{ margin: '0.5rem 0', color: 'var(--text-secondary)' }}>Protección de Datos</h4>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0 }}>Completa 2 misiones más para desbloquear.</p>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* Ranking */}
-                    <div className="card" style={{ background: 'linear-gradient(145deg, rgba(30, 78, 140, 0.2) 0%, rgba(20, 20, 20, 0.8) 100%)' }}>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span>🏆</span> Ranking de Empresa
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                <span style={{ fontWeight: 'bold', color: 'var(--primary)', width: '20px' }}>1</span>
-                                <span style={{ flex: 1 }}>Carlos M.</span>
-                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>2,450 pts</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', background: 'rgba(201, 162, 39, 0.15)', border: '1px solid var(--primary)', borderRadius: '8px' }}>
-                                <span style={{ fontWeight: 'bold', color: 'var(--primary)', width: '20px' }}>2</span>
-                                <span style={{ flex: 1, fontWeight: 'bold' }}>Tú</span>
-                                <span style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 'bold' }}>2,120 pts</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                <span style={{ fontWeight: 'bold', color: 'var(--text-muted)', width: '20px' }}>3</span>
-                                <span style={{ flex: 1 }}>Elena R.</span>
-                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>1,980 pts</span>
-                            </div>
+            {/* Hidden Certificate Template */}
+            <div ref={certRef} style={{ display: 'none', width: '1123px', height: '794px', padding: '60px', background: '#ffffff', color: '#000000', fontFamily: 'serif', position: 'relative', border: '20px solid #1e4e8c', boxSizing: 'border-box' }}>
+                <div style={{ border: '2px solid #c9a227', height: '100%', padding: '40px', boxSizing: 'border-box', textAlign: 'center', position: 'relative' }}>
+                    <h1 style={{ color: '#1e4e8c', fontSize: '48px', margin: '0 0 20px 0', textTransform: 'uppercase', letterSpacing: '4px' }}>Certificado de Competencia</h1>
+                    <h2 style={{ color: '#666', fontSize: '24px', fontWeight: 'normal', margin: '0 0 60px 0' }}>THOTH AI Platform</h2>
+
+                    <p style={{ fontSize: '20px', color: '#333', margin: '0 0 20px 0' }}>Se certifica que</p>
+                    <h3 style={{ fontSize: '42px', color: '#000', margin: '0 0 40px 0', borderBottom: '2px solid #c9a227', display: 'inline-block', paddingBottom: '10px' }}>Usuario Trabajador</h3>
+
+                    <p style={{ fontSize: '20px', color: '#333', margin: '0 0 20px 0' }}>ha completado satisfactoriamente la formación y evaluación práctica en:</p>
+                    <h4 style={{ fontSize: '32px', color: '#1e4e8c', margin: '0 0 60px 0' }}>Uso Seguro y Ético de Inteligencia Artificial</h4>
+
+                    <p style={{ fontSize: '16px', color: '#666', maxWidth: '800px', margin: '0 auto 60px auto', lineHeight: '1.6' }}>
+                        Demostrando competencia en la aplicación de directrices de seguridad, protección de datos y supervisión humana (HITL) en entornos corporativos, en conformidad con los requisitos de formación del AI Act (Reglamento UE 2024/1689).
+                    </p>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto', position: 'absolute', bottom: '40px', left: '60px', right: '60px' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ borderBottom: '1px solid #000', width: '200px', marginBottom: '10px' }}></div>
+                            <p style={{ margin: 0, fontSize: '14px', color: '#333' }}>Fecha de Emisión</p>
+                            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>{new Date().toLocaleDateString()}</p>
+                        </div>
+                        <div style={{ width: '100px', height: '100px', background: '#f8fafc', border: '2px solid #c9a227', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-15deg)' }}>
+                            <span style={{ color: '#c9a227', fontWeight: 'bold', fontSize: '14px', textAlign: 'center' }}>SELLO<br />OFICIAL</span>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ borderBottom: '1px solid #000', width: '200px', marginBottom: '10px' }}></div>
+                            <p style={{ margin: 0, fontSize: '14px', color: '#333' }}>ID de Verificación</p>
+                            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>THOTH-CERT-{Date.now().toString().slice(-6)}</p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -4,16 +4,35 @@ import { useState } from 'react';
 
 export default function NormativaPage() {
     const [selectedNorma, setSelectedNorma] = useState<string | null>('ai-act');
+    const [showModal, setShowModal] = useState(false);
+    const [newNormaName, setNewNormaName] = useState('');
 
-    const normas = [
+    const [normas, setNormas] = useState([
         { id: 'ai-act', nombre: 'Ley de Inteligencia Artificial (AI Act)', fecha: 'Actualizado: 12/05/2026', estado: 'Vigente' },
         { id: 'rgpd', nombre: 'Reglamento General de Protección de Datos (RGPD)', fecha: 'Actualizado: 01/01/2026', estado: 'Vigente' },
         { id: 'lopdgdd', nombre: 'LOPDGDD (España)', fecha: 'Actualizado: 15/03/2025', estado: 'Vigente' },
         { id: 'aepd', nombre: 'Guía AEPD sobre IA', fecha: 'Actualizado: 20/06/2026', estado: 'Borrador' },
-    ];
+    ]);
+
+    const handleAddNorma = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newNormaName.trim()) return;
+
+        const newNorma = {
+            id: `norma-${Date.now()}`,
+            nombre: newNormaName,
+            fecha: `Añadido: ${new Date().toLocaleDateString()}`,
+            estado: 'Borrador'
+        };
+
+        setNormas([newNorma, ...normas]);
+        setShowModal(false);
+        setNewNormaName('');
+        setSelectedNorma(newNorma.id);
+    };
 
     return (
-        <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
@@ -23,7 +42,7 @@ export default function NormativaPage() {
                         Gestiona las fuentes legales que alimentan el sistema. Cada artículo se conecta directamente con las misiones y competencias.
                     </p>
                 </div>
-                <button className="btn btn-primary">+ Añadir Nueva Norma</button>
+                <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Añadir Nueva Norma</button>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', flex: 1, overflow: 'hidden' }}>
@@ -130,12 +149,50 @@ export default function NormativaPage() {
                     ) : (
                         <div style={{ margin: 'auto', textAlign: 'center', color: 'var(--text-muted)' }}>
                             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚖️</div>
-                            <h3>Selecciona una norma</h3>
-                            <p>Para ver sus artículos y cómo se conectan con el sistema.</p>
+                            <h3>{normas.find(n => n.id === selectedNorma)?.nombre}</h3>
+                            <p>Esta normativa está en proceso de indexación por la IA.</p>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Modal Añadir Normativa */}
+            {showModal && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div className="card" style={{ width: '100%', maxWidth: '500px', padding: '2rem' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Añadir Nueva Normativa</h2>
+                        <form onSubmit={handleAddNorma}>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Nombre de la Ley / Guía</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    required
+                                    placeholder="Ej: Directiva de Copyright..."
+                                    value={newNormaName}
+                                    onChange={(e) => setNewNormaName(e.target.value)}
+                                    style={{ width: '100%' }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Subir Documento (PDF/TXT)</label>
+                                <input
+                                    type="file"
+                                    className="form-input"
+                                    style={{ width: '100%', padding: '0.5rem' }}
+                                />
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                                    El sistema procesará el documento automáticamente para extraer artículos y generar misiones.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                                <button type="submit" className="btn btn-primary">Indexar Normativa</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

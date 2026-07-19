@@ -18,32 +18,27 @@ export default function DashboardLayout({
     const menus = {
         worker: [
             { href: '/worker/panel', icon: '🏠', label: 'Panel' },
+            { href: '/express', icon: '🧭', label: 'Ruta Formativa' },
             { href: '/worker/misiones', icon: '🎯', label: 'Misiones' },
-            { href: '/worker/competencias', icon: '🧠', label: 'Competencias' },
             { href: '/worker/formacion', icon: '📖', label: 'Formación' },
-            { href: '/worker/progreso', icon: '📈', label: 'Progreso' },
-            { href: '/worker/laboratorio', icon: '🤖', label: 'Laboratorio IA' },
+            { href: '/worker/competencias', icon: '🧠', label: 'Competencias' },
+            { href: '/worker/progreso', icon: '📊', label: 'Progreso' },
         ],
         hr: [
-            { href: '/hr/panel', icon: '🏠', label: 'Panel' },
-            { href: '/hr/empleados', icon: '👥', label: 'Empleados' },
-            { href: '/hr/rutas', icon: '🛤️', label: 'Rutas formativas' },
-            { href: '/hr/formacion', icon: '📖', label: 'Formación' },
-            { href: '/hr/competencias', icon: '🧠', label: 'Competencias' },
-            { href: '/hr/informes', icon: '📊', label: 'Informes' },
-            { href: '/hr/evidencias', icon: '📋', label: 'Evidencias' },
-            { href: '/hr/actualizaciones', icon: '🔔', label: 'Actualizaciones' },
-            { href: '/hr/configuracion', icon: '⚙️', label: 'Configuración' },
+            { href: '/hr/panel', icon: '📊', label: 'Panel Principal' },
+            { href: '/hr/empleados', icon: '👥', label: 'Plantilla' },
+            { href: '/hr/documentos', icon: '📁', label: 'Gestor Documental' },
+            { href: '/hr/certificaciones', icon: '📜', label: 'Certificaciones' },
+            { href: '/hr/evidencias', icon: '🛡️', label: 'Evidencias Legales' },
         ],
         admin: [
             { href: '/admin/empresas', icon: '🏢', label: 'Empresas' },
-            { href: '/admin/usuarios', icon: '👥', label: 'Usuarios' },
-            { href: '/admin/contenidos', icon: '📚', label: 'Contenidos' },
+            { href: '/admin/knowledge-studio', icon: '🧠', label: 'Knowledge Studio' },
+            { href: '/admin/marcos', icon: '🧩', label: 'Marcos Competenciales' },
             { href: '/admin/normativa', icon: '⚖️', label: 'Normativa' },
-            { href: '/admin/validacion', icon: '✅', label: 'Validación' },
-            { href: '/admin/planes', icon: '💳', label: 'Planes y facturación' },
-            { href: '/admin/modelos', icon: '🤖', label: 'Modelos IA' },
-            { href: '/admin/informes', icon: '📊', label: 'Informes globales' },
+            { href: '/admin/modelos', icon: '🤖', label: 'IA' },
+            { href: '/admin/planes', icon: '💳', label: 'Facturación' },
+            { href: '/admin/informes', icon: '📊', label: 'Estadísticas' },
             { href: '/admin/configuracion', icon: '⚙️', label: 'Configuración' },
         ]
     };
@@ -57,31 +52,21 @@ export default function DashboardLayout({
                     <div className="logo-icon">T</div>
                     <div className="logo-text">THOTH</div>
                 </div>
-                
-                {/* Role Switcher for Development/Demo purposes */}
-                <div style={{ padding: '0 1rem', marginBottom: '1rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Vista actual</div>
-                    <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.05)', padding: '0.25rem', borderRadius: '8px' }}>
-                        <Link href="/worker/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.75rem', borderRadius: '4px', textDecoration: 'none', background: role === 'worker' ? 'var(--primary-color)' : 'transparent', color: role === 'worker' ? '#fff' : 'var(--text-secondary)' }}>Trabajador</Link>
-                        <Link href="/hr/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.75rem', borderRadius: '4px', textDecoration: 'none', background: role === 'hr' ? 'var(--primary-color)' : 'transparent', color: role === 'hr' ? '#fff' : 'var(--text-secondary)' }}>RRHH</Link>
-                        <Link href="/admin/empresas" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.75rem', borderRadius: '4px', textDecoration: 'none', background: role === 'admin' ? 'var(--primary-color)' : 'transparent', color: role === 'admin' ? '#fff' : 'var(--text-secondary)' }}>Admin</Link>
-                    </div>
-                </div>
 
                 <nav className="sidebar-nav" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem', padding: '0 0.5rem', overflowY: 'auto' }}>
                     {currentMenu.map((item) => {
                         const isActive = pathname.startsWith(item.href);
                         return (
-                            <Link 
-                                key={item.href} 
-                                href={item.href} 
-                                className={`nav-link ${isActive ? 'active' : ''}`} 
-                                style={{ 
-                                    textDecoration: 'none', 
-                                    color: isActive ? '#fff' : 'var(--text-secondary)', 
-                                    padding: '0.75rem 1rem', 
-                                    borderRadius: '8px', 
-                                    background: isActive ? 'rgba(255, 107, 0, 0.1)' : 'transparent', 
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`nav-link ${isActive ? 'active' : ''}`}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: isActive ? '#fff' : 'var(--text-secondary)',
+                                    padding: '0.75rem 1rem',
+                                    borderRadius: '8px',
+                                    background: isActive ? 'rgba(255, 107, 0, 0.1)' : 'transparent',
                                     border: isActive ? '1px solid var(--border-color)' : '1px solid transparent',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -96,6 +81,14 @@ export default function DashboardLayout({
                     })}
                 </nav>
                 <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border-color)', padding: '1rem' }}>
+                    <div style={{ marginBottom: '1rem', padding: '0.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--warning)', marginBottom: '0.5rem', textAlign: 'center', fontWeight: 'bold', letterSpacing: '0.05em' }}>MODO SOPORTE: VER COMO</div>
+                        <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            <Link href="/worker/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'worker' ? 'var(--primary)' : 'transparent', color: role === 'worker' ? '#000' : 'var(--text-secondary)' }}>WRK</Link>
+                            <Link href="/hr/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'hr' ? 'var(--primary)' : 'transparent', color: role === 'hr' ? '#000' : 'var(--text-secondary)' }}>HR</Link>
+                            <Link href="/admin/empresas" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'admin' ? 'var(--primary)' : 'transparent', color: role === 'admin' ? '#000' : 'var(--text-secondary)' }}>ADM</Link>
+                        </div>
+                    </div>
                     <form action="/auth/signout" method="post">
                         <button type="submit" className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'transparent', cursor: 'pointer', color: 'var(--danger)', padding: '0.75rem 1rem', border: 'none', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderRadius: '8px' }}>
                             <span>🚪</span> Cerrar Sesión

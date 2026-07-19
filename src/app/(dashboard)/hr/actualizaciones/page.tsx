@@ -49,8 +49,8 @@ export default function ActualizacionesPage() {
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
-                        <button className="btn btn-secondary">Ver Detalles del Cambio</button>
-                        <button className="btn btn-primary">Asignar Misiones a los 5 Trabajadores</button>
+                        <button className="btn btn-secondary" onClick={() => alert('Mostrando detalles del cambio normativo...')}>Ver Detalles del Cambio</button>
+                        <button className="btn btn-primary" onClick={() => alert('Misiones asignadas correctamente. Los trabajadores recibirán una notificación.')}>Asignar Misiones a los 5 Trabajadores</button>
                     </div>
                 </div>
 

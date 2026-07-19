@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-
+import { EmbeddingService } from '@/utils/ai/EmbeddingService';
+import { LLMService } from '@/utils/ai/LLMService';
 export async function POST(request: Request) {
     try {
         const supabase = await createClient();
@@ -28,23 +29,24 @@ export async function POST(request: Request) {
         let geminiKey = settings?.gemini_api_key || '';
         let preferredModel = settings?.preferred_model || 'gpt-4o-mini';
 
-        // 1. Find relevant legal chunks for this action
-        // We do a text search on the chunks for keywords related to the action
-        // In a real app, we'd use embeddings, but text search is fine for now
-        const { data: chunks, error: chunksError } = await supabase
-            .from('legal_chunks')
-            .select('id, title, section, text')
-            .eq('domain_id', 'ai_literacy')
-            .limit(3);
+        // 1. Generate embedding for the action to search relevant laws using the GLOBAL model
+        const { vector: queryEmbedding } = await EmbeddingService.generate(action_name);
+
+        // 2. Find relevant legal chunks using Vector Search (RAG)
+        const { data: chunks, error: chunksError } = await supabase.rpc('match_legal_chunks', {
+            query_embedding: queryEmbedding,
+            match_threshold: 0.3, // Lower threshold to ensure we get results even with mock embeddings
+            match_count: 3,
+            p_tenant_id: user.id
+        });
 
         if (chunksError || !chunks || chunks.length === 0) {
             return NextResponse.json({ error: 'No relevant legal context found for this action' }, { status: 404 });
         }
 
-        const contextText = chunks.map(c => `Documento: ${c.title}\nSección: ${c.section}\nTexto: ${c.text}`).join('\n\n');
+        const contextText = chunks.map((c: any) => `Documento: ${c.title}\nSección: ${c.section}\nTexto: ${c.text}`).join('\n\n');
 
-        const prompt = `Eres un experto en formación empresarial y cumplimiento normativo (AI Act, RGPD).
-Tu objetivo es crear una "Misión" (un caso práctico) para un empleado cuya acción habitual es: "${action_name}".
+        const prompt = `Tu objetivo es crear una "Misión" (un caso práctico) para un empleado cuya acción habitual es: "${action_name}".
 
 Basándote ÚNICAMENTE en el siguiente contexto legal:
 ${contextText}
@@ -56,71 +58,21 @@ Responde ÚNICAMENTE en formato JSON con las siguientes claves:
 - "related_laws": Array de strings con las leyes aplicables (ej. ["AI Act Art. 4", "RGPD Art. 5"]).
 - "difficulty": "basic", "medium", o "advanced".`;
 
+        const systemPrompt = 'Eres un experto en formación empresarial y cumplimiento normativo (AI Act, RGPD). Responde únicamente en formato JSON válido.';
+
         let missionData: any;
 
-        if (!openaiKey && !anthropicKey && !groqKey && !geminiKey) {
-            // Mock mode
+        try {
+            missionData = await LLMService.generateJSON(prompt, systemPrompt, settings);
+        } catch (err) {
+            console.error('Error calling AI:', err);
+            // Fallback for demo purposes if API keys are missing
             missionData = {
                 title: `Misión de prueba: ${action_name}`,
                 description: `Estás realizando la tarea: ${action_name}. Un cliente te pide que uses IA para procesar sus datos personales. ¿Qué haces?`,
                 related_laws: ['RGPD Art. 5 (Mock)'],
                 difficulty: 'medium'
             };
-        } else {
-            try {
-                if (preferredModel.startsWith('claude-')) {
-                    const res = await fetch('https://api.anthropic.com/v1/messages', {
-                        method: 'POST',
-                        headers: {
-                            'x-api-key': anthropicKey,
-                            'anthropic-version': '2023-06-01',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: preferredModel,
-                            max_tokens: 1024,
-                            system: 'Responde únicamente en formato JSON válido.',
-                            messages: [{ role: 'user', content: prompt }]
-                        })
-                    });
-                    const data = await res.json();
-                    if (data.error) throw new Error(data.error.message);
-                    missionData = JSON.parse(data.content[0].text);
-                } else {
-                    let apiUrl = 'https://api.openai.com/v1/chat/completions';
-                    let apiKey = openaiKey;
-
-                    if (preferredModel.startsWith('llama') || preferredModel.startsWith('mixtral')) {
-                        apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-                        apiKey = groqKey;
-                    } else if (preferredModel.startsWith('gemini')) {
-                        apiUrl = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
-                        apiKey = geminiKey;
-                    }
-
-                    const res = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            Authorization: `Bearer ${apiKey}`,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: preferredModel,
-                            messages: [
-                                { role: 'system', content: 'Responde únicamente en formato JSON válido.' },
-                                { role: 'user', content: prompt },
-                            ],
-                            response_format: { type: 'json_object' },
-                        }),
-                    });
-                    const data = await res.json();
-                    if (data.error) throw new Error(data.error.message);
-                    missionData = JSON.parse(data.choices[0].message.content);
-                }
-            } catch (err) {
-                console.error('Error calling AI:', err);
-                return NextResponse.json({ error: 'Failed to generate mission with AI' }, { status: 500 });
-            }
         }
 
         // Save mission to database

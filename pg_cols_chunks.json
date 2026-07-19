@@ -1,0 +1,19 @@
+[
+  "id",
+  "document_id",
+  "domain_id",
+  "tenant_id",
+  "chunk_index",
+  "title",
+  "section",
+  "text",
+  "url",
+  "authority",
+  "sha256",
+  "embedding",
+  "legal_effect",
+  "relevance_score",
+  "confidence_score",
+  "practical_value_score",
+  "created_at"
+]

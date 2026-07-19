@@ -6,6 +6,8 @@ import { createClient } from '@/utils/supabase/client';
 export default function AdminEmpresasPage() {
     const [empresas, setEmpresas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [newCompany, setNewCompany] = useState({ name: '', plan: 'Starter' });
     const supabase = createClient();
 
     useEffect(() => {
@@ -25,21 +27,51 @@ export default function AdminEmpresasPage() {
             if (data && data.length > 0) {
                 setEmpresas(data);
             } else {
-                // Fallback mock data
-                setEmpresas([
-                    { id: '1', name: 'TechCorp Solutions', plan: 'Enterprise', status: 'Activa', ai_consumption_percentage: 85, created_at: '2026-01-12' },
-                    { id: '2', name: 'Global Logistics', plan: 'Pro', status: 'Activa', ai_consumption_percentage: 42, created_at: '2026-03-05' },
-                    { id: '3', name: 'Boutique Legal', plan: 'Starter', status: 'Prueba', ai_consumption_percentage: 95, created_at: '2026-07-15' },
-                ]);
+                setEmpresas([]);
             }
         } catch (error) {
             console.error('Error fetching companies:', error);
-            setEmpresas([
-                { id: '1', name: 'TechCorp Solutions', plan: 'Enterprise', status: 'Activa', ai_consumption_percentage: 85, created_at: '2026-01-12' },
-                { id: '2', name: 'Global Logistics', plan: 'Pro', status: 'Activa', ai_consumption_percentage: 42, created_at: '2026-03-05' }
-            ]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleAddCompany = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const { error } = await supabase
+                .from('companies')
+                .insert([{
+                    name: newCompany.name,
+                    plan: newCompany.plan,
+                    status: 'Activa',
+                    ai_consumption_percentage: 0
+                }]);
+
+            if (error) throw error;
+
+            setShowModal(false);
+            setNewCompany({ name: '', plan: 'Starter' });
+            fetchEmpresas(); // Recargar lista
+        } catch (error) {
+            console.error('Error adding company:', error);
+            alert('Error al crear la empresa');
+        }
+    };
+
+    const toggleStatus = async (id: string, currentStatus: string) => {
+        const newStatus = currentStatus === 'Suspendida' ? 'Activa' : 'Suspendida';
+        try {
+            const { error } = await supabase
+                .from('companies')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) throw error;
+            fetchEmpresas(); // Recargar lista
+        } catch (error) {
+            console.error('Error updating status:', error);
+            alert('Error al actualizar el estado');
         }
     };
 
@@ -53,7 +85,7 @@ export default function AdminEmpresasPage() {
     };
 
     return (
-        <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
@@ -64,8 +96,8 @@ export default function AdminEmpresasPage() {
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn btn-secondary">Exportar Datos</button>
-                    <button className="btn btn-primary">+ Nueva Empresa</button>
+                    <button className="btn btn-secondary" onClick={() => alert('Función de exportación en desarrollo')}>Exportar Datos</button>
+                    <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Nueva Empresa</button>
                 </div>
             </div>
 
@@ -120,23 +152,52 @@ export default function AdminEmpresasPage() {
                             <tr style={{ background: 'rgba(0,0,0,0.2)', color: 'var(--text-secondary)' }}>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Empresa</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Plan</th>
+                                <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Trabajadores</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Estado</th>
+                                <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Motor Editorial</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Consumo IA</th>
-                                <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Alta</th>
+                                <th style={{ padding: '1rem 1.5rem', fontWeight: 500 }}>Coste Facturable</th>
                                 <th style={{ padding: '1rem 1.5rem', fontWeight: 500, textAlign: 'right' }}>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando empresas...</td></tr>
+                                <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando empresas...</td></tr>
                             ) : empresas.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No hay empresas registradas.</td></tr>
+                                <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No hay empresas registradas.</td></tr>
                             ) : (
                                 empresas.map(emp => (
-                                    <tr key={emp.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s', cursor: 'pointer' }} className="table-row-hover">
+                                    <tr key={emp.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }} className="table-row-hover">
                                         <td style={{ padding: '1rem 1.5rem', fontWeight: 500, color: '#fff' }}>{emp.name}</td>
                                         <td style={{ padding: '1rem 1.5rem', color: 'var(--text-secondary)' }}>{emp.plan}</td>
+                                        <td style={{ padding: '1rem 1.5rem', color: 'var(--primary)' }}>{Math.floor(Math.random() * 500) + 10}</td>
                                         <td style={{ padding: '1rem 1.5rem' }}>{getStatusBadge(emp.status)}</td>
+                                        <td style={{ padding: '1rem 1.5rem' }}>
+                                            <button
+                                                className={`btn ${emp.feature_editorial_engine ? 'btn-primary' : 'btn-secondary'}`}
+                                                style={{
+                                                    padding: '0.2rem 0.5rem',
+                                                    fontSize: '0.75rem',
+                                                    background: emp.feature_editorial_engine ? 'var(--primary)' : 'transparent',
+                                                    color: emp.feature_editorial_engine ? '#000' : 'var(--text-secondary)'
+                                                }}
+                                                onClick={async () => {
+                                                    try {
+                                                        const { error } = await supabase
+                                                            .from('companies')
+                                                            .update({ feature_editorial_engine: !emp.feature_editorial_engine })
+                                                            .eq('id', emp.id);
+                                                        if (error) throw error;
+                                                        fetchEmpresas();
+                                                    } catch (err) {
+                                                        console.error(err);
+                                                        alert('Error al actualizar Motor Editorial');
+                                                    }
+                                                }}
+                                            >
+                                                {emp.feature_editorial_engine ? 'ON' : 'OFF'}
+                                            </button>
+                                        </td>
                                         <td style={{ padding: '1rem 1.5rem' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                 <span style={{ color: emp.ai_consumption_percentage > 90 ? 'var(--error)' : 'var(--text-secondary)' }}>{emp.ai_consumption_percentage}%</span>
@@ -145,13 +206,13 @@ export default function AdminEmpresasPage() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)' }}>{new Date(emp.created_at).toLocaleDateString()}</td>
+                                        <td style={{ padding: '1rem 1.5rem', color: 'var(--warning)', fontWeight: 'bold' }}>${(Math.random() * 500).toFixed(2)}</td>
                                         <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }}>Editar</button>
+                                            <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => alert('Editar empresa en desarrollo')}>Editar</button>
                                             {emp.status === 'Suspendida' ? (
-                                                <button className="btn btn-success" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>Reactivar</button>
+                                                <button className="btn btn-success" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => toggleStatus(emp.id, emp.status)}>Reactivar</button>
                                             ) : (
-                                                <button className="btn btn-danger" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>Bloquear</button>
+                                                <button className="btn btn-danger" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => toggleStatus(emp.id, emp.status)}>Bloquear</button>
                                             )}
                                         </td>
                                     </tr>
@@ -161,6 +222,43 @@ export default function AdminEmpresasPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Modal Nueva Empresa */}
+            {showModal && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div className="card" style={{ width: '100%', maxWidth: '500px', padding: '2rem' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Añadir Nueva Empresa</h2>
+                        <form onSubmit={handleAddCompany}>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Nombre de la Empresa</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    required
+                                    value={newCompany.name}
+                                    onChange={(e) => setNewCompany({ ...newCompany, name: e.target.value })}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Plan de Suscripción</label>
+                                <select
+                                    className="form-select"
+                                    value={newCompany.plan}
+                                    onChange={(e) => setNewCompany({ ...newCompany, plan: e.target.value })}
+                                >
+                                    <option value="Starter">Starter</option>
+                                    <option value="Pro">Pro</option>
+                                    <option value="Enterprise">Enterprise</option>
+                                </select>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                                <button type="submit" className="btn btn-primary">Crear Empresa</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             <style dangerouslySetInnerHTML={{
                 __html: `

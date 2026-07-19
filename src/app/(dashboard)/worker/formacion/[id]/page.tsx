@@ -1,179 +1,179 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
+import Link from 'next/link';
 
-export default function DocumentDetail() {
-    const [activeTab, setActiveTab] = useState('resumen');
+const mockDocs: Record<string, { title: string; content: string }> = {
+    '1': {
+        title: 'Guía Práctica AI Act',
+        content: `El AI Act (Reglamento UE 2024/1689) es la primera legislación global sobre Inteligencia Artificial. Clasifica los sistemas de IA en cuatro niveles de riesgo: inaceptable, alto, limitado y mínimo. Las empresas que usen sistemas de IA de alto riesgo deben mantener registros de uso, garantizar supervisión humana y formar a sus trabajadores. El incumplimiento puede suponer multas de hasta 35 millones de euros o el 7% de la facturación global anual.`,
+    },
+    '2': {
+        title: 'Política Interna de Datos (Q3)',
+        content: `Queda prohibido introducir datos personales de clientes (nombre, DNI, email, teléfono, dirección) en herramientas de IA públicas como ChatGPT, Gemini o Claude. Para el procesamiento de datos sensibles solo se permite el uso de la instancia privada corporativa de THOTH. El incumplimiento de esta política se considera una infracción grave y puede conllevar medidas disciplinarias.`,
+    },
+    '3': {
+        title: 'Uso de Copilot en RRHH',
+        content: `Microsoft Copilot puede usarse para redactar ofertas de empleo, generar plantillas de evaluación y resumir CVs anonimizados. No está permitido subir CVs con datos personales completos a Copilot sin anonimizar previamente. Las decisiones finales de contratación siempre deben ser tomadas por un humano. Copilot es una herramienta de apoyo, no de decisión.`,
+    },
+    '4': {
+        title: 'Reglamento General de Protección de Datos',
+        content: `El RGPD (Reglamento UE 2016/679) regula el tratamiento de datos personales. En el contexto de la IA, los titulares de datos tienen derecho a no ser objeto de decisiones automatizadas con efectos jurídicos significativos. Las empresas deben implementar el principio de "privacidad desde el diseño" en todos sus sistemas de IA.`,
+    },
+};
+
+export default function FormacionDocPage({ params }: { params: { id: string } }) {
+    const doc = mockDocs[params.id] || { title: 'Documento', content: 'Contenido no disponible.' };
+    const [activeTab, setActiveTab] = useState<'resumen' | 'test' | 'tutor'>('resumen');
     const [chatInput, setChatInput] = useState('');
-    const [chatMessages, setChatMessages] = useState([
-        { role: 'ai', text: '¡Hola! Soy tu Tutor IA para este documento. Puedes pedirme que te explique un concepto, que te haga un resumen de una sección específica o que te ponga un ejemplo práctico.' }
+    const [chatHistory, setChatHistory] = useState<{ role: string; text: string }[]>([
+        { role: 'tutor', text: `Hola, soy tu Tutor IA. He procesado "${doc.title}". ¿Qué quieres saber?` },
     ]);
+    const [testScore, setTestScore] = useState<number | null>(null);
+    const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
 
-    const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
+    const testQuestions = [
+        { q: '¿Cuál es el objetivo principal del AI Act?', opts: ['Prohibir la IA', 'Regular la IA por niveles de riesgo', 'Fomentar el uso libre de la IA', 'Crear una IA europea'], correct: 'Regular la IA por niveles de riesgo' },
+        { q: '¿Qué datos NO puedes introducir en herramientas de IA públicas?', opts: ['Estadísticas públicas', 'Datos personales de clientes', 'Textos legales', 'Plantillas de documentos'], correct: 'Datos personales de clientes' },
+        { q: '¿Qué principio exige el RGPD en sistemas de IA?', opts: ['Velocidad máxima', 'Privacidad desde el diseño', 'Automatización total', 'Código abierto'], correct: 'Privacidad desde el diseño' },
+    ];
+
+    const handleSendChat = () => {
         if (!chatInput.trim()) return;
-
-        setChatMessages([...chatMessages, { role: 'user', text: chatInput }]);
+        const userMsg = chatInput;
         setChatInput('');
-
-        // Simulate AI response
+        setChatHistory(prev => [...prev, { role: 'user', text: userMsg }]);
         setTimeout(() => {
-            setChatMessages(prev => [...prev, {
-                role: 'ai',
-                text: 'Entiendo tu pregunta. Según el Artículo 4 de esta guía, la respuesta es que los sistemas de IA de alto riesgo deben someterse a una evaluación de conformidad antes de su comercialización. ¿Te gustaría un ejemplo práctico de esto en tu departamento?'
+            setChatHistory(prev => [...prev, {
+                role: 'tutor',
+                text: `Sobre tu pregunta: "${userMsg}" — Según el documento, la clave está en ${doc.content.split('.')[0]}. ¿Necesitas más detalle?`,
             }]);
-        }, 1000);
+        }, 800);
+    };
+
+    const handleSubmitTest = () => {
+        let correct = 0;
+        testQuestions.forEach((q, i) => {
+            if (testAnswers[i] === q.correct) correct++;
+        });
+        setTestScore(Math.round((correct / testQuestions.length) * 100));
     };
 
     return (
-        <div style={{ padding: '0', height: 'calc(100vh - 4rem)', display: 'flex', flexDirection: 'column' }}>
-            {/* Header */}
-            <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.8)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <Link href="/worker/formacion" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '1.5rem' }}>←</Link>
-                    <div>
-                        <h1 style={{ fontSize: '1.5rem', margin: '0 0 0.25rem 0' }}>Guía Práctica AI Act</h1>
-                        <span className="badge" style={{ background: 'rgba(30, 78, 140, 0.3)', color: '#8bb4e5', border: '1px solid rgba(30, 78, 140, 0.5)' }}>Normativa</span>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Descargar Original PDF</button>
-                    <button className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>Marcar como Leído</button>
-                </div>
+        <div style={{ padding: '1rem', maxWidth: '900px' }}>
+            <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Link href="/worker/formacion" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>← Biblioteca</Link>
+                <h1 className="title-gradient" style={{ fontSize: '2rem', margin: 0 }}>{doc.title}</h1>
             </div>
 
-            {/* Main Content Area */}
-            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+            {/* Tabs */}
+            <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '2rem' }}>
+                {(['resumen', 'test', 'tutor'] as const).map(tab => (
+                    <button key={tab} onClick={() => setActiveTab(tab)} style={{
+                        padding: '0.75rem 1.5rem', background: 'none', border: 'none',
+                        borderBottom: activeTab === tab ? '2px solid var(--primary)' : '2px solid transparent',
+                        color: activeTab === tab ? 'var(--primary)' : 'var(--text-secondary)',
+                        fontWeight: activeTab === tab ? 600 : 400, cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s'
+                    }}>
+                        {tab === 'resumen' ? '📝 Resumen' : tab === 'test' ? '❓ Test' : '🤖 Tutor IA'}
+                    </button>
+                ))}
+            </div>
 
-                {/* Left Panel: Document Content / Summary */}
-                <div style={{ flex: '1.2', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', background: 'var(--bg-dark)' }}>
-
-                    {/* Tabs */}
-                    <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '0 1rem' }}>
-                        <button
-                            onClick={() => setActiveTab('resumen')}
-                            style={{ padding: '1rem 1.5rem', background: 'transparent', border: 'none', color: activeTab === 'resumen' ? 'var(--primary)' : 'var(--text-secondary)', borderBottom: activeTab === 'resumen' ? '2px solid var(--primary)' : '2px solid transparent', cursor: 'pointer', fontWeight: activeTab === 'resumen' ? 600 : 400, fontSize: '1rem' }}
-                        >
-                            ✨ Resumen IA
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('conceptos')}
-                            style={{ padding: '1rem 1.5rem', background: 'transparent', border: 'none', color: activeTab === 'conceptos' ? 'var(--primary)' : 'var(--text-secondary)', borderBottom: activeTab === 'conceptos' ? '2px solid var(--primary)' : '2px solid transparent', cursor: 'pointer', fontWeight: activeTab === 'conceptos' ? 600 : 400, fontSize: '1rem' }}
-                        >
-                            🔑 Conceptos Clave
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('documento')}
-                            style={{ padding: '1rem 1.5rem', background: 'transparent', border: 'none', color: activeTab === 'documento' ? 'var(--primary)' : 'var(--text-secondary)', borderBottom: activeTab === 'documento' ? '2px solid var(--primary)' : '2px solid transparent', cursor: 'pointer', fontWeight: activeTab === 'documento' ? 600 : 400, fontSize: '1rem' }}
-                        >
-                            📄 Documento Completo
-                        </button>
-                    </div>
-
-                    {/* Tab Content */}
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
-                        {activeTab === 'resumen' && (
-                            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                                <h2 style={{ color: '#fff', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Resumen Ejecutivo</h2>
-                                <div style={{ background: 'rgba(201, 162, 39, 0.05)', borderLeft: '4px solid var(--primary)', padding: '1.5rem', borderRadius: '0 8px 8px 0', marginBottom: '2rem' }}>
-                                    <p style={{ fontSize: '1.1rem', lineHeight: '1.6', margin: 0, color: 'var(--text-primary)' }}>
-                                        La Ley de Inteligencia Artificial (AI Act) es el primer marco legal integral sobre IA en el mundo. Su objetivo es garantizar que los sistemas de IA utilizados en la UE sean seguros, transparentes, trazables, no discriminatorios y respetuosos con el medio ambiente.
-                                    </p>
-                                </div>
-
-                                <h3 style={{ color: 'var(--primary)', marginBottom: '1rem', marginTop: '2rem' }}>Puntos Principales</h3>
-                                <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                                    <li><strong>Enfoque basado en el riesgo:</strong> Clasifica los sistemas de IA en riesgo inaceptable (prohibidos), alto riesgo (estrictamente regulados), riesgo limitado (obligaciones de transparencia) y riesgo mínimo (sin obligaciones).</li>
-                                    <li><strong>Sistemas prohibidos:</strong> Incluyen la manipulación cognitiva, la puntuación social (social scoring) y la identificación biométrica en tiempo real en espacios públicos (con excepciones).</li>
-                                    <li><strong>Obligaciones para Alto Riesgo:</strong> Requieren sistemas de gestión de riesgos, calidad de datos, documentación técnica, transparencia, supervisión humana y ciberseguridad.</li>
-                                    <li><strong>IA Generativa:</strong> Modelos como ChatGPT deben cumplir requisitos de transparencia, como indicar que el contenido fue generado por IA y publicar resúmenes de los datos de entrenamiento protegidos por derechos de autor.</li>
-                                </ul>
-                            </div>
-                        )}
-
-                        {activeTab === 'conceptos' && (
-                            <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                <div className="card" style={{ padding: '1.5rem' }}>
-                                    <h3 style={{ color: 'var(--primary)', margin: '0 0 0.5rem 0' }}>Sistema de Alto Riesgo</h3>
-                                    <p style={{ color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>Sistemas de IA que pueden afectar negativamente la seguridad o los derechos fundamentales de las personas. Ejemplos: CV screening, evaluación de crédito, sistemas biométricos.</p>
-                                </div>
-                                <div className="card" style={{ padding: '1.5rem' }}>
-                                    <h3 style={{ color: 'var(--primary)', margin: '0 0 0.5rem 0' }}>Supervisión Humana (Human-in-the-loop)</h3>
-                                    <p style={{ color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>Requisito obligatorio para sistemas de alto riesgo que asegura que una persona física pueda intervenir, interrumpir o ignorar las decisiones de la IA.</p>
-                                </div>
-                                <div className="card" style={{ padding: '1.5rem' }}>
-                                    <h3 style={{ color: 'var(--primary)', margin: '0 0 0.5rem 0' }}>Transparencia Algorítmica</h3>
-                                    <p style={{ color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>Obligación de informar a los usuarios cuando están interactuando con un sistema de IA (ej. chatbots) o cuando el contenido (imagen, audio, texto) ha sido generado artificialmente.</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'documento' && (
-                            <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-muted)' }}>
-                                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
-                                <h3>Visor de PDF Integrado</h3>
-                                <p>Aquí se renderizaría el documento original completo para lectura profunda.</p>
-                            </div>
-                        )}
+            {/* Resumen Tab */}
+            {activeTab === 'resumen' && (
+                <div className="card" style={{ padding: '2rem', borderLeft: '4px solid var(--primary)' }}>
+                    <h2 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>Resumen generado por IA</h2>
+                    <p style={{ lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-secondary)' }}>{doc.content}</p>
+                    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(201,162,39,0.08)', borderRadius: '8px', border: '1px solid rgba(201,162,39,0.2)' }}>
+                        <strong style={{ color: 'var(--primary)' }}>💡 Punto clave:</strong>
+                        <p style={{ margin: '0.5rem 0 0 0', color: 'var(--text-secondary)' }}>Aplica siempre supervisión humana antes de tomar decisiones basadas en IA.</p>
                     </div>
                 </div>
+            )}
 
-                {/* Right Panel: Tutor IA (Chat) */}
-                <div style={{ flex: '0.8', display: 'flex', flexDirection: 'column', background: 'rgba(15,15,20,0.9)' }}>
-                    <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)' }}>
-                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span>🤖</span> Tutor IA
-                        </h3>
-                        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Pregunta cualquier duda sobre este documento</p>
+            {/* Test Tab */}
+            {activeTab === 'test' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {testScore !== null ? (
+                        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{testScore >= 70 ? '✅' : '📚'}</div>
+                            <h2 style={{ fontSize: '2rem', color: testScore >= 70 ? 'var(--success)' : 'var(--warning)' }}>{testScore}%</h2>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                                {testScore >= 70
+                                    ? '¡Test de repaso superado! Has comprendido la teoría básica de este documento.'
+                                    : 'Revisa el resumen e inténtalo de nuevo.'}
+                            </p>
+                            {testScore >= 70 && (
+                                <div style={{ background: 'rgba(201,162,39,0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(201,162,39,0.3)', marginBottom: '1.5rem', display: 'inline-block' }}>
+                                    <p style={{ margin: 0, color: 'var(--primary)', fontSize: '0.9rem' }}>
+                                        💡 <strong>Recuerda:</strong> Esto es solo un test formativo. Para obtener tu certificado oficial, debes resolver un caso práctico en la sección de Misiones.
+                                    </p>
+                                </div>
+                            )}
+                            <div>
+                                <button className="btn btn-secondary" onClick={() => { setTestScore(null); setTestAnswers({}); }}>Repetir Test</button>
+                                {testScore >= 70 && (
+                                    <Link href="/worker/misiones" className="btn btn-primary" style={{ marginLeft: '1rem', textDecoration: 'none' }}>Ir a Misiones →</Link>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            {testQuestions.map((q, i) => (
+                                <div key={i} className="card" style={{ padding: '1.5rem' }}>
+                                    <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>{i + 1}. {q.q}</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        {q.opts.map(opt => (
+                                            <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', borderRadius: '6px', background: testAnswers[i] === opt ? 'rgba(201,162,39,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${testAnswers[i] === opt ? 'var(--primary)' : 'transparent'}`, cursor: 'pointer' }}>
+                                                <input type="radio" name={`q${i}`} value={opt} checked={testAnswers[i] === opt} onChange={() => setTestAnswers(prev => ({ ...prev, [i]: opt }))} />
+                                                {opt}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                            <button className="btn btn-primary" onClick={handleSubmitTest} disabled={Object.keys(testAnswers).length < testQuestions.length} style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
+                                Enviar Respuestas
+                            </button>
+                        </>
+                    )}
+                </div>
+            )}
+
+            {/* Tutor IA Tab */}
+            {activeTab === 'tutor' && (
+                <div className="card" style={{ padding: '0', display: 'flex', flexDirection: 'column', height: '500px' }}>
+                    <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontSize: '1.5rem' }}>🤖</span>
+                        <div>
+                            <strong>Tutor IA</strong>
+                            <div style={{ color: 'var(--success)', fontSize: '0.75rem' }}>● Activo · Contexto: {doc.title}</div>
+                        </div>
                     </div>
-
-                    {/* Chat Messages */}
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        {chatMessages.map((msg, i) => (
-                            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {chatHistory.map((msg, i) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
                                 <div style={{
-                                    maxWidth: '85%',
-                                    padding: '1rem',
-                                    borderRadius: '12px',
-                                    background: msg.role === 'user' ? 'var(--primary)' : 'rgba(30, 78, 140, 0.3)',
-                                    color: msg.role === 'user' ? '#000' : '#fff',
-                                    border: msg.role === 'ai' ? '1px solid rgba(30, 78, 140, 0.5)' : 'none',
-                                    lineHeight: '1.5',
-                                    fontSize: '0.95rem'
+                                    maxWidth: '80%', padding: '0.75rem 1rem', borderRadius: '12px',
+                                    background: msg.role === 'user' ? 'var(--primary)' : 'rgba(255,255,255,0.06)',
+                                    color: msg.role === 'user' ? '#000' : 'var(--text-primary)', fontSize: '0.95rem', lineHeight: '1.5'
                                 }}>
                                     {msg.text}
                                 </div>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem', padding: '0 0.5rem' }}>
-                                    {msg.role === 'user' ? 'Tú' : 'Tutor IA'}
-                                </span>
                             </div>
                         ))}
                     </div>
-
-                    {/* Chat Input */}
-                    <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)' }}>
-                        <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '0.5rem' }}>
-                            <input
-                                type="text"
-                                value={chatInput}
-                                onChange={(e) => setChatInput(e.target.value)}
-                                placeholder="Ej: Explícame el artículo 4 como si fuera administrativo..."
-                                className="form-input"
-                                style={{ flex: 1, background: 'rgba(0,0,0,0.4)' }}
-                            />
-                            <button type="submit" className="btn btn-primary" style={{ padding: '0 1.5rem' }}>
-                                Enviar
-                            </button>
-                        </form>
-                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <button onClick={() => setChatInput('¿Qué significa "riesgo inaceptable"?')} style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '99px', color: 'var(--text-secondary)', cursor: 'pointer' }}>¿Qué es riesgo inaceptable?</button>
-                            <button onClick={() => setChatInput('Hazme un resumen en 3 viñetas')} style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '99px', color: 'var(--text-secondary)', cursor: 'pointer' }}>Resumen corto</button>
-                        </div>
+                    <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', gap: '0.75rem' }}>
+                        <input
+                            type="text" value={chatInput} onChange={e => setChatInput(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && handleSendChat()}
+                            placeholder="Pregunta sobre el documento..." className="form-input" style={{ flex: 1 }}
+                        />
+                        <button className="btn btn-primary" onClick={handleSendChat} style={{ padding: '0.75rem 1.5rem' }}>Enviar</button>
                     </div>
                 </div>
-
-            </div>
+            )}
         </div>
     );
 }

@@ -1,15 +1,48 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function EvidenciasPage() {
     const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    const reportRef = useRef<HTMLDivElement>(null);
 
     const employees = [
         { id: '1', name: 'Ana Martínez', role: 'Especialista en Marketing', dept: 'Marketing', status: '✅ Competente', score: 92 },
         { id: '2', name: 'Carlos López', role: 'Atención al Cliente', dept: 'Soporte', status: '⚠️ En proceso', score: 65 },
         { id: '3', name: 'Laura Gómez', role: 'Analista de Datos', dept: 'IT', status: '✅ Competente', score: 88 },
     ];
+
+    const generatePDF = async () => {
+        if (!reportRef.current) return;
+        setIsGeneratingPDF(true);
+
+        try {
+            reportRef.current.style.display = 'block';
+
+            const canvas = await html2canvas(reportRef.current, {
+                scale: 2,
+                backgroundColor: '#ffffff'
+            });
+
+            reportRef.current.style.display = 'none';
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Auditoria_Evidencias_Thoth.pdf');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Hubo un error al generar el PDF.');
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
 
     return (
         <div style={{ padding: '1rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -19,12 +52,14 @@ export default function EvidenciasPage() {
                         Compliance y Evidencias 📋
                     </h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
-                        Centro de auditoría. Genera reportes legales que demuestran la capacitación de tu plantilla en el uso de IA según la normativa vigente.
+                        Centro de auditoría. Genera reportes legales que demuestran la capacitación de tu plantilla. Incluye el historial de evidencias, certificados emitidos y estado competencial de cada trabajador.
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn btn-secondary">📥 Exportar Excel Global</button>
-                    <button className="btn btn-primary">📄 Generar Informe de Auditoría (PDF)</button>
+                    <button className="btn btn-secondary" onClick={() => alert('Exportación a Excel en desarrollo.')}>📥 Exportar Excel Global</button>
+                    <button className="btn btn-primary" onClick={generatePDF} disabled={isGeneratingPDF}>
+                        {isGeneratingPDF ? 'Generando...' : '📄 Generar Informe de Auditoría (PDF)'}
+                    </button>
                 </div>
             </div>
 
@@ -78,10 +113,10 @@ export default function EvidenciasPage() {
                         <>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
                                 <div>
-                                    <h2 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0' }}>Ana Martínez</h2>
-                                    <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Especialista en Marketing • ID: EMP-2026-042</p>
+                                    <h2 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0' }}>{employees.find(e => e.id === selectedEmployee)?.name}</h2>
+                                    <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{employees.find(e => e.id === selectedEmployee)?.role} • ID: EMP-2026-042</p>
                                 </div>
-                                <button className="btn btn-secondary">Descargar Dossier Individual</button>
+                                <button className="btn btn-secondary" onClick={() => alert('Descarga de dossier individual en desarrollo.')}>Descargar Dossier Individual</button>
                             </div>
 
                             {/* Justificación de Competencia */}
@@ -91,7 +126,7 @@ export default function EvidenciasPage() {
                                 </h3>
                                 <div style={{ background: 'rgba(16, 185, 129, 0.05)', borderLeft: '4px solid var(--success)', padding: '1.5rem', borderRadius: '0 8px 8px 0' }}>
                                     <p style={{ fontSize: '0.95rem', lineHeight: '1.6', margin: 0, color: 'var(--text-primary)' }}>
-                                        Ana Martínez ha demostrado un nivel de competencia del <strong>92%</strong> en el uso de herramientas de IA generativa aplicadas a su rol.
+                                        {employees.find(e => e.id === selectedEmployee)?.name} ha demostrado un nivel de competencia del <strong>{employees.find(e => e.id === selectedEmployee)?.score}%</strong> en el uso de herramientas de IA generativa aplicadas a su rol.
                                         Ha completado satisfactoriamente la lectura y evaluación de la <em>Guía Interna de Uso de IA</em> y la <em>Política de Protección de Datos</em>.
                                         Además, ha superado 14 misiones prácticas, demostrando su capacidad para aplicar la <strong>supervisión humana (HITL)</strong> y evitar la introducción de datos sensibles (RGPD) en prompts públicos.
                                     </p>
@@ -134,6 +169,48 @@ export default function EvidenciasPage() {
                             </div>
                         </>
                     )}
+                </div>
+            </div>
+
+            {/* Hidden PDF Template */}
+            <div ref={reportRef} style={{ display: 'none', width: '800px', padding: '40px', background: '#ffffff', color: '#000000', fontFamily: 'sans-serif' }}>
+                <div style={{ borderBottom: '2px solid #1e4e8c', paddingBottom: '20px', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h1 style={{ margin: 0, color: '#1e4e8c', fontSize: '28px' }}>Auditoría de Evidencias IA</h1>
+                        <p style={{ margin: '5px 0 0 0', color: '#666' }}>Generado por THOTH Platform</p>
+                    </div>
+                    <div style={{ textAlign: 'right', color: '#666' }}>
+                        <p style={{ margin: 0 }}>Fecha: {new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+
+                <h2 style={{ color: '#1e4e8c', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>Listado de Empleados Auditados</h2>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                    <thead>
+                        <tr style={{ background: '#f1f5f9' }}>
+                            <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #cbd5e1' }}>Empleado</th>
+                            <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #cbd5e1' }}>Departamento</th>
+                            <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #cbd5e1' }}>Puntuación</th>
+                            <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #cbd5e1' }}>Estado Legal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {employees.map(emp => (
+                            <tr key={emp.id}>
+                                <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>{emp.name}</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>{emp.dept}</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>{emp.score}%</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0', color: emp.score >= 80 ? '#10b981' : '#f59e0b', fontWeight: 'bold' }}>
+                                    {emp.score >= 80 ? 'Competente' : 'En Proceso'}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #e2e8f0', textAlign: 'center', color: '#666', fontSize: '12px' }}>
+                    <p>Este documento constituye una evidencia legal de monitorización continua según lo requerido por el AI Act (Reglamento UE 2024/1689).</p>
+                    <p>Firma Digital: THOTH-AUDIT-{Date.now()}</p>
                 </div>
             </div>
         </div>

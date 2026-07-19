@@ -145,7 +145,7 @@ export default function WorkerPanelPage() {
                                             </div>
                                             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>{pm.missions?.description}</p>
                                         </div>
-                                        <button className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>Iniciar</button>
+                                        <Link href="/worker/misiones" className="btn btn-primary" style={{ padding: '0.5rem 1rem', textDecoration: 'none' }}>Iniciar</Link>
                                     </div>
                                 ))
                             )}
@@ -165,8 +165,8 @@ export default function WorkerPanelPage() {
                                 <h4 style={{ margin: '0 0 0.5rem 0' }}>Guía Práctica AI Act</h4>
                                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>Conceptos clave sobre la nueva normativa europea.</p>
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1 }}>Leer Resumen</button>
-                                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1 }}>Chat IA</button>
+                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Leer Resumen</Link>
+                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Chat IA</Link>
                                 </div>
                             </div>
 
@@ -175,8 +175,8 @@ export default function WorkerPanelPage() {
                                 <h4 style={{ margin: '0 0 0.5rem 0' }}>Política Interna de Datos</h4>
                                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>Actualización Q3 sobre manejo de datos de clientes.</p>
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1 }}>Leer Resumen</button>
-                                    <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1 }}>Chat IA</button>
+                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Leer Resumen</Link>
+                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Chat IA</Link>
                                 </div>
                             </div>
                         </div>
@@ -204,15 +204,27 @@ export default function WorkerPanelPage() {
                         </div>
                     </div>
 
-                    {/* Laboratorio IA Promo */}
+                    {/* Ruta Express Promo */}
+                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(201, 162, 39, 0.1) 100%)', textAlign: 'center', padding: '2rem 1.5rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚀</div>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Ruta Express</h3>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                            ¿Quieres quitarte la formación de encima? Encadena todas tus tareas pendientes en una sola sesión continua.
+                        </p>
+                        <Link href="/express" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none', background: 'var(--error)', borderColor: 'var(--error)' }}>
+                            Acelerar Formación
+                        </Link>
+                    </div>
+
+                    {/* Simulador IA Promo */}
                     <div className="card" style={{ background: 'linear-gradient(135deg, rgba(30, 78, 140, 0.4) 0%, rgba(201, 162, 39, 0.1) 100%)', textAlign: 'center', padding: '2rem 1.5rem' }}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Laboratorio IA</h3>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Simulador IA</h3>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                             Practica libremente, mejora tus prompts o simula escenarios sin afectar tus métricas.
                         </p>
-                        <Link href="/worker/laboratorio" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none' }}>
-                            Entrar al Laboratorio
+                        <Link href="/worker/simulador" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none' }}>
+                            Entrar al Simulador
                         </Link>
                     </div>
 

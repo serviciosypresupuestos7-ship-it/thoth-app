@@ -86,7 +86,7 @@ export default function MisionesPage() {
                         Situaciones reales basadas en tu puesto de trabajo. Resuélvelas utilizando IA para demostrar tu competencia y ganar certificados.
                     </p>
                 </div>
-                <button className="btn btn-primary">+ Generar Nueva Misión</button>
+                <button className="btn btn-primary" onClick={() => alert('Generador de misiones con IA en desarrollo')}>+ Generar Nueva Misión</button>
             </div>
 
             {/* Tabs */}
@@ -140,9 +140,9 @@ export default function MisionesPage() {
                                     </div>
                                 </div>
 
-                                <button className="btn btn-primary" style={{ padding: '0.6rem 1.5rem' }}>
+                                <Link href="/worker/simulador" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', textDecoration: 'none' }}>
                                     {activeTab === 'pending' ? 'Iniciar Misión' : 'Revisar Resultados'}
-                                </button>
+                                </Link>
                             </div>
                         ))
                     )}

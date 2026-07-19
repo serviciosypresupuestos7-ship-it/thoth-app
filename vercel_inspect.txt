@@ -1,0 +1,19 @@
+Vercel CLI 56.3.1 (Node.js 22.18.0)
+> Found Project ley34/thoth-app [245ms]
+
+  General
+
+    ID				prj_vpIZc0yxQ1UxUhomXkRWNOaPKJxE
+    Name			thoth-app
+    Owner			leyes
+    Created At			16 July 2026 17:22:04 [2d ago]
+    Root Directory		.
+    Node.js Version		24.x
+
+  Framework Settings
+
+    Framework Preset		Next.js
+    Build Command		`npm run build` or `next build`
+    Output Directory		Next.js default
+    Install Command		`yarn install`, `pnpm install`, `npm install`, or `bun install`
+
