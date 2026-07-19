@@ -267,9 +267,10 @@ El Diccionario soporta un grafo de dependencias. Una competencia avanzada solo s
 
 | Plan | Precio | Capacidad | Características |
 |---|---|---|---|
-| **Individual** | 29 €/mes | 1 usuario | Para profesionales independientes. |
-| **Empresa** | 99 €/mes | Hasta 15 workers | Dashboard HR, Certificados, Evidencias. |
-| **Enterprise** | A medida | Workers ilimitados | SSO, BYOK (Bring Your Own Key), SLA dedicado. |
+| **Acreditado 🆔** | 29 €/mes | 1 usuario | Para autónomos y consultores. IA incluida, certificados y evidencias. |
+| **Control Equipo 👥** | 99 €/mes (base) | Hasta 15 workers | Panel HR, Asistente Redactor Legal, Generador de Temarios básico. (+12 €/mes por empleado extra). |
+| **Escudo Digital 📄** | 149 € (Pago único) | Solo documentación | Asistente Redactor Legal, Dossier PDF. Sin mantenimiento mensual ni acceso a la plataforma. |
+| **Corporativo 👑** | A medida | Workers ilimitados | Generador de Temarios avanzado, SSO, BYOK, soporte prioritario. |
 
 ### 9.2. Feature Flags — Motor Editorial
 En la tabla de empresas del Admin existe el interruptor **Motor Editorial** (por defecto `OFF`). Solo se activa para clientes que necesiten construir sus propias matrices de conocimiento a medida (typically plan Enterprise). Permite controlar qué clientes tienen capacidad de crear bases de conocimiento propietarias vs. usar únicamente los marcos globales de THOTH.
