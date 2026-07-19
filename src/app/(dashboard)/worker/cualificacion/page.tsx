@@ -32,44 +32,65 @@ export default function CualificacionPage() {
         }, []);
     });
 
-    const startTutor = () => {
+    const startTutor = async () => {
         setPhase('tutor');
         setIsTyping(true);
-        setTimeout(() => {
-            setMessages([{
-                role: 'ai',
-                text: '¡Hola! Soy Thoth, tu tutor legal. Antes de empezar a usar IA en tu trabajo, vamos a ver 3 reglas básicas del AI Act europeo.\n\n**Regla 1: ¿Qué es una IA?**\nNo todo el software es IA. Usar el corrector de Word no es IA, pero usar ChatGPT para redactar un email sí lo es, porque el sistema "infiere" y crea contenido nuevo por su cuenta.\n\nSabiendo esto: Si usas una herramienta que resume PDFs automáticamente leyendo el texto y creando un resumen nuevo, ¿crees que la ley lo considera IA? (Responde Sí o No)'
-            }]);
+        try {
+            const initialMessages: any[] = [];
+            const res = await fetch('/api/tutor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: initialMessages })
+            });
+            const data = await res.json();
+            if (data.text) {
+                setMessages([{ role: 'ai', text: data.text }]);
+            } else {
+                throw new Error("No text returned");
+            }
+        } catch (error) {
+            console.error(error);
+            setMessages([{ role: 'ai', text: 'Error al conectar con el tutor. Por favor, inténtalo de nuevo.' }]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
-    const handleSendMessage = (e?: React.FormEvent) => {
+    const handleSendMessage = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!inputText.trim()) return;
 
         const userMsg = inputText.trim();
-        setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+        const newMessages = [...messages, { role: 'user' as const, text: userMsg }];
+        setMessages(newMessages);
         setInputText('');
         setIsTyping(true);
 
-        // Simulate AI Tutor progression
-        setTimeout(() => {
-            if (tutorStep === 0) {
-                setMessages(prev => [...prev, {
-                    role: 'ai',
-                    text: '¡Exacto! ✅ Al generar contenido nuevo, se considera un Sistema de IA y aplica la ley.\n\n**Regla 2: Privacidad de Datos (RGPD)**\nNunca debes introducir datos personales (DNI, nombres de clientes, tarjetas) en una IA pública como ChatGPT, porque esos datos se usan para entrenar al modelo y podrías filtrarlos.\n\nPregunta: Si un cliente te pide que resumas su contrato, ¿qué es lo primero que debes hacer antes de subirlo a la IA?'
-                }]);
-                setTutorStep(1);
-            } else if (tutorStep === 1) {
-                setMessages(prev => [...prev, {
-                    role: 'ai',
-                    text: '¡Muy bien! ✅ Hay que anonimizar o borrar los datos personales primero.\n\n**Regla 3: Supervisión Humana**\nLa ley exige que un humano revise siempre el trabajo de la IA antes de enviarlo o aplicarlo. La IA es tu asistente, no tu reemplazo.\n\nCon esto hemos terminado la teoría básica. ¡Ya estás listo para la práctica!'
-                }]);
-                setTutorStep(2);
+        try {
+            // Convert to format expected by API
+            const apiMessages = newMessages.map(m => ({ role: m.role, content: m.text }));
+
+            const res = await fetch('/api/tutor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: apiMessages })
+            });
+            const data = await res.json();
+
+            if (data.text) {
+                setMessages(prev => [...prev, { role: 'ai', text: data.text }]);
+                if (data.text.includes('TERMINAR')) {
+                    setTutorStep(2); // Show finish button
+                }
+            } else {
+                throw new Error("No text returned");
             }
+        } catch (error) {
+            console.error(error);
+            setMessages(prev => [...prev, { role: 'ai', text: 'Error de conexión. Intenta enviar tu mensaje de nuevo.' }]);
+        } finally {
             setIsTyping(false);
-        }, 2000);
+        }
     };
 
     const pendingCount = MISSIONS_MOCK.filter(m => m.status === 'pending').length;
