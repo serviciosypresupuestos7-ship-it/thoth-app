@@ -94,7 +94,7 @@ export default function DashboardLayout({
                             <Link href="/worker/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'worker' ? 'var(--primary)' : 'transparent', color: role === 'worker' ? '#000' : 'var(--text-secondary)' }}>Trabajador</Link>
                             <Link href="/hr/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'hr' ? 'var(--primary)' : 'transparent', color: role === 'hr' ? '#000' : 'var(--text-secondary)' }}>R. Humanos</Link>
                             <Link href="/admin/empresas" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'admin' ? 'var(--primary)' : 'transparent', color: role === 'admin' ? '#000' : 'var(--text-secondary)' }}>ADM</Link>
-                            <Link href="/escudo-digital" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'escudo' ? 'var(--primary)' : 'transparent', color: role === 'escudo' ? '#000' : 'var(--text-secondary)' }}>ESC</Link>
+                            <Link href="/escudo-digital" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'escudo' ? 'var(--primary)' : 'transparent', color: role === 'escudo' ? '#000' : 'var(--text-secondary)' }}>E. Digital</Link>
                         </div>
                     </div>
                     <form action="/auth/signout" method="post">
