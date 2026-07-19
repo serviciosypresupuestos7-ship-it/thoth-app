@@ -3,54 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-// --- DATOS DEL DIAGNÓSTICO PREVIO (PRUEBA DE NIVEL) ---
-const diagnosticQuestions = [
-    {
-        id: 1,
-        question: '¿Qué es un sistema de IA según el Art. 3 del AI Act europeo?',
-        options: [
-            { id: 'a', text: 'Un software que sigue reglas fijas programadas por un desarrollador.' },
-            { id: 'b', text: 'Un sistema que aprende, infiere y genera salidas (contenido, decisiones) de forma autónoma.' },
-            { id: 'c', text: 'Cualquier programa informático que utilice internet.' },
-            { id: 'd', text: 'Un robot industrial con sensores físicos.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 2,
-        question: 'Tu empresa usa ChatGPT para redactar correos. Según la ley española, ¿estás usando IA corporativa?',
-        options: [
-            { id: 'a', text: 'No, ChatGPT es solo una herramienta de texto, no cuenta como IA.' },
-            { id: 'b', text: 'Solo si la empresa lo tiene instalado en sus servidores.' },
-            { id: 'c', text: 'Sí. Si el software infiere datos y genera contenido autónomamente, es IA corporativa según el Art. 3 del AI Act y la AESIA puede supervisarla.' },
-            { id: 'd', text: 'Depende del número de empleados de la empresa.' },
-        ],
-        correct: 'c',
-    },
-    {
-        id: 3,
-        question: 'Un cliente te pide que subas su contrato a ChatGPT para extraer datos clave. ¿Qué harías?',
-        options: [
-            { id: 'a', text: 'Lo subiría sin problema; la IA es confidencial.' },
-            { id: 'b', text: 'Anonimizaría los datos personales antes de introducirlos en la IA, ya que el RGPD prohíbe compartir datos de clientes sin consentimiento.' },
-            { id: 'c', text: 'Solo lo haría si el archivo pesa menos de 1MB.' },
-            { id: 'd', text: 'Le pediría permiso al cliente enviándole un correo automático.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 4,
-        question: '¿Qué organismo en España supervisa el cumplimiento de la Ley de IA (AI Act)?',
-        options: [
-            { id: 'a', text: 'La Agencia Tributaria (AEAT).' },
-            { id: 'b', text: 'El Instituto Nacional de Estadística (INE).' },
-            { id: 'c', text: 'La Agencia Española de Supervisión de Inteligencia Artificial (AESIA).' },
-            { id: 'd', text: 'El Ministerio de Trabajo y Economía Social.' },
-        ],
-        correct: 'c',
-    },
-];
-
 const MISSIONS_MOCK = [
     { id: '1', title: 'Redactar correo a cliente con IA', action: 'Redactar correos', difficulty: 'Media', status: 'pending', time: '10 min', icon: '📧' },
     { id: '2', title: 'Resumir contrato de confidencialidad', action: 'Resumir documentos', difficulty: 'Alta', status: 'pending', time: '15 min', icon: '📝' },
@@ -58,14 +10,17 @@ const MISSIONS_MOCK = [
 ];
 
 export default function CualificacionPage() {
-    // 'intro' | 'diagnostic' | 'result' | 'missions'
-    const [phase, setPhase] = useState<'intro' | 'diagnostic' | 'result' | 'missions' | null>(null);
-    const [currentQ, setCurrentQ] = useState(0);
-    const [answers, setAnswers] = useState<Record<number, string>>({});
-    const [selected, setSelected] = useState<string | null>(null);
+    // 'intro' | 'tutor' | 'missions'
+    const [phase, setPhase] = useState<'intro' | 'tutor' | 'missions' | null>(null);
     const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
 
-    // Check if diagnostic was already completed
+    // Tutor Chat State
+    const [messages, setMessages] = useState<{ role: 'ai' | 'user', text: string }[]>([]);
+    const [inputText, setInputText] = useState('');
+    const [tutorStep, setTutorStep] = useState(0);
+    const [isTyping, setIsTyping] = useState(false);
+
+    // Check if diagnostic/tutor was already completed
     import('react').then((React) => {
         React.useEffect(() => {
             const completed = localStorage.getItem('thoth_diagnostic_completed');
@@ -77,26 +32,44 @@ export default function CualificacionPage() {
         }, []);
     });
 
-    const score = diagnosticQuestions.filter(q => answers[q.id] === q.correct).length;
-    const totalQ = diagnosticQuestions.length;
-    const pct = Math.round((score / totalQ) * 100);
-    const isAdvanced = pct >= 75;
-
-    const handleAnswer = (optId: string) => {
-        setSelected(optId);
+    const startTutor = () => {
+        setPhase('tutor');
+        setIsTyping(true);
+        setTimeout(() => {
+            setMessages([{
+                role: 'ai',
+                text: '¡Hola! Soy Thoth, tu tutor legal. Antes de empezar a usar IA en tu trabajo, vamos a ver 3 reglas básicas del AI Act europeo.\n\n**Regla 1: ¿Qué es una IA?**\nNo todo el software es IA. Usar el corrector de Word no es IA, pero usar ChatGPT para redactar un email sí lo es, porque el sistema "infiere" y crea contenido nuevo por su cuenta.\n\nSabiendo esto: Si usas una herramienta que resume PDFs automáticamente leyendo el texto y creando un resumen nuevo, ¿crees que la ley lo considera IA? (Responde Sí o No)'
+            }]);
+            setIsTyping(false);
+        }, 1500);
     };
 
-    const handleNext = () => {
-        if (!selected) return;
-        const q = diagnosticQuestions[currentQ];
-        setAnswers(prev => ({ ...prev, [q.id]: selected }));
-        setSelected(null);
-        if (currentQ + 1 < diagnosticQuestions.length) {
-            setCurrentQ(currentQ + 1);
-        } else {
-            setPhase('result');
-            localStorage.setItem('thoth_diagnostic_completed', 'true');
-        }
+    const handleSendMessage = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!inputText.trim()) return;
+
+        const userMsg = inputText.trim();
+        setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+        setInputText('');
+        setIsTyping(true);
+
+        // Simulate AI Tutor progression
+        setTimeout(() => {
+            if (tutorStep === 0) {
+                setMessages(prev => [...prev, {
+                    role: 'ai',
+                    text: '¡Exacto! ✅ Al generar contenido nuevo, se considera un Sistema de IA y aplica la ley.\n\n**Regla 2: Privacidad de Datos (RGPD)**\nNunca debes introducir datos personales (DNI, nombres de clientes, tarjetas) en una IA pública como ChatGPT, porque esos datos se usan para entrenar al modelo y podrías filtrarlos.\n\nPregunta: Si un cliente te pide que resumas su contrato, ¿qué es lo primero que debes hacer antes de subirlo a la IA?'
+                }]);
+                setTutorStep(1);
+            } else if (tutorStep === 1) {
+                setMessages(prev => [...prev, {
+                    role: 'ai',
+                    text: '¡Muy bien! ✅ Hay que anonimizar o borrar los datos personales primero.\n\n**Regla 3: Supervisión Humana**\nLa ley exige que un humano revise siempre el trabajo de la IA antes de enviarlo o aplicarlo. La IA es tu asistente, no tu reemplazo.\n\nCon esto hemos terminado la teoría básica. ¡Ya estás listo para la práctica!'
+                }]);
+                setTutorStep(2);
+            }
+            setIsTyping(false);
+        }, 2000);
     };
 
     const pendingCount = MISSIONS_MOCK.filter(m => m.status === 'pending').length;
@@ -119,156 +92,99 @@ export default function CualificacionPage() {
                 <div className="fade-in card" style={{ padding: '3rem', textAlign: 'center', background: 'linear-gradient(145deg, rgba(16, 163, 127, 0.05) 0%, rgba(20, 20, 20, 0.8) 100%)', border: '1px solid rgba(16, 163, 127, 0.2)' }}>
                     <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>👋</div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-                        Bienvenido a tu Cualificación en IA
+                        Bienvenido a tu Alfabetización en IA
                     </h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', marginBottom: '2rem', lineHeight: '1.6', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
-                        El uso de la Inteligencia Artificial en el trabajo está regulado por la ley europea (AI Act). Para protegerte a ti y a la empresa, necesitamos asegurarnos de que conoces las normas básicas antes de usar estas herramientas.
+                        El uso de la Inteligencia Artificial en el trabajo está regulado por la ley europea (AI Act). Como partimos de cero, vamos a hacer un pequeño curso interactivo antes de empezar a trabajar.
                     </p>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '500px', margin: '0 auto 3rem auto', textAlign: 'left' }}>
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                             <div style={{ background: 'rgba(16, 163, 127, 0.2)', color: 'var(--success)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</div>
                             <div>
-                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Prueba de Nivel (2 minutos)</strong>
-                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>4 preguntas rápidas para saber si ya conoces la ley o si empezamos desde cero.</span>
+                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Tutoría Interactiva (3 minutos)</strong>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Chatearás con la IA, que te explicará las 3 reglas de oro de forma muy sencilla y con ejemplos.</span>
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                             <div style={{ background: 'rgba(16, 163, 127, 0.2)', color: 'var(--success)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>2</div>
                             <div>
                                 <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Misiones Prácticas</strong>
-                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Casos reales de tu puesto de trabajo que resolverás chateando con nuestra IA.</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Casos reales de tu puesto de trabajo para poner en práctica lo aprendido.</span>
                             </div>
                         </div>
                     </div>
 
-                    <button className="btn btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 3rem' }} onClick={() => setPhase('diagnostic')}>
-                        Comenzar Prueba de Nivel →
+                    <button className="btn btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 3rem' }} onClick={startTutor}>
+                        Comenzar Tutoría Guiada →
                     </button>
                 </div>
             )}
 
-            {/* ======= FASE 1: DIAGNÓSTICO INICIAL ======= */}
-            {phase === 'diagnostic' && (
-                <div className="fade-in">
-                    <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                        <h1 className="title-gradient" style={{ fontSize: '2.2rem', marginBottom: '0.5rem' }}>
-                            🩺 Diagnóstico Inicial de Nivel
+            {/* ======= FASE 1: TUTOR INTERACTIVO ======= */}
+            {phase === 'tutor' && (
+                <div className="fade-in" style={{ height: '70vh', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ marginBottom: '1rem' }}>
+                        <h1 className="title-gradient" style={{ fontSize: '1.8rem', margin: 0 }}>
+                            Tutor de Alfabetización 🧠
                         </h1>
-                        <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-                            Evalúa tus conocimientos en <strong style={{ color: '#fff' }}>IA y AI Act</strong>. El sistema adaptará tu formación al resultado.
-                        </p>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Aprende los conceptos básicos chateando.</p>
                     </div>
 
-                    {/* Progress bar */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                        {diagnosticQuestions.map((_, i) => (
-                            <div key={i} style={{ flex: 1, height: '6px', borderRadius: '3px', background: i < currentQ ? 'var(--success)' : i === currentQ ? 'var(--primary)' : 'rgba(255,255,255,0.1)' }} />
-                        ))}
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{currentQ + 1} / {totalQ}</span>
-                    </div>
-
-                    {/* Question Card */}
-                    <div className="card" style={{ padding: '2.5rem' }}>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>
-                            Pregunta {currentQ + 1}
-                        </div>
-                        <h2 style={{ fontSize: '1.4rem', marginBottom: '2rem', lineHeight: '1.5', color: '#fff' }}>
-                            {diagnosticQuestions[currentQ].question}
-                        </h2>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-                            {diagnosticQuestions[currentQ].options.map(opt => (
-                                <button
-                                    key={opt.id}
-                                    onClick={() => handleAnswer(opt.id)}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '1rem',
-                                        padding: '1rem 1.25rem', textAlign: 'left',
-                                        background: selected === opt.id ? 'rgba(201, 162, 39, 0.12)' : 'rgba(255,255,255,0.04)',
-                                        border: `1px solid ${selected === opt.id ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`,
-                                        borderRadius: '10px', cursor: 'pointer',
-                                        color: selected === opt.id ? '#fff' : 'var(--text-secondary)',
-                                        transition: 'all 0.15s ease',
-                                        fontWeight: selected === opt.id ? 500 : 400,
-                                    }}
-                                >
-                                    <div style={{
-                                        width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontWeight: 700, fontSize: '0.85rem',
-                                        background: selected === opt.id ? 'var(--primary)' : 'rgba(255,255,255,0.08)',
-                                        color: selected === opt.id ? '#000' : 'var(--text-secondary)',
-                                    }}>
-                                        {opt.id.toUpperCase()}
+                    <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
+                        {/* Chat Messages */}
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            {messages.map((msg, idx) => (
+                                <div key={idx} style={{ display: 'flex', gap: '1rem', flexDirection: msg.role === 'ai' ? 'row' : 'row-reverse' }}>
+                                    <div style={{ width: '35px', height: '35px', borderRadius: '50%', background: msg.role === 'ai' ? 'rgba(201,162,39,0.2)' : 'rgba(16,163,127,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>
+                                        {msg.role === 'ai' ? '🤖' : '👤'}
                                     </div>
-                                    <span style={{ fontSize: '0.95rem' }}>{opt.text}</span>
-                                </button>
+                                    <div style={{ background: msg.role === 'ai' ? 'rgba(255,255,255,0.05)' : 'rgba(16,163,127,0.1)', padding: '1rem 1.25rem', borderRadius: '12px', border: msg.role === 'ai' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(16,163,127,0.3)', maxWidth: '80%', whiteSpace: 'pre-wrap', lineHeight: '1.5', color: '#fff' }}>
+                                        {msg.text}
+                                    </div>
+                                </div>
                             ))}
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <button
-                                className="btn btn-primary"
-                                style={{ padding: '0.75rem 2rem', opacity: selected ? 1 : 0.4, cursor: selected ? 'pointer' : 'not-allowed' }}
-                                onClick={handleNext}
-                                disabled={!selected}
-                            >
-                                {currentQ + 1 < totalQ ? 'Siguiente pregunta →' : 'Ver mi resultado →'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* ======= FASE 2: RESULTADO DEL DIAGNÓSTICO ======= */}
-            {phase === 'result' && (
-                <div className="fade-in" style={{ textAlign: 'center', paddingTop: '2rem' }}>
-                    <div className="card" style={{ padding: '3rem', maxWidth: '650px', margin: '0 auto' }}>
-                        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-                            {isAdvanced ? '🏆' : '📚'}
-                        </div>
-                        <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
-                            {isAdvanced ? '¡Excelente nivel!' : 'Comenzaremos desde cero'}
-                        </h2>
-                        <div style={{ fontSize: '4rem', fontWeight: 900, color: isAdvanced ? 'var(--success)' : 'var(--warning)', margin: '1rem 0' }}>
-                            {pct}%
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.7 }}>
-                            {isAdvanced
-                                ? `Has respondido correctamente ${score} de ${totalQ} preguntas. Tu nivel de conocimiento en IA y AI Act es alto. Pasarás directamente a la fase práctica sin necesidad de formación básica, ahorrándote tiempo.`
-                                : `Has respondido correctamente ${score} de ${totalQ} preguntas. No te preocupes, Thoth te guiará por un módulo de Alfabetización en IA basado en el AI Act antes de comenzar la práctica.`
-                            }
-                        </p>
-
-                        {/* Detalle de respuestas */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem', textAlign: 'left' }}>
-                            {diagnosticQuestions.map(q => {
-                                const ok = answers[q.id] === q.correct;
-                                return (
-                                    <div key={q.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: ok ? 'var(--success)' : 'var(--error)' }}>
-                                        <span>{ok ? '✓' : '✗'}</span>
-                                        <span style={{ color: 'var(--text-secondary)' }}>{q.question.substring(0, 60)}...</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                            {!isAdvanced && (
-                                <Link href="/worker/biblioteca" className="btn btn-secondary">
-                                    📖 Ver Alfabetización IA Primero
-                                </Link>
+                            {isTyping && (
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <div style={{ width: '35px', height: '35px', borderRadius: '50%', background: 'rgba(201,162,39,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>🤖</div>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px', color: 'var(--text-muted)' }}>Escribiendo...</div>
+                                </div>
                             )}
-                            <button className="btn btn-primary" style={{ padding: '0.85rem 2rem' }} onClick={() => setPhase('missions')}>
-                                {isAdvanced ? '🎯 Ir a mis Cualificaciones →' : 'Ir a mis Cualificaciones →'}
-                            </button>
+                        </div>
+
+                        {/* Chat Input */}
+                        <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)' }}>
+                            {tutorStep === 2 ? (
+                                <div style={{ textAlign: 'center' }}>
+                                    <button className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }} onClick={() => {
+                                        localStorage.setItem('thoth_diagnostic_completed', 'true');
+                                        setPhase('missions');
+                                    }}>
+                                        🎯 Ir a mis Misiones Prácticas
+                                    </button>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '1rem' }}>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        style={{ flex: 1, padding: '1rem', fontSize: '1rem' }}
+                                        placeholder="Escribe tu respuesta aquí..."
+                                        value={inputText}
+                                        onChange={e => setInputText(e.target.value)}
+                                        disabled={isTyping}
+                                    />
+                                    <button type="submit" className="btn btn-primary" disabled={isTyping || !inputText.trim()} style={{ padding: '0 2rem' }}>
+                                        Enviar
+                                    </button>
+                                </form>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* ======= FASE 3: MISIONES / CUALIFICACIONES ======= */}
+            {/* ======= FASE 2: MISIONES / CUALIFICACIONES ======= */}
             {phase === 'missions' && (
                 <div className="fade-in">
                     <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -283,11 +199,10 @@ export default function CualificacionPage() {
                         <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => {
                             localStorage.removeItem('thoth_diagnostic_completed');
                             setPhase('intro');
-                            setCurrentQ(0);
-                            setAnswers({});
-                            setSelected(null);
+                            setTutorStep(0);
+                            setMessages([]);
                         }}>
-                            🔄 Repetir Test de Nivel
+                            🔄 Repetir Tutoría
                         </button>
                     </div>
 
