@@ -178,6 +178,30 @@ export default function WorkerPanelPage() {
                 </div>
             </div>
 
+            {/* Formación Continua */}
+            <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(16, 163, 127, 0.05) 0%, rgba(0,0,0,0.2) 100%)', border: '1px solid rgba(16, 163, 127, 0.2)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontSize: '1.5rem' }}>🔄</span>
+                        <h3 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--success)' }}>Formación Continua</h3>
+                    </div>
+                    <span className="badge badge-success">Novedades</span>
+                </div>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                    Mantente al día. Aquí aparecerán las nuevas políticas de la empresa y los módulos de actualización mensual para mantener tu cualificación activa.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.25rem', borderRadius: '8px', borderLeft: '3px solid var(--success)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Actualización: Uso de Copilot</div>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Octubre 2026</span>
+                        </div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Nuevas directrices sobre cómo usar Microsoft Copilot con documentos internos.</div>
+                        <Link href="/worker/formacion" style={{ color: 'var(--success)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500 }}>Iniciar módulo (10 min) →</Link>
+                    </div>
+                </div>
+            </div>
+
             {/* Biblioteca y Lecturas Recomendadas */}
             <div className="card" style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
