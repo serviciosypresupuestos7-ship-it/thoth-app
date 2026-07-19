@@ -14,6 +14,7 @@ export default function DashboardLayout({
     let role = 'worker'; // default
     if (pathname.startsWith('/hr')) role = 'hr';
     if (pathname.startsWith('/admin')) role = 'admin';
+    if (pathname.startsWith('/escudo-digital')) role = 'escudo';
 
     const menus = {
         worker: [
@@ -42,6 +43,10 @@ export default function DashboardLayout({
             { href: '/admin/informes', icon: '📊', label: 'Estadísticas' },
             { href: '/admin/infraestructura', icon: '⚡', label: 'Estado del Sistema' },
             { href: '/admin/configuracion', icon: '⚙️', label: 'Configuración' },
+        ],
+        escudo: [
+            { href: '/escudo-digital', icon: '📄', label: 'Escudo Digital (Dossier)' },
+            { href: '/hr/politicas', icon: '📝', label: 'Asistente Redactor Legal' },
         ]
     };
 
@@ -89,6 +94,7 @@ export default function DashboardLayout({
                             <Link href="/worker/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'worker' ? 'var(--primary)' : 'transparent', color: role === 'worker' ? '#000' : 'var(--text-secondary)' }}>WRK</Link>
                             <Link href="/hr/panel" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'hr' ? 'var(--primary)' : 'transparent', color: role === 'hr' ? '#000' : 'var(--text-secondary)' }}>HR</Link>
                             <Link href="/admin/empresas" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'admin' ? 'var(--primary)' : 'transparent', color: role === 'admin' ? '#000' : 'var(--text-secondary)' }}>ADM</Link>
+                            <Link href="/escudo-digital" style={{ flex: 1, textAlign: 'center', padding: '0.25rem', fontSize: '0.7rem', borderRadius: '4px', textDecoration: 'none', background: role === 'escudo' ? 'var(--primary)' : 'transparent', color: role === 'escudo' ? '#000' : 'var(--text-secondary)' }}>ESC</Link>
                         </div>
                     </div>
                     <form action="/auth/signout" method="post">
