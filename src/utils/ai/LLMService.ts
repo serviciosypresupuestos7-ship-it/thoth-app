@@ -48,10 +48,26 @@ export class LLMService {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${settings.gemini_api_key}`;
 
                 // Convert messages to Gemini format
-                const geminiMessages = messages.map(m => ({
+                let geminiMessages = messages.map(m => ({
                     role: m.role === 'user' ? 'user' : 'model',
                     parts: [{ text: m.content }]
                 }));
+
+                // Gemini requires the first message to be from 'user'
+                if (geminiMessages.length > 0 && geminiMessages[0].role === 'model') {
+                    geminiMessages.unshift({
+                        role: 'user',
+                        parts: [{ text: 'Hola, estoy listo para empezar.' }]
+                    });
+                }
+
+                // If empty, Gemini might fail, so we add a dummy user message
+                if (geminiMessages.length === 0) {
+                    geminiMessages.push({
+                        role: 'user',
+                        parts: [{ text: 'Hola, por favor preséntate y comienza la lección.' }]
+                    });
+                }
 
                 const res = await fetch(url, {
                     method: 'POST',
