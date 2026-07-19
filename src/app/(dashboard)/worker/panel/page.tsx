@@ -107,10 +107,10 @@ export default function WorkerPanelPage() {
                     }} className="hover-scale">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div style={{ fontSize: '3rem' }}>🚀</div>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>Rápido</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>Intensivo</div>
                         </div>
                         <h2 style={{ fontSize: '1.8rem', margin: '1rem 0 0.5rem 0', fontWeight: 700 }}>Ruta Express</h2>
-                        <p style={{ margin: 0, opacity: 0.9, fontSize: '0.95rem' }}>Quítatelo de encima. Encadena todo en una sesión.</p>
+                        <p style={{ margin: 0, opacity: 0.9, fontSize: '0.95rem' }}>Completa toda tu evaluación de forma continua en una sola sesión.</p>
                     </Link>
                 </div>
 
