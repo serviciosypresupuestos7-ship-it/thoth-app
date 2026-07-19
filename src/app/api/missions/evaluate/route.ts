@@ -49,11 +49,11 @@ export async function POST(request: Request) {
             .eq('tenant_id', user.id)
             .single();
 
-        let openaiKey = process.env.OPENAI_API_KEY || settings?.openai_api_key || '';
-        let anthropicKey = settings?.anthropic_api_key || '';
-        let groqKey = settings?.groq_api_key || '';
-        let geminiKey = settings?.gemini_api_key || '';
-        let preferredModel = settings?.preferred_model || 'gpt-4o-mini';
+        const openaiKey = process.env.OPENAI_API_KEY || settings?.openai_api_key || '';
+        const anthropicKey = settings?.anthropic_api_key || '';
+        const groqKey = settings?.groq_api_key || '';
+        const geminiKey = settings?.gemini_api_key || '';
+        const preferredModel = settings?.preferred_model || 'gpt-4o-mini';
 
         // 1. Find relevant legal chunks for evaluation
         // In a real app, we'd use embeddings to find the most relevant chunks for the employee's response
