@@ -429,21 +429,23 @@ Generado mediante THOTH AI Compliance Platform conforme al AI Act (Reg. UE 2024/
                                         style={{ padding: '0.9rem 2rem', fontSize: '1rem', whiteSpace: 'nowrap', opacity: generatingPdf ? 0.7 : 1, cursor: generatingPdf ? 'not-allowed' : 'pointer' }}
                                         onClick={() => {
                                             if (generatingPdf) return;
+                                            if (pdfSuccess) {
+                                                alert('Iniciando descarga del Dossier de Cumplimiento (PDF)...');
+                                                return;
+                                            }
                                             setGeneratingPdf(true);
                                             setPdfSuccess(false);
                                             setTimeout(() => {
                                                 setGeneratingPdf(false);
                                                 setPdfSuccess(true);
-                                                // In a real app, this would trigger a file download
                                             }, 2500);
                                         }}
-                                        disabled={generatingPdf}
                                     >
-                                        {generatingPdf ? '⏳ Generando PDF...' : pdfSuccess ? '✅ Descargar Dossier PDF' : '🖨️ Emitir Dossier de Compliance (PDF)'}
+                                        {generatingPdf ? '⏳ Generando PDF...' : pdfSuccess ? '⬇️ Descargar Dossier PDF' : '🖨️ Emitir Dossier de Compliance (PDF)'}
                                     </button>
                                     {pdfSuccess && (
                                         <div style={{ fontSize: '0.8rem', color: 'var(--success)', textAlign: 'center' }}>
-                                            Dossier generado y guardado en Evidencias.
+                                            Dossier generado correctamente. Haz clic para descargar tu copia.
                                         </div>
                                     )}
                                     <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => { setStep(1); setPdfSuccess(false); }}>

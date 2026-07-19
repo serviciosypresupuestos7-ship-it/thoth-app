@@ -50,7 +50,7 @@ export default function InfraestructuraPage() {
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
                 <div className="card" style={{ background: 'linear-gradient(145deg, rgba(16, 163, 127, 0.1) 0%, rgba(20, 20, 20, 0.8) 100%)', border: '1px solid rgba(16, 163, 127, 0.3)' }}>
                     <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Coste Estimado Total</div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--success)' }}>$342.50</div>
+                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--success)' }}>342,50 €</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>+12% vs mes anterior</div>
                 </div>
                 <div className="card">
