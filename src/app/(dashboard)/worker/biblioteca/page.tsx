@@ -42,18 +42,18 @@ export default function FormacionPage() {
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Abre un documento →</div>
                     </div>
                 </Link>
-                <Link href="/worker/formacion/1" style={{ textDecoration: 'none' }}>
+                <Link href="/worker/biblioteca/1" style={{ textDecoration: 'none' }}>
                     <div style={{ background: 'rgba(201,162,39,0.08)', padding: '1.25rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(201,162,39,0.2)', cursor: 'pointer', transition: 'all 0.2s' }}>
                         <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>❓</div>
                         <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>Generación de Tests</div>
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Abre un documento →</div>
                     </div>
                 </Link>
-                <Link href="/worker/misiones" style={{ textDecoration: 'none' }}>
+                <Link href="/worker/cualificacion" style={{ textDecoration: 'none' }}>
                     <div style={{ background: 'rgba(201,162,39,0.08)', padding: '1.25rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(201,162,39,0.2)', cursor: 'pointer', transition: 'all 0.2s' }}>
                         <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>🎯</div>
                         <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>Creación de Misiones</div>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Ver misiones →</div>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Ir a Mi Cualificación →</div>
                     </div>
                 </Link>
                 <Link href="/worker/simulador" style={{ textDecoration: 'none' }}>
@@ -104,7 +104,7 @@ export default function FormacionPage() {
                             </p>
 
                             <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
-                                <Link href={`/worker/formacion/${doc.id}`} className="btn btn-primary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center', padding: '0.6rem' }}>
+                                <Link href={`/worker/biblioteca/${doc.id}`} className="btn btn-primary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center', padding: '0.6rem' }}>
                                     Abrir con Tutor IA
                                 </Link>
                             </div>

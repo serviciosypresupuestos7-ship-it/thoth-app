@@ -114,7 +114,7 @@ export default function FormacionDocPage({ params }: { params: { id: string } })
                             <div>
                                 <button className="btn btn-secondary" onClick={() => { setTestScore(null); setTestAnswers({}); }}>Repetir Test</button>
                                 {testScore >= 70 && (
-                                    <Link href="/worker/misiones" className="btn btn-primary" style={{ marginLeft: '1rem', textDecoration: 'none' }}>Ir a Misiones →</Link>
+                                    <Link href="/worker/cualificacion" className="btn btn-primary" style={{ marginLeft: '1rem', textDecoration: 'none' }}>Ir a Mi Cualificación →</Link>
                                 )}
                             </div>
                         </div>

@@ -70,7 +70,7 @@ export default function WorkerPanelPage() {
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     {/* 1. Botón Principal: Acceso a Cualificación */}
-                    <Link href="/worker/misiones" style={{
+                    <Link href="/worker/cualificacion" style={{
                         flex: 2,
                         background: 'linear-gradient(135deg, var(--primary) 0%, #b38b1d 100%)',
                         color: '#000',
