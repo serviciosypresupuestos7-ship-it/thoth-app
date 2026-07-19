@@ -75,7 +75,7 @@ export async function POST(request: Request) {
             }
         }
 
-        // Fallback to global env vars if tenant settings are missing keys
+        // Fallback to global env vars
         if (settings.llm_provider === 'openai' && !settings.openai_api_key) {
             settings.openai_api_key = process.env.OPENAI_API_KEY;
         }
@@ -83,7 +83,48 @@ export async function POST(request: Request) {
             settings.gemini_api_key = process.env.GEMINI_API_KEY;
         }
 
-        const responseText = await LLMService.generateChat(messages, SYSTEM_PROMPT, settings, 800);
+        // 1. RAG ENFORCEMENT: Extract the last user message to search the vector database
+        const lastUserMessage = messages.filter(m => m.role === 'user').pop();
+        let legalContext = "";
+
+        if (lastUserMessage && lastUserMessage.content) {
+            try {
+                const { EmbeddingService } = await import('@/utils/ai/EmbeddingService');
+                const { vector: queryEmbedding } = await EmbeddingService.generate(lastUserMessage.content);
+
+                const { data: chunks, error: chunksError } = await supabase.rpc('match_legal_chunks', {
+                    query_embedding: queryEmbedding,
+                    match_threshold: 0.3,
+                    match_count: 3,
+                    p_tenant_id: user.id
+                });
+
+                if (chunksError || !chunks || chunks.length === 0) {
+                    // STRICT COMPLIANCE: If no law is found, we refuse to answer.
+                    return NextResponse.json({
+                        text: "⚠️ **ALERTA DE CUMPLIMIENTO (RAG VACÍO)**\n\nComo Cualificador Profesional estricto, tengo **PROHIBIDO** usar conocimiento general de internet para formarte. Mi base de datos vectorial (RAG) actualmente no contiene los documentos legales necesarios (AI Act, RGPD, ISOs) para responder a tu consulta.\n\nPor favor, contacta con el administrador para que ingeste la normativa oficial en el sistema antes de continuar con la capacitación."
+                    });
+                }
+
+                legalContext = chunks.map((c: any) => `[Documento: ${c.title}]\n${c.text}`).join('\n\n');
+            } catch (e) {
+                console.error("RAG Search Error:", e);
+                return NextResponse.json({
+                    text: "⚠️ **ERROR DEL MOTOR RAG**\n\nNo he podido conectar con la base de datos vectorial para fundamentar mi respuesta en la ley. Por seguridad jurídica, detengo la capacitación."
+                });
+            }
+        }
+
+        const STRICT_PROMPT = `${SYSTEM_PROMPT}
+        
+REGLA DE ORO ABSOLUTA: 
+Solo puedes basar tus respuestas en el siguiente contexto legal extraído de la base de datos (RAG). Si el contexto está vacío, debes negarte a responder. NUNCA inventes leyes ni uses tu conocimiento previo.
+
+CONTEXTO LEGAL RECUPERADO (RAG):
+${legalContext ? legalContext : "Ningún documento encontrado."}
+`;
+
+        const responseText = await LLMService.generateChat(messages, STRICT_PROMPT, settings, 800);
 
         return NextResponse.json({ text: responseText });
 
