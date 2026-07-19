@@ -49,11 +49,11 @@ export default function FormacionPage() {
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Abre un documento →</div>
                     </div>
                 </Link>
-                <Link href="/worker/cualificacion" style={{ textDecoration: 'none' }}>
+                <Link href="/worker/autoevaluacion" style={{ textDecoration: 'none' }}>
                     <div style={{ background: 'rgba(201,162,39,0.08)', padding: '1.25rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(201,162,39,0.2)', cursor: 'pointer', transition: 'all 0.2s' }}>
-                        <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>🎯</div>
-                        <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>Creación de Misiones</div>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Ir a Mi Cualificación →</div>
+                        <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>📝</div>
+                        <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>Test de Práctica</div>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Autoevaluación →</div>
                     </div>
                 </Link>
                 <Link href="/worker/simulador" style={{ textDecoration: 'none' }}>
