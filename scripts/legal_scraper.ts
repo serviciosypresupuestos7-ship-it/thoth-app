@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import { EmbeddingService } from '../src/utils/ai/EmbeddingService';
 
 dotenv.config({ path: '.env.local' });
 
@@ -10,45 +11,51 @@ dotenv.config({ path: '.env.local' });
 // CONFIGURACIÓN DE FUENTES OFICIALES (CRAWLER)
 // ==========================================
 const OFFICIAL_SOURCES = [
+    // 1. Normativa vinculante
     {
         id: 'ai-act',
         title: 'Reglamento (UE) 2024/1689 (AI Act)',
-        level: 'Nivel 1: Normativa Principal',
+        level: '1. Normativa vinculante',
         url: 'https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=OJ:L_202401689',
         type: 'html'
     },
     {
         id: 'rgpd',
-        title: 'Reglamento General de Protección de Datos (RGPD)',
-        level: 'Nivel 2: Reglamentos Relacionados',
+        title: 'Reglamento (UE) 2016/679 (RGPD)',
+        level: '1. Normativa vinculante',
         url: 'https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32016R0679',
         type: 'html'
     },
     {
         id: 'lopdgdd',
-        title: 'LOPDGDD (España)',
-        level: 'Nivel 4: España (Nacional)',
-        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673&p=20230509&tn=1', // BOE Consolidado
+        title: 'Ley Orgánica 3/2018 (LOPDGDD)',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673&p=20230509&tn=1',
+        type: 'html'
+    },
+    {
+        id: 'estatuto-trabajadores',
+        title: 'Estatuto de los Trabajadores (Art. 64.4.d)',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430',
+        type: 'html'
+    },
+    {
+        id: 'aesia-estatuto',
+        title: 'Estatuto AESIA',
+        level: '1. Normativa vinculante',
+        url: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2023-19911',
+        type: 'html'
+    },
+    // 2. Directrices oficiales no vinculantes
+    {
+        id: 'faq-art4',
+        title: 'FAQ Oficiales del Artículo 4 (Comisión Europea)',
+        level: '2. Directrices oficiales no vinculantes',
+        url: 'https://digital-strategy.ec.europa.eu/es/policies/ai-act-faq',
         type: 'html'
     }
-    // Nota: ISOs y normativas de pago se integran vía API de AENOR/ISO cuando el cliente provee licencia.
 ];
-
-// Mock EmbeddingService for the script (since we run this outside Next.js)
-const EmbeddingService = {
-    generate: async (text: string) => {
-        const vector = Array.from({ length: 1536 }, () => Math.random() * 2 - 1);
-        return {
-            vector,
-            metadata: {
-                embedding_provider: 'mock',
-                embedding_model: 'mock-model',
-                embedding_dimensions: 1536,
-                embedding_version: '1.0'
-            }
-        };
-    }
-};
 
 async function scrapeHtml(url: string): Promise<string> {
     try {
@@ -75,7 +82,7 @@ async function scrapeHtml(url: string): Promise<string> {
 function chunkText(text: string, maxChunkSize: number = 2000): string[] {
     const chunks: string[] = [];
     let currentChunk = '';
-    const sentences = text.split(/(?<=\.)\s+/); // Split by sentences
+    const sentences = text.split(/(?<=\.)\s+/);
 
     for (const sentence of sentences) {
         if ((currentChunk.length + sentence.length) > maxChunkSize && currentChunk.length > 0) {
@@ -92,19 +99,26 @@ function chunkText(text: string, maxChunkSize: number = 2000): string[] {
 
 async function main() {
     console.log("==================================================");
-    console.log("THOTH LEGAL CRAWLER - INGESTA AUTOMÁTICA DE RAG");
+    console.log("THOTH LEGAL CRAWLER - INGESTA LOCAL A SUPABASE");
     console.log("==================================================");
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const openAiKey = process.env.OPENAI_API_KEY;
 
-    if (!supabaseUrl || !supabaseKey) {
-        console.error("ERROR: Faltan credenciales de Supabase en .env.local");
-        // We will simulate the process if credentials are not found so the user sees it works
-        console.log("Ejecutando en modo SIMULACIÓN (Dry Run)...");
+    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('[SENSITIVE]') || supabaseKey.includes('[SENSITIVE]')) {
+        console.error("❌ ERROR CRÍTICO: Faltan credenciales reales de Supabase en .env.local");
+        console.error("Por favor, edita el archivo .env.local y pon tus claves reales (NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY).");
+        process.exit(1);
     }
 
-    const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+    if (!openAiKey || openAiKey.includes('[SENSITIVE]')) {
+        console.error("❌ ERROR CRÍTICO: Falta la clave de OpenAI en .env.local para generar los vectores.");
+        console.error("Por favor, edita el archivo .env.local y pon tu OPENAI_API_KEY real.");
+        process.exit(1);
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     for (const source of OFFICIAL_SOURCES) {
         console.log(`\nProcesando: ${source.title} (${source.level})`);
@@ -115,33 +129,36 @@ async function main() {
             continue;
         }
 
-        console.log(`✅ Texto extraído: ${text.substring(0, 100)}... (${text.length} caracteres)`);
+        // Limit to 20000 chars to avoid massive API costs during testing
+        const limitedText = text.substring(0, 20000);
+        console.log(`✅ Texto extraído: ${limitedText.substring(0, 100)}... (${limitedText.length} caracteres)`);
 
-        const chunks = chunkText(text);
+        const chunks = chunkText(limitedText);
         console.log(`🔪 Documento dividido en ${chunks.length} fragmentos (chunks).`);
 
-        if (supabase) {
-            const docId = crypto.randomUUID();
-            const hash = crypto.createHash('sha256').update(text).digest('hex');
+        const docId = crypto.randomUUID();
+        const hash = crypto.createHash('sha256').update(limitedText).digest('hex');
 
-            console.log(`💾 Guardando metadatos en Supabase...`);
-            await supabase.from('legal_documents').insert([{
-                id: docId,
-                tenant_id: '00000000-0000-0000-0000-000000000000',
-                domain_id: 'global',
-                title: source.title,
-                text: text.substring(0, 5000), // Save a preview
-                document_type: 'law',
-                sha256: hash,
-                authority: 'Oficial',
-                retrieved_at: new Date().toISOString()
-            }]);
+        console.log(`💾 Guardando metadatos en Supabase...`);
+        await supabase.from('legal_documents').insert([{
+            id: docId,
+            tenant_id: '00000000-0000-0000-0000-000000000000',
+            domain_id: 'global',
+            title: source.title,
+            text: limitedText.substring(0, 5000), // Save a preview
+            document_type: 'law',
+            sha256: hash,
+            authority: 'Oficial',
+            retrieved_at: new Date().toISOString()
+        }]);
 
-            console.log(`🧠 Vectorizando e insertando ${chunks.length} chunks en el RAG...`);
-            let processed = 0;
-            for (let i = 0; i < chunks.length; i++) {
-                const chunkContent = chunks[i];
-                const chunkHash = crypto.createHash('sha256').update(chunkContent).digest('hex');
+        console.log(`🧠 Vectorizando e insertando ${chunks.length} chunks en el RAG...`);
+        let processed = 0;
+        for (let i = 0; i < chunks.length; i++) {
+            const chunkContent = chunks[i];
+            const chunkHash = crypto.createHash('sha256').update(chunkContent).digest('hex');
+
+            try {
                 const { vector, metadata } = await EmbeddingService.generate(chunkContent);
 
                 await supabase.from('legal_chunks').insert([{
@@ -159,12 +176,12 @@ async function main() {
                     embedding_version: metadata.embedding_version
                 }]);
                 processed++;
-                if (processed % 50 === 0) console.log(`   ... ${processed}/${chunks.length} chunks guardados.`);
+                if (processed % 5 === 0) console.log(`   ... ${processed}/${chunks.length} chunks guardados.`);
+            } catch (err: any) {
+                console.error(`   ❌ Error vectorizando chunk ${i}:`, err.message);
             }
-            console.log(`✅ ${source.title} indexado correctamente en el RAG.`);
-        } else {
-            console.log(`[SIMULACIÓN] Se habrían guardado ${chunks.length} vectores en Supabase.`);
         }
+        console.log(`✅ ${source.title} indexado correctamente en el RAG.`);
     }
 
     console.log("\n==================================================");
