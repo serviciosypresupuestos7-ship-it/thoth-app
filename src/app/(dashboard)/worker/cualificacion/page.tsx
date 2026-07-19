@@ -123,7 +123,7 @@ export default function CualificacionPage() {
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                             <div style={{ background: 'rgba(16, 163, 127, 0.2)', color: 'var(--success)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</div>
                             <div>
-                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Tutoría Interactiva (3 minutos)</strong>
+                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Cualificación Interactiva (3 minutos)</strong>
                                 <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Chatearás con la IA, que te explicará las 3 reglas de oro de forma muy sencilla y con ejemplos.</span>
                             </div>
                         </div>
@@ -137,7 +137,7 @@ export default function CualificacionPage() {
                     </div>
 
                     <button className="btn btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 3rem' }} onClick={startTutor}>
-                        Comenzar Tutoría Guiada →
+                        Comenzar Cualificación Guiada →
                     </button>
                 </div>
             )}
@@ -147,7 +147,7 @@ export default function CualificacionPage() {
                 <div className="fade-in" style={{ height: '70vh', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ marginBottom: '1rem' }}>
                         <h1 className="title-gradient" style={{ fontSize: '1.8rem', margin: 0 }}>
-                            Tutor de Alfabetización 🧠
+                            Cualificador Profesional 🧠
                         </h1>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Aprende los conceptos básicos chateando.</p>
                     </div>
@@ -223,7 +223,7 @@ export default function CualificacionPage() {
                             setTutorStep(0);
                             setMessages([]);
                         }}>
-                            🔄 Repetir Tutoría
+                            🔄 Repetir Cualificación
                         </button>
                     </div>
 
