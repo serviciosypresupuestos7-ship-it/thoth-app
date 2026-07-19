@@ -211,6 +211,9 @@ export default function KnowledgeStudioWizard() {
                             El curso "{topic}" ha sido generado, estructurado y guardado en la base de datos. Los trabajadores con el rol de {targetRole} ya pueden acceder a él desde su Ruta Formativa.
                         </p>
                         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                            <button className="btn btn-primary" onClick={() => setStep(8)}>
+                                📄 Ver Temario / Imprimir PDF
+                            </button>
                             <button className="btn btn-secondary" onClick={() => {
                                 setStep(1);
                                 setTopic('');
@@ -218,8 +221,87 @@ export default function KnowledgeStudioWizard() {
                                 setTargetRole('');
                                 setObjective('');
                             }}>Crear Otro Temario</button>
-                            <button className="btn btn-primary" onClick={() => window.location.href = '/admin/knowledge-studio'}>Volver al Inicio</button>
                         </div>
+                    </div>
+                )}
+
+                {step === 8 && (
+                    <div className="fade-in" style={{ padding: '0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                            <button className="btn btn-secondary" onClick={() => setStep(7)}>← Volver</button>
+                            <button className="btn btn-primary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                🖨️ Imprimir / Guardar como PDF
+                            </button>
+                        </div>
+
+                        {/* Documento Profesional para Imprimir */}
+                        <div id="course-document" style={{
+                            background: '#fff',
+                            color: '#000',
+                            padding: '3rem',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            fontFamily: 'serif',
+                            lineHeight: '1.6'
+                        }}>
+                            <div style={{ borderBottom: '2px solid #000', paddingBottom: '1rem', marginBottom: '2rem', textAlign: 'center' }}>
+                                <h1 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', fontFamily: 'sans-serif' }}>{topic || 'Temario Generado'}</h1>
+                                <p style={{ fontSize: '1.2rem', color: '#555', margin: 0 }}>Documento Oficial de Capacitación</p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem', background: '#f9f9f9', padding: '1.5rem', borderRadius: '4px' }}>
+                                <div>
+                                    <strong style={{ display: 'block', color: '#333', fontSize: '0.9rem', textTransform: 'uppercase' }}>Destinatario</strong>
+                                    <span style={{ fontSize: '1.1rem' }}>{targetRole || 'General'}</span>
+                                </div>
+                                <div>
+                                    <strong style={{ display: 'block', color: '#333', fontSize: '0.9rem', textTransform: 'uppercase' }}>Nivel de Profundidad</strong>
+                                    <span style={{ fontSize: '1.1rem' }}>{depthLevel}</span>
+                                </div>
+                                <div style={{ gridColumn: '1 / -1' }}>
+                                    <strong style={{ display: 'block', color: '#333', fontSize: '0.9rem', textTransform: 'uppercase' }}>Normativa Aplicable</strong>
+                                    <span style={{ fontSize: '1.1rem' }}>{norms.length > 0 ? norms.join(', ') : 'General'}</span>
+                                </div>
+                            </div>
+
+                            <h2 style={{ fontSize: '1.5rem', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginTop: '2rem' }}>1. Objetivo de Aprendizaje</h2>
+                            <p style={{ fontSize: '1.1rem', marginBottom: '2rem' }}>{objective || 'Comprender y aplicar la normativa vigente en el uso de herramientas de Inteligencia Artificial.'}</p>
+
+                            <h2 style={{ fontSize: '1.5rem', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginTop: '2rem' }}>2. Estructura del Módulo</h2>
+                            <div style={{ marginTop: '1rem' }}>
+                                {proposedIndex.map((item, idx) => (
+                                    <div key={item.id} style={{ marginBottom: '1.5rem' }}>
+                                        <h3 style={{ fontSize: '1.2rem', margin: '0 0 0.5rem 0' }}>2.{idx + 1}. {item.title}</h3>
+                                        <p style={{ margin: 0, color: '#444' }}>{item.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #ccc', fontSize: '0.9rem', color: '#666', textAlign: 'center' }}>
+                                <p>Generado automáticamente por THOTH AI Platform — {new Date().toLocaleDateString()}</p>
+                                <p>Este documento constituye una evidencia válida de estructuración formativa según los requisitos del AI Act.</p>
+                            </div>
+                        </div>
+
+                        <style dangerouslySetInnerHTML={{
+                            __html: `
+                            @media print {
+                                body * {
+                                    visibility: hidden;
+                                }
+                                #course-document, #course-document * {
+                                    visibility: visible;
+                                }
+                                #course-document {
+                                    position: absolute;
+                                    left: 0;
+                                    top: 0;
+                                    width: 100%;
+                                    box-shadow: none;
+                                    padding: 0;
+                                }
+                            }
+                        `}} />
                     </div>
                 )}
 
