@@ -61,7 +61,7 @@ const mockPlanes = [
 
 export default function AdminPlanesPage() {
     return (
-        <div style={{ padding: '1rem', height: '100%', overflowY: 'auto' }}>
+        <div style={{ padding: '1rem 2rem' }}>
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Estrategia Comercial y Planes 💳</h1>
@@ -72,7 +72,7 @@ export default function AdminPlanesPage() {
                 <button className="btn btn-primary" onClick={() => alert('Creación de plan en desarrollo.')}>+ Nuevo Plan</button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', maxWidth: '1400px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
                 {mockPlanes.map(p => (
                     <div key={p.id} className="card" style={{
                         padding: '2rem',
@@ -115,7 +115,7 @@ export default function AdminPlanesPage() {
                 ))}
             </div>
 
-            <div className="card" style={{ padding: '2rem', marginTop: '3rem', maxWidth: '1400px' }}>
+            <div className="card" style={{ padding: '2rem', marginTop: '3rem' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span>🛒</span> Marketplace de Contenidos (Próximamente)
                 </h2>
