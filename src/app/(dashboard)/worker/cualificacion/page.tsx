@@ -58,12 +58,24 @@ const MISSIONS_MOCK = [
 ];
 
 export default function CualificacionPage() {
-    // 'diagnostic' | 'result' | 'missions'
-    const [phase, setPhase] = useState<'diagnostic' | 'result' | 'missions'>('diagnostic');
+    // 'intro' | 'diagnostic' | 'result' | 'missions'
+    const [phase, setPhase] = useState<'intro' | 'diagnostic' | 'result' | 'missions' | null>(null);
     const [currentQ, setCurrentQ] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [selected, setSelected] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
+
+    // Check if diagnostic was already completed
+    import('react').then((React) => {
+        React.useEffect(() => {
+            const completed = localStorage.getItem('thoth_diagnostic_completed');
+            if (completed === 'true') {
+                setPhase('missions');
+            } else {
+                setPhase('intro');
+            }
+        }, []);
+    });
 
     const score = diagnosticQuestions.filter(q => answers[q.id] === q.correct).length;
     const totalQ = diagnosticQuestions.length;
@@ -83,14 +95,58 @@ export default function CualificacionPage() {
             setCurrentQ(currentQ + 1);
         } else {
             setPhase('result');
+            localStorage.setItem('thoth_diagnostic_completed', 'true');
         }
     };
 
     const pendingCount = MISSIONS_MOCK.filter(m => m.status === 'pending').length;
     const completedCount = MISSIONS_MOCK.filter(m => m.status === 'completed').length;
 
+    if (!phase) return null; // Loading state
+
     return (
         <div style={{ padding: '1rem', maxWidth: '900px', margin: '0 auto' }}>
+
+            {/* Botón global de volver al menú */}
+            <div style={{ marginBottom: '2rem' }}>
+                <Link href="/worker/panel" className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', fontSize: '0.9rem' }}>
+                    <span>←</span> Volver al Panel Principal
+                </Link>
+            </div>
+
+            {/* ======= FASE 0: INTRODUCCIÓN ======= */}
+            {phase === 'intro' && (
+                <div className="fade-in card" style={{ padding: '3rem', textAlign: 'center', background: 'linear-gradient(145deg, rgba(16, 163, 127, 0.05) 0%, rgba(20, 20, 20, 0.8) 100%)', border: '1px solid rgba(16, 163, 127, 0.2)' }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>👋</div>
+                    <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+                        Bienvenido a tu Cualificación en IA
+                    </h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', marginBottom: '2rem', lineHeight: '1.6', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
+                        El uso de la Inteligencia Artificial en el trabajo está regulado por la ley europea (AI Act). Para protegerte a ti y a la empresa, necesitamos asegurarnos de que conoces las normas básicas antes de usar estas herramientas.
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '500px', margin: '0 auto 3rem auto', textAlign: 'left' }}>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                            <div style={{ background: 'rgba(16, 163, 127, 0.2)', color: 'var(--success)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</div>
+                            <div>
+                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Prueba de Nivel (2 minutos)</strong>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>4 preguntas rápidas para saber si ya conoces la ley o si empezamos desde cero.</span>
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                            <div style={{ background: 'rgba(16, 163, 127, 0.2)', color: 'var(--success)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>2</div>
+                            <div>
+                                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.25rem' }}>Misiones Prácticas</strong>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Casos reales de tu puesto de trabajo que resolverás chateando con nuestra IA.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button className="btn btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 3rem' }} onClick={() => setPhase('diagnostic')}>
+                        Comenzar Prueba de Nivel →
+                    </button>
+                </div>
+            )}
 
             {/* ======= FASE 1: DIAGNÓSTICO INICIAL ======= */}
             {phase === 'diagnostic' && (
@@ -100,7 +156,7 @@ export default function CualificacionPage() {
                             🩺 Diagnóstico Inicial de Nivel
                         </h1>
                         <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-                            Antes de comenzar tu cualificación, evalúa tus conocimientos en <strong style={{ color: '#fff' }}>IA y AI Act</strong>. El sistema adaptará tu formación al resultado. Son 4 preguntas rápidas.
+                            Evalúa tus conocimientos en <strong style={{ color: '#fff' }}>IA y AI Act</strong>. El sistema adaptará tu formación al resultado.
                         </p>
                     </div>
 
@@ -224,7 +280,13 @@ export default function CualificacionPage() {
                                 Situaciones reales basadas en tu puesto. Resuélvelas con IA para demostrar tu competencia y obtener tu certificado legal.
                             </p>
                         </div>
-                        <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => { setPhase('diagnostic'); setCurrentQ(0); setAnswers({}); setSelected(null); }}>
+                        <button className="btn btn-secondary" style={{ fontSize: '0.85rem' }} onClick={() => {
+                            localStorage.removeItem('thoth_diagnostic_completed');
+                            setPhase('intro');
+                            setCurrentQ(0);
+                            setAnswers({});
+                            setSelected(null);
+                        }}>
                             🔄 Repetir Test de Nivel
                         </button>
                     </div>
