@@ -44,21 +44,57 @@ export default function NormativaPage() {
         'Nivel 5: Normas Técnicas'
     ];
 
-    const handleAddNorma = (e: React.FormEvent) => {
+    const [isUploading, setIsUploading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const handleAddNorma = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newNormaName.trim()) return;
+        if (!newNormaName.trim() || !selectedFile) {
+            alert("Por favor, introduce un nombre y selecciona un archivo.");
+            return;
+        }
 
-        const newNorma = {
-            id: `norma-${Date.now()}`,
-            nombre: newNormaName,
-            nivel: 'Nivel 1: Normativa Principal',
-            estado: 'Borrador'
-        };
+        setIsUploading(true);
 
-        setNormas([newNorma, ...normas]);
-        setShowModal(false);
-        setNewNormaName('');
-        setSelectedNorma(newNorma.id);
+        try {
+            // Read file content
+            const text = await selectedFile.text();
+
+            // Send to ingest API
+            const res = await fetch('/api/documents/ingest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: newNormaName,
+                    text: text,
+                    document_type: 'law'
+                })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Error al procesar el documento');
+            }
+
+            const newNorma = {
+                id: `norma-${Date.now()}`,
+                nombre: newNormaName,
+                nivel: 'Nivel 1: Normativa Principal', // Default, can be changed later
+                estado: 'Vigente'
+            };
+
+            setNormas([newNorma, ...normas]);
+            setShowModal(false);
+            setNewNormaName('');
+            setSelectedFile(null);
+            setSelectedNorma(newNorma.id);
+            alert("Documento procesado e indexado en el RAG correctamente.");
+        } catch (error: any) {
+            console.error(error);
+            alert("Error: " + error.message);
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -216,19 +252,24 @@ export default function NormativaPage() {
                                 />
                             </div>
                             <div style={{ marginBottom: '2rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Subir Documento (PDF/TXT)</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Subir Documento (TXT/MD)</label>
                                 <input
                                     type="file"
+                                    accept=".txt,.md"
                                     className="form-input"
                                     style={{ width: '100%', padding: '0.5rem' }}
+                                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                    disabled={isUploading}
                                 />
                                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                                    El sistema procesará el documento automáticamente para extraer artículos y generar misiones.
+                                    El sistema procesará el documento automáticamente, lo troceará y lo vectorizará en el RAG.
                                 </p>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                                <button type="submit" className="btn btn-primary">Indexar Normativa</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)} disabled={isUploading}>Cancelar</button>
+                                <button type="submit" className="btn btn-primary" disabled={isUploading}>
+                                    {isUploading ? 'Indexando en RAG...' : 'Indexar Normativa'}
+                                </button>
                             </div>
                         </form>
                     </div>
