@@ -18,6 +18,7 @@ export default function KnowledgeStudioWizard() {
 
     const handleGenerateIndex = () => {
         setIsGenerating(true);
+        setStep(6); // Move to step 6 immediately to show the spinner
         // Simulate AI generation delay
         setTimeout(() => {
             setProposedIndex([
@@ -27,7 +28,6 @@ export default function KnowledgeStudioWizard() {
                 { id: 4, title: 'Casos Prácticos', description: 'Ejemplos del día a día.' }
             ]);
             setIsGenerating(false);
-            setStep(6);
         }, 2000);
     };
 
@@ -203,41 +203,69 @@ export default function KnowledgeStudioWizard() {
                     </div>
                 )}
 
-                {/* Navigation Buttons */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => setStep(s => Math.max(1, s - 1))}
-                        disabled={step === 1 || isGenerating}
-                    >
-                        ← Atrás
-                    </button>
+                {step === 7 && (
+                    <div className="fade-in" style={{ textAlign: 'center', padding: '2rem 0' }}>
+                        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
+                        <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--success)' }}>¡Temario Generado con Éxito!</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '2rem' }}>
+                            El curso "{topic}" ha sido generado, estructurado y guardado en la base de datos. Los trabajadores con el rol de {targetRole} ya pueden acceder a él desde su Ruta Formativa.
+                        </p>
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                            <button className="btn btn-secondary" onClick={() => {
+                                setStep(1);
+                                setTopic('');
+                                setNorms([]);
+                                setTargetRole('');
+                                setObjective('');
+                            }}>Crear Otro Temario</button>
+                            <button className="btn btn-primary" onClick={() => window.location.href = '/admin/knowledge-studio'}>Volver al Inicio</button>
+                        </div>
+                    </div>
+                )}
 
-                    {step < 5 ? (
+                {/* Navigation Buttons */}
+                {step < 7 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
                         <button
-                            className="btn btn-primary"
-                            onClick={() => setStep(s => Math.min(6, s + 1))}
+                            className="btn btn-secondary"
+                            onClick={() => setStep(s => Math.max(1, s - 1))}
+                            disabled={step === 1 || isGenerating}
                         >
-                            Siguiente →
+                            ← Atrás
                         </button>
-                    ) : step === 5 ? (
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleGenerateIndex}
-                            disabled={!topic || !targetRole || !objective}
-                        >
-                            ✨ Generar Índice con IA
-                        </button>
-                    ) : (
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => alert('Generando contenido de los módulos...')}
-                            disabled={isGenerating}
-                        >
-                            Generar Contenido de Módulos →
-                        </button>
-                    )}
-                </div>
+
+                        {step < 5 ? (
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => setStep(s => Math.min(6, s + 1))}
+                            >
+                                Siguiente →
+                            </button>
+                        ) : step === 5 ? (
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleGenerateIndex}
+                                disabled={!topic || !targetRole || !objective || isGenerating}
+                            >
+                                {isGenerating ? 'Generando...' : '✨ Generar Índice con IA'}
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    setIsGenerating(true);
+                                    setTimeout(() => {
+                                        setIsGenerating(false);
+                                        setStep(7);
+                                    }, 2500);
+                                }}
+                                disabled={isGenerating}
+                            >
+                                {isGenerating ? 'Generando Contenido...' : 'Generar Contenido de Módulos →'}
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
