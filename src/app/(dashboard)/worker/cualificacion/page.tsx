@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const MISSIONS_MOCK = [
     { id: '1', title: 'Redactar correo a cliente con IA', action: 'Redactar correos', difficulty: 'Media', status: 'pending', time: '10 min', icon: '📧' },
@@ -21,16 +21,14 @@ export default function CualificacionPage() {
     const [isTyping, setIsTyping] = useState(false);
 
     // Check if diagnostic/tutor was already completed
-    import('react').then((React) => {
-        React.useEffect(() => {
-            const completed = localStorage.getItem('thoth_diagnostic_completed');
-            if (completed === 'true') {
-                setPhase('missions');
-            } else {
-                setPhase('intro');
-            }
-        }, []);
-    });
+    useEffect(() => {
+        const completed = localStorage.getItem('thoth_diagnostic_completed');
+        if (completed === 'true') {
+            setPhase('missions');
+        } else {
+            setPhase('intro');
+        }
+    }, []);
 
     const startTutor = async () => {
         setPhase('tutor');
