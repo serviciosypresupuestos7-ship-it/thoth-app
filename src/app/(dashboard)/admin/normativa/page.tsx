@@ -8,11 +8,41 @@ export default function NormativaPage() {
     const [newNormaName, setNewNormaName] = useState('');
 
     const [normas, setNormas] = useState([
-        { id: 'ai-act', nombre: 'Ley de Inteligencia Artificial (AI Act)', fecha: 'Actualizado: 12/05/2026', estado: 'Vigente' },
-        { id: 'rgpd', nombre: 'Reglamento General de Protección de Datos (RGPD)', fecha: 'Actualizado: 01/01/2026', estado: 'Vigente' },
-        { id: 'lopdgdd', nombre: 'LOPDGDD (España)', fecha: 'Actualizado: 15/03/2025', estado: 'Vigente' },
-        { id: 'aepd', nombre: 'Guía AEPD sobre IA', fecha: 'Actualizado: 20/06/2026', estado: 'Borrador' },
+        // NIVEL 1: Normativa Principal
+        { id: 'ai-act', nombre: 'Reglamento (UE) 2024/1689 (AI Act)', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
+        { id: 'carta-derechos', nombre: 'Carta de Derechos Fundamentales UE', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
+        { id: 'tfue', nombre: 'Tratado de Funcionamiento UE (TFUE)', nivel: 'Nivel 1: Normativa Principal', estado: 'Vigente' },
+
+        // NIVEL 2: Reglamentos Relacionados
+        { id: 'rgpd', nombre: 'RGPD (Reglamento General de Protección de Datos)', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
+        { id: 'nis2', nombre: 'Directiva NIS2 (Ciberseguridad)', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
+        { id: 'data-act', nombre: 'Data Act & Data Governance Act', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
+        { id: 'dsa-dma', nombre: 'Digital Services Act (DSA) & DMA', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Vigente' },
+        { id: 'product-liability', nombre: 'Product Liability Directive', nivel: 'Nivel 2: Reglamentos Relacionados', estado: 'Borrador' },
+
+        // NIVEL 3: Comisión Europea
+        { id: 'faq-art4', nombre: 'FAQ Oficiales del Artículo 4', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
+        { id: 'guidelines-ai', nombre: 'Guidelines on AI System Definition', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
+        { id: 'ai-pact', nombre: 'AI Pact & Living Repository', nivel: 'Nivel 3: Comisión Europea', estado: 'Vigente' },
+
+        // NIVEL 4: España (Nacional)
+        { id: 'aesia', nombre: 'Criterios y Guías AESIA', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
+        { id: 'aepd-ia', nombre: 'Guías AEPD sobre Inteligencia Artificial', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
+        { id: 'incibe', nombre: 'INCIBE & CCN-CERT (Ciberseguridad)', nivel: 'Nivel 4: España (Nacional)', estado: 'Vigente' },
+
+        // NIVEL 5: Normas Técnicas
+        { id: 'iso-42001', nombre: 'ISO/IEC 42001 (Gestión de IA)', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
+        { id: 'iso-27001', nombre: 'ISO 27001 & 27701 (Seguridad y Privacidad)', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
+        { id: 'nist-ai', nombre: 'NIST AI Risk Management Framework', nivel: 'Nivel 5: Normas Técnicas', estado: 'Vigente' },
     ]);
+
+    const niveles = [
+        'Nivel 1: Normativa Principal',
+        'Nivel 2: Reglamentos Relacionados',
+        'Nivel 3: Comisión Europea',
+        'Nivel 4: España (Nacional)',
+        'Nivel 5: Normas Técnicas'
+    ];
 
     const handleAddNorma = (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,7 +51,7 @@ export default function NormativaPage() {
         const newNorma = {
             id: `norma-${Date.now()}`,
             nombre: newNormaName,
-            fecha: `Añadido: ${new Date().toLocaleDateString()}`,
+            nivel: 'Nivel 1: Normativa Principal',
             estado: 'Borrador'
         };
 
@@ -36,45 +66,56 @@ export default function NormativaPage() {
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-                        Biblioteca Jurídica y Normativa 📚
+                        Ecosistema Jurídico RAG 📚
                     </h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
-                        Gestiona las fuentes legales que alimentan el sistema. Cada artículo se conecta directamente con las misiones y competencias.
+                        El cerebro legal de Thoth. 5 niveles de profundidad normativa que garantizan el cumplimiento absoluto del Artículo 4 ante cualquier inspección.
                     </p>
                 </div>
-                <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Añadir Nueva Norma</button>
+                <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Añadir Documento</button>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', flex: 1, overflow: 'hidden' }}>
-                {/* Left Panel: List of Norms */}
-                <div className="card" style={{ flex: '0.35', display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
+                {/* Left Panel: List of Norms grouped by Level */}
+                <div className="card" style={{ flex: '0.4', display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
                     <input
                         type="text"
-                        placeholder="Buscar normativa..."
+                        placeholder="Buscar en el ecosistema..."
                         className="form-input"
                         style={{ marginBottom: '1.5rem', width: '100%' }}
                     />
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', overflowY: 'auto' }}>
-                        {normas.map(norma => (
-                            <div
-                                key={norma.id}
-                                onClick={() => setSelectedNorma(norma.id)}
-                                style={{
-                                    padding: '1rem',
-                                    borderRadius: '8px',
-                                    background: selectedNorma === norma.id ? 'rgba(201, 162, 39, 0.1)' : 'rgba(0,0,0,0.2)',
-                                    border: selectedNorma === norma.id ? '1px solid var(--primary)' : '1px solid transparent',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span className={`badge ${norma.estado === 'Vigente' ? 'badge-success' : 'badge-warning'}`}>
-                                        {norma.estado}
-                                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                        {niveles.map(nivel => (
+                            <div key={nivel}>
+                                <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--primary)', marginBottom: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+                                    {nivel}
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    {normas.filter(n => n.nivel === nivel).map(norma => (
+                                        <div
+                                            key={norma.id}
+                                            onClick={() => setSelectedNorma(norma.id)}
+                                            style={{
+                                                padding: '0.85rem 1rem',
+                                                borderRadius: '8px',
+                                                background: selectedNorma === norma.id ? 'rgba(201, 162, 39, 0.1)' : 'rgba(0,0,0,0.2)',
+                                                border: selectedNorma === norma.id ? '1px solid var(--primary)' : '1px solid transparent',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <h4 style={{ margin: 0, color: selectedNorma === norma.id ? '#fff' : 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: selectedNorma === norma.id ? 600 : 400 }}>
+                                                {norma.nombre}
+                                            </h4>
+                                            <span className={`badge ${norma.estado === 'Vigente' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}>
+                                                {norma.estado}
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
-                                <h4 style={{ margin: '0 0 0.5rem 0', color: '#fff', fontSize: '1rem', lineHeight: '1.4' }}>{norma.nombre}</h4>
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{norma.fecha}</div>
                             </div>
                         ))}
                     </div>
