@@ -1,0 +1,3 @@
+To https://github.com/serviciosypresupuestos7-ship-it/thoth-app.git
+ ! [remote rejected] update-panel-and-policies -> update-panel-and-policies (refusing to allow a Personal Access Token to create or update workflow `.github/workflows/auto-recolector.yml` without `workflow` scope)
+error: failed to push some refs to 'https://github.com/serviciosypresupuestos7-ship-it/thoth-app.git'

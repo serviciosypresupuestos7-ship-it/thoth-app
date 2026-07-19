@@ -5,6 +5,14 @@ import { anonymizeQuestion } from '@/lib/legal-questions/anonymize-question';
 import { normalizeQuestion } from '@/lib/legal-questions/normalize-question';
 import { hashQuestion } from '@/lib/legal-questions/hash-question';
 import { registerQuestion } from '@/lib/legal-questions/register-question';
+import rateLimit from '@/utils/rate-limit';
+
+export const maxDuration = 10; // Fuerza a que la petición muera a los 10 segundos
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
 
 // Note: Supabase client is created lazily inside handlers to avoid build-time errors
 
@@ -34,6 +42,13 @@ async function getOpenAIEmbedding(text: string, apiKey: string): Promise<number[
 
 export async function POST(request: Request) {
     try {
+        // Rate Limiting (5 requests per minute per IP)
+        const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+        try {
+            await limiter.check(5, ip);
+        } catch {
+            return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+        }
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
         const supabase = createClient(supabaseUrl, supabaseKey);
@@ -273,6 +288,7 @@ export async function POST(request: Request) {
                 },
                 body: JSON.stringify({
                     model: preferredModel,
+                    max_tokens: 300, // Límite estricto para evitar sobrecostes
                     messages: [
                         { role: 'system', content: 'Eres un estratega legal riguroso que propone soluciones basadas únicamente en las fuentes proporcionadas.' },
                         { role: 'user', content: prompt }

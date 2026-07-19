@@ -36,7 +36,7 @@ export default function KnowledgeStudioWizard() {
             <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-                        Knowledge Studio 🧠
+                        Generador de Temarios 🧠
                     </h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', maxWidth: '800px' }}>
                         Asistente de creación de cursos. La IA propone la estructura basándose en la base jurídica oficial, y tú decides el contenido final.

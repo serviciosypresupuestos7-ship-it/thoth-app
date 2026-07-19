@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS user_competencies (
 CREATE TABLE IF NOT EXISTS missions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
+    description VARCHAR(2000) NOT NULL, -- Límite para evitar payloads masivos
     target_action VARCHAR(100),
     difficulty VARCHAR(50) DEFAULT 'Media', -- Baja, Media, Alta
     ai_confidence INTEGER,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS user_missions (
     mission_id UUID REFERENCES missions(id) ON DELETE CASCADE,
     status VARCHAR(50) DEFAULT 'pending', -- pending, in_progress, completed, failed
     score INTEGER,
-    feedback TEXT,
+    feedback VARCHAR(2000), -- Límite para evitar payloads masivos
     completed_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS documents (
     title VARCHAR(255) NOT NULL,
     type VARCHAR(50), -- PDF, Manual, Guía
     category VARCHAR(100),
-    content_url TEXT,
-    summary TEXT,
+    content_url VARCHAR(1000),
+    summary VARCHAR(2000), -- Límite para evitar payloads masivos
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS evidences (
     user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
     company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
     evidence_type VARCHAR(100) NOT NULL, -- Misión Superada, Examen Aprobado, Lectura Completada
-    detail TEXT NOT NULL,
+    detail VARCHAR(2000) NOT NULL, -- Límite para evitar payloads masivos
     hash_id VARCHAR(255) NOT NULL UNIQUE, -- Simulación de inmutabilidad/blockchain
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -128,4 +128,16 @@ CREATE POLICY "HR can view company profiles" ON profiles
 CREATE POLICY "Superadmin can view all companies" ON companies
     FOR ALL USING (
         (SELECT role FROM profiles WHERE id = auth.uid()) = 'superadmin'
+    );
+
+-- Seguridad: Evitar inserciones maliciosas (Verificar tenant_id/company_id)
+CREATE POLICY "Users can only insert their own evidences" ON evidences
+    FOR INSERT WITH CHECK (
+        user_id = auth.uid() AND
+        company_id = (SELECT company_id FROM profiles WHERE id = auth.uid())
+    );
+
+CREATE POLICY "Users can only insert their own missions" ON user_missions
+    FOR INSERT WITH CHECK (
+        user_id = auth.uid()
     );

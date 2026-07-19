@@ -42,9 +42,9 @@ Este es el panel de control de la empresa. Aquí no se compran cursos, se compra
     3. Se les asigna una "Misión de Actualización" inmediata.
     4. Al completarla, el nivel de cumplimiento de la empresa vuelve al 100%.
 
-### 2.3. Gestor Documental y Knowledge Studio
-*   **Ruta:** `HR > Gestor Documental` / `Knowledge Studio`
-*   **Uso:** RRHH sube sus políticas internas. El Knowledge Studio no es para "hacer cursillos", sino para estructurar el conocimiento legal en módulos versionados e inmutables. Estos módulos son la *fuente de la verdad* de la que beben las misiones diarias de los trabajadores.
+### 2.3. Gestor Documental y Generador de Temarios
+*   **Ruta:** `HR > Gestor Documental` / `Generador de Temarios`
+*   **Uso:** RRHH sube sus políticas internas. El Generador de Temarios no es para "hacer cursillos", sino para estructurar el conocimiento legal en módulos versionados e inmutables. Estos módulos son la *fuente de la verdad* de la que beben las misiones diarias de los trabajadores.
 
 ---
 

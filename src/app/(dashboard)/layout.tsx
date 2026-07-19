@@ -34,7 +34,7 @@ export default function DashboardLayout({
         ],
         admin: [
             { href: '/admin/empresas', icon: '🏢', label: 'Empresas' },
-            { href: '/admin/knowledge-studio', icon: '🧠', label: 'Knowledge Studio' },
+            { href: '/admin/knowledge-studio', icon: '🧠', label: 'Generador de Temarios' },
             { href: '/admin/marcos', icon: '🧩', label: 'Marcos Competenciales' },
             { href: '/admin/normativa', icon: '⚖️', label: 'Normativa' },
             { href: '/admin/modelos', icon: '🤖', label: 'IA' },

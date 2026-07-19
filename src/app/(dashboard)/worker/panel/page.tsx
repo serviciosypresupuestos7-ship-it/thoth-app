@@ -52,184 +52,161 @@ export default function WorkerPanelPage() {
     };
 
     return (
-        <div style={{ padding: '1rem' }}>
-            <div style={{ marginBottom: '2.5rem' }}>
-                <h1 className="title-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
+        <div style={{ padding: '1rem', maxWidth: '1200px', margin: '0 auto' }}>
+            {/* Header */}
+            <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+                <h1 className="title-gradient" style={{ fontSize: '2.8rem', marginBottom: '0.5rem' }}>
                     ¡Hola, Trabajador! 👋
                 </h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
-                    Aquí tienes un resumen de tu progreso y misiones pendientes.
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
+                    Tienes <strong style={{ color: 'var(--warning)' }}>{pendingMissions.length} misiones</strong> pendientes para mantener tu cualificación.
                 </p>
             </div>
 
-            {/* Top Metrics */}
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginTop: '0' }}>
-                <div className="card" style={{ background: 'linear-gradient(145deg, rgba(201, 162, 39, 0.1) 0%, rgba(20, 20, 20, 0.8) 100%)', border: '1px solid rgba(201, 162, 39, 0.3)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>Progreso General</h3>
-                        <span style={{ fontSize: '1.5rem' }}>📈</span>
-                    </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--primary)', marginTop: '0.5rem' }}>
-                        78%
-                    </div>
-                    <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', marginTop: '1rem', overflow: 'hidden' }}>
-                        <div style={{ width: '78%', height: '100%', background: 'var(--primary)', borderRadius: '3px' }}></div>
-                    </div>
+            {/* ========================================== */}
+            {/* 🏛️ LA NUEVA JERARQUÍA VISUAL (HERO SECTION) */}
+            {/* ========================================== */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem' }}>
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    {/* 1. Botón Principal: Acceso a Cualificación */}
+                    <Link href="/worker/misiones" style={{
+                        flex: 2,
+                        background: 'linear-gradient(135deg, var(--primary) 0%, #b38b1d 100%)',
+                        color: '#000',
+                        padding: '2rem',
+                        borderRadius: '12px',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        boxShadow: '0 10px 30px rgba(201, 162, 39, 0.3)',
+                        transition: 'transform 0.2s ease'
+                    }} className="hover-scale">
+                        <div>
+                            <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }}>El Camino Oficial</div>
+                            <h2 style={{ fontSize: '2.2rem', margin: 0, fontWeight: 800 }}>Acceso a Cualificación</h2>
+                            <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9, fontSize: '1.1rem' }}>Entra directo a tu misión activa. Sin rodeos.</p>
+                        </div>
+                        <div style={{ fontSize: '4rem' }}>🎯</div>
+                    </Link>
+
+                    {/* 2. Botón Secundario: Ruta Express */}
+                    <Link href="/express" style={{
+                        flex: 1,
+                        background: 'linear-gradient(135deg, var(--error) 0%, #cc3a3a 100%)',
+                        color: '#fff',
+                        padding: '2rem',
+                        borderRadius: '12px',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        boxShadow: '0 10px 30px rgba(239, 68, 68, 0.3)',
+                        transition: 'transform 0.2s ease'
+                    }} className="hover-scale">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div style={{ fontSize: '3rem' }}>🚀</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>Rápido</div>
+                        </div>
+                        <h2 style={{ fontSize: '1.8rem', margin: '1rem 0 0.5rem 0', fontWeight: 700 }}>Ruta Express</h2>
+                        <p style={{ margin: 0, opacity: 0.9, fontSize: '0.95rem' }}>Quítatelo de encima. Encadena todo en una sesión.</p>
+                    </Link>
                 </div>
 
-                <div className="card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>Misiones Pendientes</h3>
-                        <span style={{ fontSize: '1.5rem' }}>🎯</span>
-                    </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--warning)', marginTop: '0.5rem' }}>
-                        {pendingMissions.length}
-                    </div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
-                        {pendingMissions.filter(m => m.missions?.difficulty === 'Alta').length} de alta prioridad
-                    </p>
-                </div>
+                {/* 3. Botón de Práctica: Simulador IA */}
+                <Link href="/worker/simulador" style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'var(--text-secondary)',
+                    padding: '1.25rem 2rem',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '1rem',
+                    transition: 'all 0.2s ease'
+                }} className="hover-glow">
+                    <span style={{ fontSize: '1.5rem' }}>🤖</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: 500 }}>Entrar al Simulador IA (Entorno Seguro de Práctica)</span>
+                    <span style={{ fontSize: '0.85rem', background: 'rgba(255,255,255,0.1)', padding: '0.2rem 0.6rem', borderRadius: '4px', marginLeft: '0.5rem' }}>No afecta a tus métricas</span>
+                </Link>
 
-                <div className="card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>Competencias</h3>
-                        <span style={{ fontSize: '1.5rem' }}>🧠</span>
-                    </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--success)', marginTop: '0.5rem' }}>
-                        4/6
-                    </div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
-                        Nivel intermedio alcanzado
-                    </p>
-                </div>
+            </div>
 
-                <div className="card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>Certificados</h3>
-                        <span style={{ fontSize: '1.5rem' }}>🏆</span>
+            {/* Separador Visual */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', opacity: 0.5 }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+                <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Tu Panel de Consulta</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+            </div>
+
+            {/* ========================================== */}
+            {/* 📉 LO QUE PASA A SEGUNDO PLANO (CONSULTA) */}
+            {/* ========================================== */}
+
+            {/* Los Contadores (Fila de tarjetas pequeñas) */}
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ fontSize: '2rem' }}>📈</div>
+                    <div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Progreso</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>78%</div>
                     </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#fff', marginTop: '0.5rem' }}>
-                        1
+                </div>
+                <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ fontSize: '2rem' }}>🎯</div>
+                    <div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Misiones</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--warning)' }}>{pendingMissions.length}</div>
                     </div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
-                        Uso Seguro de IA (Básico)
-                    </p>
+                </div>
+                <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ fontSize: '2rem' }}>🧠</div>
+                    <div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Competencias</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>4/6</div>
+                    </div>
+                </div>
+                <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ fontSize: '2rem' }}>🏆</div>
+                    <div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Certificados</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>1</div>
+                    </div>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginTop: '2.5rem' }}>
-                {/* Left Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-                    {/* Misiones Pendientes */}
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', margin: 0 }}>Misiones Pendientes</h2>
-                            <Link href="/worker/misiones" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500 }}>Ver todas →</Link>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {loading ? (
-                                <div style={{ color: 'var(--text-muted)' }}>Cargando misiones...</div>
-                            ) : pendingMissions.length === 0 ? (
-                                <div style={{ color: 'var(--text-muted)' }}>No tienes misiones pendientes. ¡Buen trabajo!</div>
-                            ) : (
-                                pendingMissions.map((pm, idx) => (
-                                    <div key={idx} className="card" style={{ padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                                                <span className={`badge ${pm.missions?.difficulty === 'Alta' ? 'badge-danger' : 'badge-warning'}`}>
-                                                    {pm.missions?.difficulty || 'Media'}
-                                                </span>
-                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{pm.missions?.title}</h4>
-                                            </div>
-                                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>{pm.missions?.description}</p>
-                                        </div>
-                                        <Link href="/worker/misiones" className="btn btn-primary" style={{ padding: '0.5rem 1rem', textDecoration: 'none' }}>Iniciar</Link>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Formación Recomendada */}
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', margin: 0 }}>Formación Recomendada</h2>
-                            <Link href="/worker/formacion" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500 }}>Ir a Biblioteca →</Link>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div className="card" style={{ padding: '1.25rem', background: 'rgba(30, 78, 140, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📄</div>
-                                <h4 style={{ margin: '0 0 0.5rem 0' }}>Guía Práctica AI Act</h4>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>Conceptos clave sobre la nueva normativa europea.</p>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Leer Resumen</Link>
-                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Chat IA</Link>
-                                </div>
-                            </div>
-
-                            <div className="card" style={{ padding: '1.25rem', background: 'rgba(30, 78, 140, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🛡️</div>
-                                <h4 style={{ margin: '0 0 0.5rem 0' }}>Política Interna de Datos</h4>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>Actualización Q3 sobre manejo de datos de clientes.</p>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Leer Resumen</Link>
-                                    <Link href="/worker/formacion" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', flex: 1, textDecoration: 'none', textAlign: 'center' }}>Chat IA</Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+            {/* Biblioteca y Lecturas Recomendadas */}
+            <div className="card" style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h3 style={{ fontSize: '1.2rem', margin: 0 }}>📚 Biblioteca y Lecturas Recomendadas</h3>
+                    <Link href="/worker/formacion" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '0.9rem' }}>Ver todo el Generador de Temarios →</Link>
                 </div>
-
-                {/* Right Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-                    {/* Avisos / Actualizaciones */}
-                    <div className="card" style={{ border: '1px solid var(--primary-glow)' }}>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span>🔔</span> Avisos Importantes
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 'bold', textTransform: 'uppercase' }}>NUEVA NORMATIVA</span>
-                                <p style={{ fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>Se ha actualizado la guía AESIA. Tienes 1 nueva misión asignada.</p>
-                            </div>
-                            <div>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 'bold', textTransform: 'uppercase' }}>LOGRO DESBLOQUEADO</span>
-                                <p style={{ fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>Has alcanzado el 92% en Protección de Datos.</p>
-                            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ fontSize: '1.5rem' }}>📄</div>
+                        <div>
+                            <div style={{ fontWeight: 500, fontSize: '0.95rem' }}>Guía Práctica AI Act</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Conceptos clave sobre la nueva normativa.</div>
                         </div>
                     </div>
-
-                    {/* Ruta Express Promo */}
-                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(201, 162, 39, 0.1) 100%)', textAlign: 'center', padding: '2rem 1.5rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚀</div>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Ruta Express</h3>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                            ¿Quieres quitarte la formación de encima? Encadena todas tus tareas pendientes en una sola sesión continua.
-                        </p>
-                        <Link href="/express" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none', background: 'var(--error)', borderColor: 'var(--error)' }}>
-                            Acelerar Formación
-                        </Link>
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ fontSize: '1.5rem' }}>🛡️</div>
+                        <div>
+                            <div style={{ fontWeight: 500, fontSize: '0.95rem' }}>Política Interna de Datos</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Actualización Q3 sobre manejo de datos.</div>
+                        </div>
                     </div>
-
-                    {/* Simulador IA Promo */}
-                    <div className="card" style={{ background: 'linear-gradient(135deg, rgba(30, 78, 140, 0.4) 0%, rgba(201, 162, 39, 0.1) 100%)', textAlign: 'center', padding: '2rem 1.5rem' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Simulador IA</h3>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                            Practica libremente, mejora tus prompts o simula escenarios sin afectar tus métricas.
-                        </p>
-                        <Link href="/worker/simulador" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none' }}>
-                            Entrar al Simulador
-                        </Link>
-                    </div>
-
                 </div>
             </div>
+
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .hover-scale:hover { transform: translateY(-4px); }
+                .hover-glow:hover { background: rgba(255,255,255,0.08) !important; border-color: rgba(255,255,255,0.2) !important; color: #fff !important; }
+            `}} />
         </div>
     );
 }

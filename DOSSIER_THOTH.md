@@ -89,7 +89,7 @@ El alma del producto; forman el **historial de cumplimiento** presentable ante c
 - Competencia obtenida.
 - Certificado emitido (con ID, fecha de emisión y caducidad).
 
-### 3.5. Knowledge Studio
+### 3.5. Generador de Temarios
 Transforma el conocimiento de la organización —PDFs, Word, Manuales, Procedimientos, Políticas, FAQs— en experiencias de aprendizaje estructuradas mediante IA:
 - Resumen automático y extracción de conceptos clave.
 - Generación de preguntas y tests.
@@ -232,7 +232,7 @@ Para situaciones de urgencia normativa. Condensa toda la Ruta Formativa en una e
 
 1. **Setup (Admin):** El Superadmin registra una nueva empresa, configura API Keys y define los Marcos Competenciales para los puestos del cliente.
 2. **Onboarding (HR):** RRHH invita a empleados y les asigna puesto + nivel. THOTH asigna automáticamente competencias, rutas y misiones.
-3. **Capacitación (Worker):** El trabajador accede al Knowledge Studio, completa la Ruta Formativa y practica en el Simulador IA.
+3. **Capacitación (Worker):** El trabajador accede al Generador de Temarios, completa la Ruta Formativa y practica en el Simulador IA.
 4. **Certificación (Worker):** Al demostrar estado *Competente*, descarga su certificado con ID, datos, competencia superada y fechas de emisión/caducidad.
 5. **Auditoría (HR):** RRHH accede a **Evidencias Legales** y genera el PDF de Compliance para presentar ante una inspección.
 6. **Alerta Normativa (Motor de Reglas):** Al detectar una actualización en un chunk legal, el sistema activa una Plantilla Inteligente, asigna nuevas misiones a los workers afectados y notifica a RRHH.
@@ -281,7 +281,7 @@ Gestionada desde `/admin/planes`. El consumo de tokens de IA se registra por ten
 
 ## 10. MÓDULO: GENERADOR GUIADO DE POLÍTICAS DE IA (`/hr/politicas`)
 
-> **Filosofía:** En lugar de pedir a la empresa que suba un documento que probablemente no tiene, THOTH le hace tres preguntas y redacta el texto legal por ella. El resultado se inyecta automáticamente en el Knowledge Studio para que los trabajadores reciban formación sobre su propia política real.
+> **Filosofía:** En lugar de pedir a la empresa que suba un documento que probablemente no tiene, THOTH le hace tres preguntas y redacta el texto legal por ella. El resultado se inyecta automáticamente en el Generador de Temarios para que los trabajadores reciban formación sobre su propia política real.
 
 ### El Problema que Resuelve
 La mayoría de PYMEs no tienen una Política de Uso de IA. Contratar un abogado para redactarla cuesta entre 500€ y 2.000€. Sin política documentada, no hay compliance. Sin compliance, THOTH no puede generar evidencias auditables. **Este módulo rompe ese bloqueo inicial** en menos de 10 minutos.
@@ -310,7 +310,7 @@ Al pulsar **"Generar Política de IA"**, el motor RAG de THOTH combina las respu
 1. **Política de Uso Aceptable de IA** — Documento para publicar en la intranet o enviar por email a toda la plantilla. Incluye: objetivo, herramientas autorizadas, usos prohibidos, sanciones y fecha de vigor.
 2. **Cláusula de Confidencialidad y Uso de IA** — Texto jurídico listo para que RRHH lo adjunte a los contratos de trabajo de nuevos empleados o como anexo de los contratos existentes.
 
-> **Integración automática con Knowledge Studio:** Ambos documentos se inyectan directamente en el Centro de Aprendizaje Inteligente del tenant. THOTH los resume automáticamente y los convierte en el material base de las Rutas Formativas de los trabajadores. El empleado aprende sobre *su propia política real*, no sobre un texto genérico.
+> **Integración automática con Generador de Temarios:** Ambos documentos se inyectan directamente en el Centro de Aprendizaje Inteligente del tenant. THOTH los resume automáticamente y los convierte en el material base de las Rutas Formativas de los trabajadores. El empleado aprende sobre *su propia política real*, no sobre un texto genérico.
 
 ### Paso 3 — Dossier Final de Cumplimiento (PDF) 🖨️
 Una vez que los trabajadores han completado sus misiones y evaluaciones sobre la política generada, el botón **"Emitir Dossier de Compliance"** imprime un PDF único que contiene:

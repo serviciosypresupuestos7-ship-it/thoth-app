@@ -2,8 +2,25 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { EmbeddingService } from '@/utils/ai/EmbeddingService';
 import { LLMService } from '@/utils/ai/LLMService';
+import rateLimit from '@/utils/rate-limit';
+
+export const maxDuration = 10; // Fuerza a que la petición muera a los 10 segundos
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
+
 export async function POST(request: Request) {
     try {
+        // Rate Limiting (5 requests per minute per IP)
+        const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+        try {
+            await limiter.check(5, ip);
+        } catch {
+            return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+        }
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -63,7 +80,7 @@ Responde ÚNICAMENTE en formato JSON con las siguientes claves:
         let missionData: any;
 
         try {
-            missionData = await LLMService.generateJSON(prompt, systemPrompt, settings);
+            missionData = await LLMService.generateJSON(prompt, systemPrompt, settings, 2000);
         } catch (err) {
             console.error('Error calling AI:', err);
             // Fallback for demo purposes if API keys are missing

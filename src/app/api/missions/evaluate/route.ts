@@ -1,8 +1,24 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import rateLimit from '@/utils/rate-limit';
+
+export const maxDuration = 10; // Fuerza a que la petición muera a los 10 segundos
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
 
 export async function POST(request: Request) {
     try {
+        // Rate Limiting (5 requests per minute per IP)
+        const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+        try {
+            await limiter.check(5, ip);
+        } catch {
+            return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+        }
+
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -120,6 +136,7 @@ Responde ÚNICAMENTE en formato JSON con las siguientes claves:
                         },
                         body: JSON.stringify({
                             model: preferredModel,
+                            max_tokens: 300, // Límite estricto para evitar sobrecostes
                             messages: [
                                 { role: 'system', content: 'Responde únicamente en formato JSON válido.' },
                                 { role: 'user', content: prompt },
