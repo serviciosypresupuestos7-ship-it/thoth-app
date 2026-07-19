@@ -28,6 +28,7 @@ export default function DashboardLayout({
             { href: '/hr/panel', icon: '📊', label: 'Panel Principal' },
             { href: '/hr/empleados', icon: '👥', label: 'Plantilla' },
             { href: '/hr/documentos', icon: '📁', label: 'Gestor Documental' },
+            { href: '/hr/politicas', icon: '📝', label: 'Política de IA' },
             { href: '/hr/certificaciones', icon: '📜', label: 'Certificaciones' },
             { href: '/hr/evidencias', icon: '🛡️', label: 'Evidencias Legales' },
         ],
@@ -39,6 +40,7 @@ export default function DashboardLayout({
             { href: '/admin/modelos', icon: '🤖', label: 'IA' },
             { href: '/admin/planes', icon: '💳', label: 'Facturación' },
             { href: '/admin/informes', icon: '📊', label: 'Estadísticas' },
+            { href: '/admin/infraestructura', icon: '⚡', label: 'Estado del Sistema' },
             { href: '/admin/configuracion', icon: '⚙️', label: 'Configuración' },
         ]
     };
