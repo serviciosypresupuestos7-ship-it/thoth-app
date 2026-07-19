@@ -7,7 +7,7 @@ export default function AdminEmpresasPage() {
     const [empresas, setEmpresas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [newCompany, setNewCompany] = useState({ name: '', plan: 'Starter' });
+    const [newCompany, setNewCompany] = useState({ name: '', plan: 'Acreditado' });
     const supabase = createClient();
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function AdminEmpresasPage() {
             if (error) throw error;
 
             setShowModal(false);
-            setNewCompany({ name: '', plan: 'Starter' });
+            setNewCompany({ name: '', plan: 'Acreditado' });
             fetchEmpresas(); // Recargar lista
         } catch (error) {
             console.error('Error adding company:', error);
@@ -133,9 +133,10 @@ export default function AdminEmpresasPage() {
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <select className="form-select" style={{ width: 'auto', background: 'rgba(0,0,0,0.2)' }}>
                             <option>Todos los planes</option>
-                            <option>Enterprise</option>
-                            <option>Pro</option>
-                            <option>Starter</option>
+                            <option>Corporativo</option>
+                            <option>Escudo Digital</option>
+                            <option>Control Equipo</option>
+                            <option>Acreditado</option>
                         </select>
                         <select className="form-select" style={{ width: 'auto', background: 'rgba(0,0,0,0.2)' }}>
                             <option>Todos los estados</option>
@@ -246,9 +247,10 @@ export default function AdminEmpresasPage() {
                                     value={newCompany.plan}
                                     onChange={(e) => setNewCompany({ ...newCompany, plan: e.target.value })}
                                 >
-                                    <option value="Starter">Starter</option>
-                                    <option value="Pro">Pro</option>
-                                    <option value="Enterprise">Enterprise</option>
+                                    <option value="Acreditado">Acreditado 🆔</option>
+                                    <option value="Control Equipo">Control Equipo 👥</option>
+                                    <option value="Escudo Digital">Escudo Digital 📄</option>
+                                    <option value="Corporativo">Corporativo 👑</option>
                                 </select>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
