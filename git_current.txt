@@ -1,0 +1,5 @@
+﻿?? diff_files.txt
+?? git_current.txt
+?? gitlog_full.txt
+?? pages_list.txt
+?? src_tree.txt

@@ -1,0 +1,176 @@
+node.exe : Vercel CLI 56.4.0 
+(Node.js 22.18.0)
+En C:\Users\Usuario\AppData\R
+oaming\npm\vercel.ps1: 24 
+Car?cter: 5
++     & "node$exe"  "$basedir
+/node_modules/vercel/dist/vc.
+js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Vercel   
+  CLI 56.4.0 (Node.js 22.1   
+ 8.0):String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Retrieving project???
+Fetching deployments in ley34
+> Deployments for 
+ley34/thoth-app [250ms]
+
+  Age     Project            
+ Deployment                  
+                 Status      
+Environment     Duration     
+Username                     
+       
+  2m      ley34/thoth-app    
+ https://thoth-p7wki4ebs-ley3
+4.vercel.app     ??? Ready   
+  Production      56s        
+  serviciosypresupuestos7-shi
+p-it     
+  3h      ley34/thoth-app    
+ https://thoth-96y772f9q-ley3
+4.vercel.app     ??? Ready   
+  Production      38s        
+  serviciosypresupuestos7-shi
+p-it     
+  4h      ley34/thoth-app    
+ https://thoth-ok2dbvwgi-ley3
+4.vercel.app     ??? Ready   
+  Production      40s        
+  serviciosypresupuestos7-shi
+p-it     
+  4h      ley34/thoth-app    
+ https://thoth-ywyxe67cz-ley3
+4.vercel.app     ??? Ready   
+  Production      54s        
+  serviciosypresupuestos7-shi
+p-it     
+  4h      ley34/thoth-app    
+ https://thoth-i5z2sg9i5-ley3
+4.vercel.app     ??? Ready   
+  Production      41s        
+  serviciosypresupuestos7-shi
+p-it     
+  4h      ley34/thoth-app    
+ https://thoth-hzy2icp8v-ley3
+4.vercel.app     ??? Ready   
+  Production      42s        
+  serviciosypresupuestos7-shi
+p-it     
+  5h      ley34/thoth-app    
+ https://thoth-i9pjjomvu-ley3
+4.vercel.app     ??? Ready   
+  Production      41s        
+  serviciosypresupuestos7-shi
+p-it     
+  5h      ley34/thoth-app    
+ https://thoth-pdqbkd0r8-ley3
+4.vercel.app     ??? Ready   
+  Production      39s        
+  serviciosypresupuestos7-shi
+p-it     
+  5h      ley34/thoth-app    
+ https://thoth-2vb2tufag-ley3
+4.vercel.app     ??? Ready   
+  Production      45s        
+  serviciosypresupuestos7-shi
+p-it     
+  5h      ley34/thoth-app    
+ https://thoth-4jwzg8mie-ley3
+4.vercel.app     ??? Ready   
+  Production      53s        
+  serviciosypresupuestos7-shi
+p-it     
+  6h      ley34/thoth-app    
+ https://thoth-eb909v8ad-ley3
+4.vercel.app     ??? Ready   
+  Production      49s        
+  serviciosypresupuestos7-shi
+p-it     
+https://thoth-p7wki4ebs-ley34.vercel.app
+https://thoth-96y772f9q-ley34.vercel.app
+https://thoth-ok2dbvwgi-ley34.vercel.app
+https://thoth-ywyxe67cz-ley34.vercel.app
+https://thoth-i5z2sg9i5-ley34.vercel.app
+https://thoth-hzy2icp8v-ley34.vercel.app
+https://thoth-i9pjjomvu-ley34.vercel.app
+https://thoth-pdqbkd0r8-ley34.vercel.app
+https://thoth-2vb2tufag-ley34.vercel.app
+https://thoth-4jwzg8mie-ley34.vercel.app
+https://thoth-eb909v8ad-ley34.vercel.app
+https://thoth-q8jjegpr3-ley34.vercel.app
+https://thoth-g3918ofz4-ley34.vercel.app
+https://thoth-kcfx5uea2-ley34.vercel.app
+https://thoth-cill3rt2d-ley34.vercel.app
+https://thoth-bc99mzz0c-ley34.vercel.app
+https://thoth-kxzi4qo5y-ley34.vercel.app
+https://thoth-m7t8pngvj-ley34.vercel.app
+https://thoth-jjo3fr43r-ley34.vercel.app
+  6h      ley34/thoth-app    
+ https://thoth-q8jjegpr3-ley3
+4.vercel.app     ??? Ready   
+  Production      39s        
+  serviciosypresupuestos7-shi
+p-it     
+  6h      ley34/thoth-app    
+ https://thoth-g3918ofz4-ley3
+4.vercel.app     ??? Ready   
+  Production      48s        
+  serviciosypresupuestos7-shi
+p-it     
+https://thoth-6bc3uk1bf-ley34.vercel.app
+  6h      ley34/thoth-app    
+ https://thoth-kcfx5uea2-ley3
+4.vercel.app     ??? Ready   
+  Production      40s        
+  serviciosypresupuestos7-shi
+p-it     
+  7h      ley34/thoth-app    
+ https://thoth-cill3rt2d-ley3
+4.vercel.app     ??? Ready   
+  Production      51s        
+  serviciosypresupuestos7-shi
+p-it     
+  9h      ley34/thoth-app    
+ https://thoth-bc99mzz0c-ley3
+4.vercel.app     ??? Ready   
+  Production      51s        
+  serviciosypresupuestos7-shi
+p-it     
+  9h      ley34/thoth-app    
+ https://thoth-kxzi4qo5y-ley3
+4.vercel.app     ??? Error   
+  Production      35s        
+  serviciosypresupuestos7-shi
+p-it     
+  10h     ley34/thoth-app    
+ https://thoth-m7t8pngvj-ley3
+4.vercel.app     ??? Error   
+  Production      26s        
+  serviciosypresupuestos7-shi
+p-it     
+  10h     ley34/thoth-app    
+ https://thoth-jjo3fr43r-ley3
+4.vercel.app     ??? Ready   
+  Production      39s        
+  serviciosypresupuestos7-shi
+p-it     
+  10h     ley34/thoth-app    
+ https://thoth-6bc3uk1bf-ley3
+4.vercel.app     ??? Ready   
+  Production      39s        
+  serviciosypresupuestos7-shi
+p-it     
+
+> To display the next page, 
+run `vercel ls --token vcp_4e
+KzHuqD7rAyraNH5GF1JbgdRSSGyvj
+xy4TXoTmRV8jxAvj6un02OI1h 
+--next 1784536702984`

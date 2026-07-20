@@ -1,0 +1,30 @@
+﻿f07c7d5 feat: restore 10-question compliance test and evidence saving in worker dashboard
+69abdfd feat: add file upload to Escudo Digital
+1abf0c7 feat: move Escudo Digital to a standalone public route
+efcec37 feat: implement premium Escudo Digital PDF with @react-pdf/renderer
+dc7b6ed feat: implement massive Escudo Digital PDF and revert platform changes
+9212742 fix: remove Cuestionario and Clausula from Escudo Digital PDF
+ef1b735 revert: remove 10-question test from worker dashboard as it belongs to Escudo Digital printed dossier
+13e302e feat: implement 10-question compliance test and evidence saving
+24193cb feat: implement DossierPDF component and html2pdf generation
+c0ee3ac feat: enhance PDF dossier with AI Act Art 4 compliance
+7aadffc fix: restore correct worker menu
+9cebfca fix: bypass auth for ingest
+51f356f fix: add more fallbacks for supabase env vars to fix vercel build
+43c9d45 feat: update local scraper script to support full taxonomy and real embeddings
+8cb872c fix: add fallback for supabase env vars to fix vercel build prerendering error
+02edc43 refactor: update legal taxonomy to distinguish binding laws from voluntary guidelines
+9362524 feat: expose crawler as API route to run on Vercel
+cd8921b feat: add automated legal crawler to fetch laws from official sources
+4dc45f2 feat: enable automatic RAG ingestion from UI file upload
+2ed77cd feat: add seed endpoint to inject core AI Act laws into RAG
+22d6a63 fix: enforce strict RAG compliance in Tutor API to prevent hallucinations
+ce0f2ef feat: expand RAG ecosystem to 5 levels of legal compliance
+2ceefcc fix: resolve Gemini API strict role validation error in chat
+3927344 fix: resolve blank screen caused by dynamic react import
+f922f03 style: rename Tutor Legal to Cualificador Profesional
+e78e169 feat: connect AI Tutor to real LLM API endpoint
+9fbc2ef feat: reframe practice test as continuous training for compliance
+7ea4dd7 feat: restore multiple-choice quiz as practice in library
+ee5c34c feat: replace diagnostic test with interactive AI tutor chat
+f69917e feat: improve worker qualification UX with intro and persistence

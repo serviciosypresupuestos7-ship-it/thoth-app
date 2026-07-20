@@ -1,0 +1,28 @@
+node.exe : Vercel CLI 56.4.0 
+(Node.js 22.18.0)
+En C:\Users\Usuario\AppData\R
+oaming\npm\vercel.ps1: 24 
+Car?cter: 5
++     & "node$exe"  "$basedir
+/node_modules/vercel/dist/vc.
+js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Vercel   
+  CLI 56.4.0 (Node.js 22.1   
+ 8.0):String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+> Assigning alias 
+thoth-app-ley34.vercel.app 
+to thoth-p7wki4ebs-ley34.verc
+el.app
+Creating alias
+> Success! https://thoth-app-
+ley34.vercel.app now points 
+to thoth-p7wki4ebs-ley34.verc
+el.app [2s]

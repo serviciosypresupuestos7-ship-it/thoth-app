@@ -1,0 +1,29 @@
+node.exe : Vercel CLI 56.4.0 
+(Node.js 22.18.0)
+En C:\Users\Usuario\AppData\R
+oaming\npm\vercel.ps1: 24 
+Car?cter: 5
++     & "node$exe"  "$basedir
+/node_modules/vercel/dist/vc.
+js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Vercel   
+  CLI 56.4.0 (Node.js 22.1   
+ 8.0):String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Fetching aliases under ley34
+> aliases found under ley34 
+[1s]
+  source                              url                                                           age    
+  thoth-aktdog276-ley34.vercel.app    thoth-leyes.vercel.app                                         9h    
+  thoth-96y772f9q-ley34.vercel.app    thoth-app-git-main-ley34.vercel.app                            2d    
+  thoth-eb909v8ad-ley34.vercel.app    thoth-app-ley34.vercel.app                                     4d    
+  thoth-p7wki4ebs-ley34.vercel.app    thoth-app-serviciosypresupuestos7-ship-it-ley34.vercel.app     4d    
+  thoth-p7wki4ebs-ley34.vercel.app    thoth-app-rust.vercel.app                                      4d    
+
