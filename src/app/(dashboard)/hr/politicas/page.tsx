@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { DossierPDF } from '@/components/DossierPDF';
+import { EscudoDigitalPDF } from '@/components/EscudoDigitalPDF';
 
 // --- DATA ---
 const herramientas = [
@@ -454,7 +454,7 @@ Leído y conforme, firman el presente anexo.`;
                                                         const html2pdf = html2pdfModule.default || html2pdfModule;
                                                         const opt = {
                                                             margin: 10,
-                                                            filename: `Dossier_Tecnico_IA_${nombreEmpresa || 'Empresa'}.pdf`,
+                                                            filename: `Escudo_Digital_${nombreEmpresa || 'Empresa'}.pdf`,
                                                             image: { type: 'jpeg' as const, quality: 0.98 },
                                                             html2canvas: { scale: 2, useCORS: true },
                                                             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
@@ -495,7 +495,7 @@ Leído y conforme, firman el presente anexo.`;
 
             {/* Hidden PDF Content */}
             <div style={{ display: 'none' }}>
-                <DossierPDF
+                <EscudoDigitalPDF
                     nombreEmpresa={nombreEmpresa}
                     listaBlanca={allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ')}
                     listaProhibida={datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => d.label).join('; ')}
