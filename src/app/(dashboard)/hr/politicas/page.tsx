@@ -57,57 +57,73 @@ export default function GeneradorPoliticasPage() {
         const listaProhibida = datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => `- ${d.label}`).join('\n');
         const hoy = new Date().toLocaleDateString('es-ES');
 
-        return `POLÍTICA DE USO ACEPTABLE DE INTELIGENCIA ARTIFICIAL
-${nombreEmpresa || 'La Empresa'}
+        return `POLÍTICA INTEGRAL DE USO ACEPTABLE Y GOBERNANZA DE INTELIGENCIA ARTIFICIAL
+Entidad: ${nombreEmpresa || 'La Empresa'}
 Fecha de entrada en vigor: ${hoy}
+Versión: 1.0 (Generada por THOTH AI Compliance Platform)
 
-1. OBJETO Y ÁMBITO DE APLICACIÓN
-La presente Política regula el uso de herramientas de Inteligencia Artificial Generativa (IA Gen) por parte de todos los empleados de ${nombreEmpresa || 'la organización'}, en cumplimiento del Reglamento de Inteligencia Artificial de la Unión Europea (AI Act, Reg. 2024/1689) y del Reglamento General de Protección de Datos (RGPD, Reg. 2016/679).
+1. DECLARACIÓN DE PRINCIPIOS Y COMPROMISO CORPORATIVO
+${nombreEmpresa || 'La organización'} reconoce el potencial transformador de la Inteligencia Artificial (IA) para mejorar la productividad y la innovación. Sin embargo, este uso debe alinearse estrictamente con nuestros valores éticos, la normativa europea (AI Act, Reglamento UE 2024/1689) y la protección de datos (RGPD, Reglamento UE 2016/679). Esta política establece el marco de gobernanza obligatorio para todos los empleados, directivos y colaboradores externos.
 
-2. HERRAMIENTAS AUTORIZADAS (LISTA BLANCA OFICIAL)
-Únicamente se autoriza el uso de las siguientes herramientas de IA para fines profesionales:
+2. ALFABETIZACIÓN EN IA Y FORMACIÓN CONTINUA (Art. 4 AI Act)
+En estricto cumplimiento del Artículo 4 del Reglamento Europeo de Inteligencia Artificial, la empresa se compromete a garantizar un nivel adecuado de "alfabetización en IA" para todo su personal. 
+- Todo empleado que utilice sistemas de IA deberá someterse a formación continua a través de la plataforma THOTH.
+- La empresa evaluará periódicamente las competencias de los trabajadores para asegurar que comprenden los riesgos, sesgos y limitaciones de la IA.
+- El uso de IA en el entorno laboral está condicionado a la superación de las misiones y evaluaciones de competencia establecidas por el departamento de Recursos Humanos.
+
+3. HERRAMIENTAS AUTORIZADAS (LISTA BLANCA OFICIAL)
+Para garantizar la seguridad de la información y el cumplimiento normativo, únicamente se autoriza el uso profesional de las siguientes herramientas de IA, las cuales han superado nuestra auditoría interna de riesgos:
 ${listaBlanca || 'Ninguna herramienta autorizada de forma genérica. Consultar con el responsable.'}
 
-Cualquier herramienta no incluida en esta lista requiere aprobación previa por escrito del Responsable de Compliance.
+El uso de cualquier otra herramienta de IA generativa (Shadow AI) para tareas laborales queda estrictamente prohibido y será considerado una brecha de seguridad grave.
 
-3. DATOS E INFORMACIÓN PROHIBIDOS EN HERRAMIENTAS DE IA
-Queda terminantemente prohibido introducir en cualquier herramienta de IA los siguientes tipos de datos e información:
+4. PROTECCIÓN DE DATOS Y RESTRICCIONES DE ENTRADA (PROMPTS)
+Queda terminantemente prohibido introducir en cualquier herramienta de IA (incluso las autorizadas) los siguientes tipos de datos e información confidencial:
 ${listaProhibida || '- No se han especificado restricciones adicionales.'}
 
-El incumplimiento de este protocolo será considerado una falta grave conforme al Convenio Colectivo aplicable.
+5. RESPONSABILIDAD, SUPERVISIÓN HUMANA Y SESGOS
+El trabajador es el único y último responsable de cualquier contenido (texto, código, imagen, decisión) generado por una herramienta de IA. 
+- Principio de "Human-in-the-loop" (Art. 14 AI Act): Ninguna respuesta de una IA puede ser enviada a un cliente, integrada en código de producción o publicada sin revisión crítica humana.
+- Los empleados deben ser conscientes de que la IA puede generar "alucinaciones" (información falsa presentada con convicción) y perpetuar sesgos discriminatorios.
 
-4. RESPONSABILIDAD Y SUPERVISIÓN HUMANA
-El trabajador es siempre el responsable final de cualquier output generado por una herramienta de IA. Ninguna respuesta de una IA puede ser enviada a un cliente, firmada o publicada sin revisión humana previa. Esto se alinea con el principio de supervisión humana del AI Act (Art. 14).
+6. TRANSPARENCIA Y USO DE IA EN RECURSOS HUMANOS
+${usaIAenRRHH ? 'Dado que la empresa utiliza IA en procesos que afectan a empleados (selección, evaluación de rendimiento, etc.), se informa a todos los trabajadores de este uso tal como exige el AI Act (Art. 13 y Anexo III). Toda decisión que afecte individualmente a un empleado y que haya sido asistida por IA será revisada y validada por un responsable humano, garantizando el derecho a la explicación.' : 'Actualmente, la empresa NO utiliza sistemas de IA de alto riesgo para la toma de decisiones sobre el empleo, selección o evaluación de trabajadores. En caso de adoptarse, se actualizará esta política con la antelación suficiente.'}
 
-5. TRANSPARENCIA
-${usaIAenRRHH ? 'Dado que la empresa utiliza IA en procesos que afectan a empleados (selección, evaluación de rendimiento), se informa a todos los trabajadores de este uso tal como exige el AI Act (Art. 13). Toda decisión que afecte individualmente a un empleado y que haya sido asistida por IA deberá ser revisada y validada por un responsable humano.' : 'En caso de que se adopten sistemas de IA que afecten a decisiones sobre empleados, se actualizará esta política con la antelación suficiente.'}
+${tieneRLT ? `7. INFORMACIÓN A LOS REPRESENTANTES DE LOS TRABAJADORES (RLT)
+En cumplimiento del Art. 64.4.d) del Estatuto de los Trabajadores, la empresa ha informado a la RLT sobre los parámetros, reglas e instrucciones en los que se basan los algoritmos o sistemas de IA que afectan a la toma de decisiones que pueden incidir en las condiciones de trabajo, el acceso y mantenimiento del empleo.` : ''}
 
-${tieneRLT ? `6. INFORMACIÓN A LOS REPRESENTANTES DE LOS TRABAJADORES (RLT)
-En cumplimiento del Art. 64 del Estatuto de los Trabajadores, la empresa informa a los representantes legales de los trabajadores sobre la implantación de sistemas de control basados en Inteligencia Artificial, sus parámetros y su impacto en las condiciones de trabajo.` : ''}
-
-VERSIÓN: 1.0 | GENERADO POR THOTH AI COMPLIANCE PLATFORM`;
+8. RÉGIMEN DISCIPLINARIO
+El incumplimiento de las directrices establecidas en esta política pondrá en grave riesgo la seguridad de la información de la empresa y de sus clientes, por lo que será considerado una falta grave o muy grave conforme al Convenio Colectivo aplicable, pudiendo derivar en sanciones disciplinarias.`;
     };
 
     const generateClausulaTexto = () => {
         const listaBlanca = allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ');
         const listaProhibida = datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => d.label).join('; ');
 
-        return `CLÁUSULA DE CONFIDENCIALIDAD Y USO DE INTELIGENCIA ARTIFICIAL
-(Anexo al Contrato de Trabajo)
+        return `CLÁUSULA CONTRACTUAL DE CONFIDENCIALIDAD, USO DE IA Y ALFABETIZACIÓN DIGITAL
+(Anexo vinculante al Contrato de Trabajo)
 
-El/la trabajador/a, en el ejercicio de sus funciones para ${nombreEmpresa || 'la empresa'}, acepta y se compromete a:
+Reunidos de una parte ${nombreEmpresa || 'la empresa'}, y de otra el/la trabajador/a, acuerdan incorporar el presente anexo a su contrato laboral, en cumplimiento del Reglamento UE 2024/1689 (AI Act) y el Reglamento UE 2016/679 (RGPD).
 
-1. Utilizar exclusivamente las herramientas de IA autorizadas por la empresa en su Lista Blanca Oficial (${listaBlanca || 'las definidas en la Política de Uso Aceptable'}).
+PRIMERO.- DEBER DE ALFABETIZACIÓN EN IA (ART. 4 AI ACT)
+El/la trabajador/a reconoce su obligación de participar activamente en los programas de formación y evaluación continua proporcionados por la empresa (a través de la plataforma THOTH o similares) para alcanzar y mantener un nivel adecuado de alfabetización en Inteligencia Artificial, comprendiendo sus riesgos, sesgos y funcionamiento básico.
 
-2. No introducir en ninguna herramienta de IA, interna o externa, la siguiente información confidencial: ${listaProhibida || 'información sensible o confidencial de la empresa'}.
+SEGUNDO.- USO EXCLUSIVO DE HERRAMIENTAS AUTORIZADAS
+El/la trabajador/a se compromete a utilizar exclusivamente las herramientas de IA autorizadas por la empresa en su Lista Blanca Oficial (${listaBlanca || 'las definidas en la Política de Uso Aceptable'}). El uso de herramientas no autorizadas para el procesamiento de información corporativa queda estrictamente prohibido.
 
-3. Asumir responsabilidad personal sobre cualquier output generado con asistencia de IA en el ejercicio de su actividad laboral.
+TERCERO.- PROTECCIÓN DE LA CONFIDENCIALIDAD
+El/la trabajador/a se obliga a NO introducir en ninguna herramienta de IA, interna o externa, la siguiente información: ${listaProhibida || 'información sensible o confidencial de la empresa'}. La vulneración de este punto será considerada una brecha de seguridad y violación del secreto profesional.
 
-4. Notificar inmediatamente al Responsable de Compliance cualquier incidente relacionado con el uso de IA que pudiera comprometer datos personales o información confidencial.
+CUARTO.- SUPERVISIÓN HUMANA OBLIGATORIA
+El/la trabajador/a asume la responsabilidad personal y directa sobre cualquier resultado (output) generado con asistencia de IA en el ejercicio de su actividad laboral. Se compromete a revisar, verificar y validar siempre la información antes de su uso, asumiendo que los sistemas de IA pueden cometer errores o alucinaciones.
 
-El incumplimiento de esta cláusula facultará a la empresa para adoptar las medidas disciplinarias previstas en el Convenio Colectivo y en el Estatuto de los Trabajadores, sin perjuicio de las responsabilidades legales que pudieran derivarse.
+QUINTO.- NOTIFICACIÓN DE INCIDENTES
+El/la trabajador/a deberá notificar inmediatamente al Responsable de Seguridad o Compliance cualquier incidente, anomalía o sospecha de brecha de datos relacionada con el uso de sistemas de Inteligencia Artificial.
 
-Generado mediante THOTH AI Compliance Platform conforme al AI Act (Reg. UE 2024/1689) y el RGPD (Reg. UE 2016/679).`;
+SEXTO.- RÉGIMEN DISCIPLINARIO
+El incumplimiento de la presente cláusula facultará a la empresa para adoptar las medidas disciplinarias previstas en el Convenio Colectivo y en el Estatuto de los Trabajadores, incluyendo el despido disciplinario en los casos de especial gravedad, sin perjuicio de las responsabilidades civiles o penales que pudieran derivarse.
+
+Leído y conforme, firman el presente anexo.`;
     };
 
     const politicaTexto = generatePoliticaTexto();
@@ -434,36 +450,76 @@ Generado mediante THOTH AI Compliance Platform conforme al AI Act (Reg. UE 2024/
                                                 import('jspdf').then(({ jsPDF }) => {
                                                     const doc = new jsPDF();
 
-                                                    // Title
-                                                    doc.setFontSize(18);
-                                                    doc.setTextColor(16, 163, 127); // Primary color
-                                                    doc.text(`Dossier de Cumplimiento - ${nombreEmpresa || 'Empresa'}`, 20, 20);
+                                                    // Title Page
+                                                    doc.setFontSize(22);
+                                                    doc.setTextColor(16, 163, 127);
+                                                    doc.text(`DOSSIER DE CUMPLIMIENTO Y GOBERNANZA IA`, 20, 30);
 
-                                                    // Subtitle
+                                                    doc.setFontSize(16);
+                                                    doc.setTextColor(50, 50, 50);
+                                                    doc.text(`Entidad: ${nombreEmpresa || 'Empresa'}`, 20, 45);
+
                                                     doc.setFontSize(12);
                                                     doc.setTextColor(100, 100, 100);
-                                                    doc.text('Generado por Thoth AI Platform', 20, 30);
+                                                    doc.text(`Generado por: THOTH AI Compliance Platform`, 20, 55);
+                                                    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-ES')}`, 20, 62);
+
+                                                    doc.setFontSize(11);
+                                                    doc.setTextColor(0, 0, 0);
+                                                    const introText = "Este documento certifica que la entidad ha establecido un marco de gobernanza de Inteligencia Artificial conforme a las exigencias del Reglamento Europeo de Inteligencia Artificial (AI Act, Reg. UE 2024/1689), incluyendo el mandato de alfabetización en IA (Art. 4), y el Reglamento General de Protección de Datos (RGPD).";
+                                                    const splitIntro = doc.splitTextToSize(introText, 170);
+                                                    doc.text(splitIntro, 20, 80);
 
                                                     // Policy Section
-                                                    doc.setFontSize(14);
-                                                    doc.setTextColor(0, 0, 0);
-                                                    doc.text('1. Política de Uso Aceptable de IA', 20, 45);
+                                                    doc.addPage();
+                                                    doc.setFontSize(16);
+                                                    doc.setTextColor(16, 163, 127);
+                                                    doc.text('ANEXO I: Política Integral de Uso Aceptable de IA', 20, 20);
 
                                                     doc.setFontSize(10);
+                                                    doc.setTextColor(0, 0, 0);
                                                     const splitPolitica = doc.splitTextToSize(politicaTexto, 170);
-                                                    doc.text(splitPolitica, 20, 55);
+                                                    doc.text(splitPolitica, 20, 35);
 
                                                     // Add new page for Clause
                                                     doc.addPage();
-                                                    doc.setFontSize(14);
-                                                    doc.text('2. Cláusula de Confidencialidad', 20, 20);
+                                                    doc.setFontSize(16);
+                                                    doc.setTextColor(16, 163, 127);
+                                                    doc.text('ANEXO II: Cláusula Contractual de Trabajadores', 20, 20);
 
                                                     doc.setFontSize(10);
+                                                    doc.setTextColor(0, 0, 0);
                                                     const splitClausula = doc.splitTextToSize(clausulaTexto, 170);
-                                                    doc.text(splitClausula, 20, 30);
+                                                    doc.text(splitClausula, 20, 35);
+
+                                                    // Add new page for Training Plan
+                                                    doc.addPage();
+                                                    doc.setFontSize(16);
+                                                    doc.setTextColor(16, 163, 127);
+                                                    doc.text('ANEXO III: Plan de Alfabetización en IA (Art. 4 AI Act)', 20, 20);
+
+                                                    doc.setFontSize(10);
+                                                    doc.setTextColor(0, 0, 0);
+                                                    const planText = `PLAN DE FORMACIÓN CONTINUA Y EVALUACIÓN DE COMPETENCIAS EN IA
+
+1. OBJETIVO DEL PLAN
+Garantizar que todo el personal de ${nombreEmpresa || 'la empresa'} adquiere y mantiene un nivel adecuado de alfabetización en Inteligencia Artificial, tal y como exige el Artículo 4 del AI Act.
+
+2. PLATAFORMA DE GESTIÓN
+La empresa utiliza la plataforma THOTH AI Compliance Platform como sistema centralizado para la formación, evaluación y certificación de las competencias en IA de sus trabajadores.
+
+3. METODOLOGÍA DE EVALUACIÓN
+- Evaluación Continua: Los trabajadores se enfrentan a "Misiones" prácticas simuladas donde deben interactuar con sistemas de IA.
+- Tutorización Legal: Un motor RAG (Retrieval-Augmented Generation) conectado a la base de datos legal europea asiste y evalúa a los trabajadores en tiempo real.
+- Trazabilidad: Todas las interacciones, decisiones y niveles de competencia quedan registrados de forma inmutable como evidencia legal de cumplimiento.
+
+4. EVIDENCIAS DE CUMPLIMIENTO
+Este dossier, junto con los registros de actividad individuales almacenados en la plataforma THOTH, constituyen la evidencia legal de que la empresa ha adoptado las medidas técnicas y organizativas necesarias para mitigar los riesgos derivados del uso de la Inteligencia Artificial en el entorno laboral.`;
+                                                    const splitPlan = doc.splitTextToSize(planText, 170);
+                                                    doc.text(splitPlan, 20, 35);
 
                                                     // Save
-                                                    doc.save(`Dossier_Cumplimiento_${nombreEmpresa || 'Empresa'}.pdf`);
+                                                    doc.save(`Dossier_Cumplimiento_IA_${nombreEmpresa || 'Empresa'}.pdf`);
                                                 });
                                                 return;
                                             }
