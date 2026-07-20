@@ -1,0 +1,73 @@
+﻿node.exe : Vercel CLI 56.3.2 
+(Node.js 22.18.0)
+En línea: 1 Carácter: 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Vercel   
+  CLI 56.3.2 (Node.js 22.1   
+ 8.0):String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Fetching deployment "thoth-da
+t08qbzw-ley34.vercel.app" in 
+ley34
+> Fetched deployment "thoth-d
+at08qbzw-ley34.vercel.app" 
+in ley34 [529ms]
+
+  General
+
+    id		dpl_47ZbwB3fjPASzURZh
+hRhcTir4Krr
+    name	thoth-app
+    target	production
+    status	ÔùÅ Ready
+    url		https://thoth-dat08q
+bzw-ley34.vercel.app
+    created	Fri Jul 17 2026 
+21:39:40 GMT+0100 (hora de 
+verano de Europa occidental) 
+[3d ago]
+
+
+  Aliases
+
+    ÔòÂ https://thoth-app-rus
+t.vercel.app
+    ÔòÂ https://thoth-app-ley
+34.vercel.app
+    ÔòÂ https://thoth-app-ser
+viciosypresupuestos7-ship-it-
+ley34.vercel.app
+    
+
+  Builds
+
+    Ôöî .        [0ms]
+    Ôö£ÔöÇÔöÇ ╬╗ _middleware 
+(126.02KB) [bom1, fra1, 
+gru1, iad1, lhr1, sfo1, 
+sin1, syd1]
+    Ôö£ÔöÇÔöÇ ╬╗ index 
+(825.41KB) [iad1]
+    Ôö£ÔöÇÔöÇ ╬╗ 
+_global-error (825.41KB) 
+[iad1]
+    Ôö£ÔöÇÔöÇ ╬╗ 
+_global-error.rsc (825.41KB) 
+[iad1]
+    Ôö£ÔöÇÔöÇ ╬╗ _global-erro
+r.segments/__PAGE__.segment.r
+sc (825.41KB) [iad1]
+    ÔööÔöÇÔöÇ 78 output 
+items hidden
+    
+

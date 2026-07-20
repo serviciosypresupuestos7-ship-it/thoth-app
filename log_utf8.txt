@@ -1,0 +1,50 @@
+﻿03e8ea5 2026-07-20 10:08:33 +0100 Merge update-panel-and-policies into main
+9cebfca 2026-07-19 23:25:51 +0100 fix: bypass auth for ingest
+51f356f 2026-07-19 22:27:38 +0100 fix: add more fallbacks for supabase env vars to fix vercel build
+43c9d45 2026-07-19 22:10:26 +0100 feat: update local scraper script to support full taxonomy and real embeddings
+8cb872c 2026-07-19 22:01:09 +0100 fix: add fallback for supabase env vars to fix vercel build prerendering error
+02edc43 2026-07-19 21:45:55 +0100 refactor: update legal taxonomy to distinguish binding laws from voluntary guidelines
+9362524 2026-07-19 21:41:27 +0100 feat: expose crawler as API route to run on Vercel
+cd8921b 2026-07-19 21:39:10 +0100 feat: add automated legal crawler to fetch laws from official sources
+4dc45f2 2026-07-19 21:36:15 +0100 feat: enable automatic RAG ingestion from UI file upload
+2ed77cd 2026-07-19 21:30:57 +0100 feat: add seed endpoint to inject core AI Act laws into RAG
+22d6a63 2026-07-19 21:22:50 +0100 fix: enforce strict RAG compliance in Tutor API to prevent hallucinations
+ce0f2ef 2026-07-19 21:13:03 +0100 feat: expand RAG ecosystem to 5 levels of legal compliance
+2ceefcc 2026-07-19 20:58:02 +0100 fix: resolve Gemini API strict role validation error in chat
+3927344 2026-07-19 20:54:09 +0100 fix: resolve blank screen caused by dynamic react import
+f922f03 2026-07-19 20:48:35 +0100 style: rename Tutor Legal to Cualificador Profesional
+e78e169 2026-07-19 20:44:46 +0100 feat: connect AI Tutor to real LLM API endpoint
+9fbc2ef 2026-07-19 20:42:18 +0100 feat: reframe practice test as continuous training for compliance
+7ea4dd7 2026-07-19 20:40:10 +0100 feat: restore multiple-choice quiz as practice in library
+ee5c34c 2026-07-19 20:38:13 +0100 feat: replace diagnostic test with interactive AI tutor chat
+f69917e 2026-07-19 20:21:54 +0100 feat: improve worker qualification UX with intro and persistence
+ad5f927 2026-07-19 20:17:53 +0100 feat: generate real PDF content with jsPDF
+9198fd3 2026-07-19 20:15:07 +0100 feat: implement real PDF file download for Escudo Digital
+cdabe16 2026-07-19 20:12:06 +0100 fix: allow direct PDF download in Escudo Digital
+c8d7921 2026-07-19 16:50:25 +0100 fix: fix layout of admin planes page
+c9139c4 2026-07-19 16:48:59 +0100 fix: update all broken links after route rename
+ac1068d 2026-07-19 16:46:36 +0100 feat: implement diagnostic assessment on Mi Cualificacion page
+e127d95 2026-07-19 16:41:24 +0100 feat: add diagnostic assessment and fix 404s
+d17df9d 2026-07-19 16:33:04 +0100 feat: enforce AI Act Art 3 in AI prompts
+270f2ed 2026-07-19 16:15:21 +0100 feat: add Formacion Continua section to worker panel
+ce64c52 2026-07-19 16:12:13 +0100 feat: simplify worker menu and fix unprofessional text
+e0cb7aa 2026-07-19 15:55:48 +0100 style: fix support mode buttons layout
+fae28a0 2026-07-19 15:54:25 +0100 fix: allow adding custom tools in HR policies
+d5a8695 2026-07-19 15:52:30 +0100 feat: implement mock PDF generation in HR policies
+da33e79 2026-07-19 15:47:35 +0100 build: ignore eslint and ts errors during build
+94cfc05 2026-07-19 15:40:50 +0100 style: change ESC label to E. Digital in support mode
+82c7dc7 2026-07-19 15:39:07 +0100 feat: add user management modal and update labels
+730957b 2026-07-19 15:28:19 +0100 feat: add module configuration toggles to Admin Empresas
+4baff2e 2026-07-19 15:26:19 +0100 feat: add Escudo Digital role and welcome page
+0571a4b 2026-07-19 15:23:45 +0100 feat: update plan options in Admin Empresas
+82646ce 2026-07-19 15:21:16 +0100 feat: update pricing plans and commercial strategy
+dd3098e 2026-07-19 15:19:18 +0100 feat: add professional course preview and PDF printing to Generador de Temarios
+09074c5 2026-07-19 15:06:46 +0100 fix: simulate course generation in Generador de Temarios
+0d5c31e 2026-07-19 14:41:54 +0100 chore: add security barriers and rename Knowledge Studio to Generador de Temarios
+2b5ae64 2026-07-19 14:11:29 +0100 feat: panel de estado del sistema e infraestructura para superadmin
+117b8e9 2026-07-19 14:06:25 +0100 feat: actualizacion general de thoth (dossier, panel worker, politicas hr)
+1c4650b 2026-07-18 22:56:56 +0100 feat: enrich competency framework with weights, sources, deps and seniority levels
+f297c5a 2026-07-18 22:52:13 +0100 feat: add DNI and training date to employee management and certificates
+f4a370d 2026-07-18 22:40:52 +0100 fix: hr employees modal and add certifications page
+8835c8f 2026-07-18 22:35:57 +0100 feat: implement Marcos Competenciales UI
+3495af2 2026-07-18 22:28:16 +0100 feat: add historical competence chart and active rules engine positioning

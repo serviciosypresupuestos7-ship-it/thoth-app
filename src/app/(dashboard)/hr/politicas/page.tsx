@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { DossierPDF } from '@/components/DossierPDF';
 
 // --- DATA ---
 const herramientas = [
@@ -446,81 +447,25 @@ Leído y conforme, firman el presente anexo.`;
                                         onClick={() => {
                                             if (generatingPdf) return;
                                             if (pdfSuccess) {
-                                                // Generate real PDF with jsPDF
-                                                import('jspdf').then(({ jsPDF }) => {
-                                                    const doc = new jsPDF();
-
-                                                    // Title Page
-                                                    doc.setFontSize(22);
-                                                    doc.setTextColor(16, 163, 127);
-                                                    doc.text(`DOSSIER DE CUMPLIMIENTO Y GOBERNANZA IA`, 20, 30);
-
-                                                    doc.setFontSize(16);
-                                                    doc.setTextColor(50, 50, 50);
-                                                    doc.text(`Entidad: ${nombreEmpresa || 'Empresa'}`, 20, 45);
-
-                                                    doc.setFontSize(12);
-                                                    doc.setTextColor(100, 100, 100);
-                                                    doc.text(`Generado por: THOTH AI Compliance Platform`, 20, 55);
-                                                    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-ES')}`, 20, 62);
-
-                                                    doc.setFontSize(11);
-                                                    doc.setTextColor(0, 0, 0);
-                                                    const introText = "Este documento certifica que la entidad ha establecido un marco de gobernanza de Inteligencia Artificial conforme a las exigencias del Reglamento Europeo de Inteligencia Artificial (AI Act, Reg. UE 2024/1689), incluyendo el mandato de alfabetización en IA (Art. 4), y el Reglamento General de Protección de Datos (RGPD).";
-                                                    const splitIntro = doc.splitTextToSize(introText, 170);
-                                                    doc.text(splitIntro, 20, 80);
-
-                                                    // Policy Section
-                                                    doc.addPage();
-                                                    doc.setFontSize(16);
-                                                    doc.setTextColor(16, 163, 127);
-                                                    doc.text('ANEXO I: Política Integral de Uso Aceptable de IA', 20, 20);
-
-                                                    doc.setFontSize(10);
-                                                    doc.setTextColor(0, 0, 0);
-                                                    const splitPolitica = doc.splitTextToSize(politicaTexto, 170);
-                                                    doc.text(splitPolitica, 20, 35);
-
-                                                    // Add new page for Clause
-                                                    doc.addPage();
-                                                    doc.setFontSize(16);
-                                                    doc.setTextColor(16, 163, 127);
-                                                    doc.text('ANEXO II: Cláusula Contractual de Trabajadores', 20, 20);
-
-                                                    doc.setFontSize(10);
-                                                    doc.setTextColor(0, 0, 0);
-                                                    const splitClausula = doc.splitTextToSize(clausulaTexto, 170);
-                                                    doc.text(splitClausula, 20, 35);
-
-                                                    // Add new page for Training Plan
-                                                    doc.addPage();
-                                                    doc.setFontSize(16);
-                                                    doc.setTextColor(16, 163, 127);
-                                                    doc.text('ANEXO III: Plan de Alfabetización en IA (Art. 4 AI Act)', 20, 20);
-
-                                                    doc.setFontSize(10);
-                                                    doc.setTextColor(0, 0, 0);
-                                                    const planText = `PLAN DE FORMACIÓN CONTINUA Y EVALUACIÓN DE COMPETENCIAS EN IA
-
-1. OBJETIVO DEL PLAN
-Garantizar que todo el personal de ${nombreEmpresa || 'la empresa'} adquiere y mantiene un nivel adecuado de alfabetización en Inteligencia Artificial, tal y como exige el Artículo 4 del AI Act.
-
-2. PLATAFORMA DE GESTIÓN
-La empresa utiliza la plataforma THOTH AI Compliance Platform como sistema centralizado para la formación, evaluación y certificación de las competencias en IA de sus trabajadores.
-
-3. METODOLOGÍA DE EVALUACIÓN
-- Evaluación Continua: Los trabajadores se enfrentan a "Misiones" prácticas simuladas donde deben interactuar con sistemas de IA.
-- Tutorización Legal: Un motor RAG (Retrieval-Augmented Generation) conectado a la base de datos legal europea asiste y evalúa a los trabajadores en tiempo real.
-- Trazabilidad: Todas las interacciones, decisiones y niveles de competencia quedan registrados de forma inmutable como evidencia legal de cumplimiento.
-
-4. EVIDENCIAS DE CUMPLIMIENTO
-Este dossier, junto con los registros de actividad individuales almacenados en la plataforma THOTH, constituyen la evidencia legal de que la empresa ha adoptado las medidas técnicas y organizativas necesarias para mitigar los riesgos derivados del uso de la Inteligencia Artificial en el entorno laboral.`;
-                                                    const splitPlan = doc.splitTextToSize(planText, 170);
-                                                    doc.text(splitPlan, 20, 35);
-
-                                                    // Save
-                                                    doc.save(`Dossier_Cumplimiento_IA_${nombreEmpresa || 'Empresa'}.pdf`);
-                                                });
+                                                const element = document.getElementById('dossier-pdf-content');
+                                                if (element) {
+                                                    element.style.display = 'block';
+                                                    import('html2pdf.js').then((html2pdfModule) => {
+                                                        const html2pdf = html2pdfModule.default || html2pdfModule;
+                                                        const opt = {
+                                                            margin: 10,
+                                                            filename: `Dossier_Tecnico_IA_${nombreEmpresa || 'Empresa'}.pdf`,
+                                                            image: { type: 'jpeg' as const, quality: 0.98 },
+                                                            html2canvas: { scale: 2, useCORS: true },
+                                                            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+                                                        };
+                                                        html2pdf().set(opt).from(element).save().then(() => {
+                                                            element.style.display = 'none';
+                                                            setGeneratingPdf(false);
+                                                            setPdfSuccess(true);
+                                                        });
+                                                    });
+                                                }
                                                 return;
                                             }
                                             setGeneratingPdf(true);
@@ -544,9 +489,17 @@ Este dossier, junto con los registros de actividad individuales almacenados en l
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 )}
+            </div>
+
+            {/* Hidden PDF Content */}
+            <div style={{ display: 'none' }}>
+                <DossierPDF
+                    nombreEmpresa={nombreEmpresa}
+                    listaBlanca={allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ')}
+                    listaProhibida={datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => d.label).join('; ')}
+                />
             </div>
         </div>
     );

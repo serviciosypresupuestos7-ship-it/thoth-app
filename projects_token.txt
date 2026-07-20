@@ -1,0 +1,29 @@
+﻿node.exe : Vercel CLI 56.3.2 
+(Node.js 22.18.0)
+En línea: 1 Carácter: 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Vercel   
+  CLI 56.3.2 (Node.js 22.1   
+ 8.0):String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Fetching projects in ley34
+> Projects found under ley34 
+ [2s]
+
+  Project Name   Latest 
+Production URL               
+ Updated   Node Version   
+  thoth-app      https://thot
+h-app-ley34.vercel.app   14m 
+      24.x           
+

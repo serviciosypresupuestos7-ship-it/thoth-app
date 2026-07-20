@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "id": "3d5f0cb7-030b-4644-ac08-4d17f957d9ba",
+      "email": "admin@secretariadinamica.com"
+    },
+    {
+      "id": "0c111191-082d-460c-b6ef-bb30ccbab20b",
+      "email": "oficinistaporhoras@gmail.com"
+    },
+    {
+      "id": "ad7a6881-89df-4007-9d5e-cf1e51b14046",
+      "email": "info@servecor.com"
+    }
+  ],
+  "error": null
+}

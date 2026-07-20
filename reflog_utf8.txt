@@ -1,0 +1,137 @@
+﻿e0cb7aa HEAD@{0}: reset: moving to e0cb7aa
+e0cb7aa HEAD@{1}: checkout: moving from main to main
+e0cb7aa HEAD@{2}: reset: moving to e0cb7aa
+03e8ea5 HEAD@{3}: checkout: moving from e0cb7aab448b41e8ad792a45ef01c3f1d7a8bcca to main
+e0cb7aa HEAD@{4}: checkout: moving from main to e0cb7aa
+03e8ea5 HEAD@{5}: reset: moving to HEAD
+03e8ea5 HEAD@{6}: rebase (abort): returning to refs/heads/main
+9cebfca HEAD@{7}: pull origin main --rebase (start): checkout 9cebfcabe886a630fd1c4a03601b2a58fc89d128
+03e8ea5 HEAD@{8}: commit (merge): Merge update-panel-and-policies into main
+9cebfca HEAD@{9}: checkout: moving from update-panel-and-policies to main
+1c4650b HEAD@{10}: checkout: moving from main to update-panel-and-policies
+9cebfca HEAD@{11}: reset: moving to HEAD
+9cebfca HEAD@{12}: checkout: moving from update-panel-and-policies to main
+1c4650b HEAD@{13}: checkout: moving from main to update-panel-and-policies
+9cebfca HEAD@{14}: reset: moving to HEAD
+9cebfca HEAD@{15}: commit: fix: bypass auth for ingest
+51f356f HEAD@{16}: commit: fix: add more fallbacks for supabase env vars to fix vercel build
+43c9d45 HEAD@{17}: commit: feat: update local scraper script to support full taxonomy and real embeddings
+8cb872c HEAD@{18}: commit: fix: add fallback for supabase env vars to fix vercel build prerendering error
+02edc43 HEAD@{19}: commit: refactor: update legal taxonomy to distinguish binding laws from voluntary guidelines
+9362524 HEAD@{20}: commit: feat: expose crawler as API route to run on Vercel
+cd8921b HEAD@{21}: commit: feat: add automated legal crawler to fetch laws from official sources
+4dc45f2 HEAD@{22}: commit: feat: enable automatic RAG ingestion from UI file upload
+2ed77cd HEAD@{23}: commit: feat: add seed endpoint to inject core AI Act laws into RAG
+22d6a63 HEAD@{24}: commit: fix: enforce strict RAG compliance in Tutor API to prevent hallucinations
+ce0f2ef HEAD@{25}: commit: feat: expand RAG ecosystem to 5 levels of legal compliance
+2ceefcc HEAD@{26}: commit: fix: resolve Gemini API strict role validation error in chat
+3927344 HEAD@{27}: commit: fix: resolve blank screen caused by dynamic react import
+f922f03 HEAD@{28}: commit: style: rename Tutor Legal to Cualificador Profesional
+e78e169 HEAD@{29}: commit: feat: connect AI Tutor to real LLM API endpoint
+9fbc2ef HEAD@{30}: commit: feat: reframe practice test as continuous training for compliance
+7ea4dd7 HEAD@{31}: commit: feat: restore multiple-choice quiz as practice in library
+ee5c34c HEAD@{32}: commit: feat: replace diagnostic test with interactive AI tutor chat
+f69917e HEAD@{33}: commit: feat: improve worker qualification UX with intro and persistence
+ad5f927 HEAD@{34}: commit: feat: generate real PDF content with jsPDF
+9198fd3 HEAD@{35}: commit: feat: implement real PDF file download for Escudo Digital
+cdabe16 HEAD@{36}: commit: fix: allow direct PDF download in Escudo Digital
+c8d7921 HEAD@{37}: commit: fix: fix layout of admin planes page
+c9139c4 HEAD@{38}: commit: fix: update all broken links after route rename
+ac1068d HEAD@{39}: commit: feat: implement diagnostic assessment on Mi Cualificacion page
+e127d95 HEAD@{40}: commit: feat: add diagnostic assessment and fix 404s
+d17df9d HEAD@{41}: commit: feat: enforce AI Act Art 3 in AI prompts
+270f2ed HEAD@{42}: commit: feat: add Formacion Continua section to worker panel
+ce64c52 HEAD@{43}: commit: feat: simplify worker menu and fix unprofessional text
+e0cb7aa HEAD@{44}: commit: style: fix support mode buttons layout
+fae28a0 HEAD@{45}: commit: fix: allow adding custom tools in HR policies
+d5a8695 HEAD@{46}: commit: feat: implement mock PDF generation in HR policies
+da33e79 HEAD@{47}: commit: build: ignore eslint and ts errors during build
+94cfc05 HEAD@{48}: commit: style: change ESC label to E. Digital in support mode
+82c7dc7 HEAD@{49}: commit: feat: add user management modal and update labels
+730957b HEAD@{50}: commit: feat: add module configuration toggles to Admin Empresas
+4baff2e HEAD@{51}: commit: feat: add Escudo Digital role and welcome page
+0571a4b HEAD@{52}: commit: feat: update plan options in Admin Empresas
+82646ce HEAD@{53}: commit: feat: update pricing plans and commercial strategy
+dd3098e HEAD@{54}: commit (amend): feat: add professional course preview and PDF printing to Generador de Temarios
+2539a4f HEAD@{55}: commit: feat: add professional course preview and PDF printing to Generador de Temarios
+09074c5 HEAD@{56}: commit (amend): fix: simulate course generation in Generador de Temarios
+9ade117 HEAD@{57}: commit (amend): fix: simulate course generation in Generador de Temarios
+b124207 HEAD@{58}: commit: fix: simulate course generation in Generador de Temarios
+0d5c31e HEAD@{59}: commit (amend): chore: add security barriers and rename Knowledge Studio to Generador de Temarios
+4b3454b HEAD@{60}: commit: chore: add security barriers and rename Knowledge Studio to Generador de Temarios
+2b5ae64 HEAD@{61}: reset: moving to origin/main
+99cb54a HEAD@{62}: commit: chore: rename Knowledge Studio to Generador de Temarios
+db76733 HEAD@{63}: commit: chore: add security barriers (rate limiting, maxDuration, max_tokens, RLS insert constraints)
+2b5ae64 HEAD@{64}: commit: feat: panel de estado del sistema e infraestructura para superadmin
+117b8e9 HEAD@{65}: commit: feat: actualizacion general de thoth (dossier, panel worker, politicas hr)
+fa91fe5 HEAD@{66}: reset: moving to origin/main
+1c4650b HEAD@{67}: checkout: moving from update-panel-and-policies to main
+1c4650b HEAD@{68}: checkout: moving from main to update-panel-and-policies
+1c4650b HEAD@{69}: reset: moving to HEAD~1
+6d44315 HEAD@{70}: commit (amend): feat: rediseno del panel del trabajador y nuevo modulo de politicas de IA
+eed0d71 HEAD@{71}: commit (amend): feat: rediseno del panel del trabajador y nuevo modulo de politicas de IA
+832fab5 HEAD@{72}: commit: feat: rediseno del panel del trabajador y nuevo modulo de politicas de IA
+1c4650b HEAD@{73}: commit: feat: enrich competency framework with weights, sources, deps and seniority levels
+f297c5a HEAD@{74}: commit: feat: add DNI and training date to employee management and certificates
+f4a370d HEAD@{75}: commit: fix: hr employees modal and add certifications page
+8835c8f HEAD@{76}: commit: feat: implement Marcos Competenciales UI
+3495af2 HEAD@{77}: commit: feat: add historical competence chart and active rules engine positioning
+d184d82 HEAD@{78}: commit: feat: implement CEO compliance dashboard and update strategic positioning
+4b80bdc HEAD@{79}: commit: feat: implement Knowledge Studio, Document Engine, and agnostic AI architecture
+fd3dd77 HEAD@{80}: commit: Connect Admin Modelos to Supabase
+2ca806a HEAD@{81}: commit: Persist API keys to localStorage
+dd90884 HEAD@{82}: commit: Rename demo role switcher to Support Mode
+7817b47 HEAD@{83}: commit: Make API keys editable in Admin Modelos
+2cf23a7 HEAD@{84}: commit: Add User Journey section to Dossier
+dd5f73b HEAD@{85}: commit: Restore discreet role switcher for demo purposes
+aab9c33 HEAD@{86}: commit: Clarify test vs simulator certification flow
+f631154 HEAD@{87}: commit: Fix API models config and implement missing stub pages
+0f2b1ab HEAD@{88}: commit: Fix competencias page buttons and always-visible formacion link
+f134069 HEAD@{89}: commit: Make feature cards clickable and implement document page with AI Tutor
+da81659 HEAD@{90}: commit: Fix all broken links and missing pages
+be69152 HEAD@{91}: commit: Fix links in worker panel
+222fc22 HEAD@{92}: commit: Add back button to express route and update login text
+ae54e6a HEAD@{93}: commit: Apply final feedback to dossier and UI
+7021e7d HEAD@{94}: commit: Apply user feedback to dossier and UI
+fa91fe5 HEAD@{95}: commit: remove github workflows
+cd5e42a HEAD@{96}: commit: feat: connect dashboards to supabase and update schema
+8e9052b HEAD@{97}: commit: Add Team Management page for onboarding
+2f37625 HEAD@{98}: commit: Clean up old pages and update activity page
+2bccf24 HEAD@{99}: commit: Update Activity page for AI Competence pivot
+f3bfaa4 HEAD@{100}: commit: Trigger Vercel deployment
+fa7b607 HEAD@{101}: commit: Pivot to AI Competence Platform
+7fac689 HEAD@{102}: commit: Add Python data pipeline and GitHub Actions automation
+096297e HEAD@{103}: commit: Update UI terminology and add cascading invalidation trigger
+381c290 HEAD@{104}: commit: Fix API routes and add Groq/Gemini support
+f89bc3c HEAD@{105}: commit: Add AI Settings UI and backend integration
+7c1b05a HEAD@{106}: commit: Fix dashboard active domains display fallback
+fc795b9 HEAD@{107}: commit: Update review page to show all 16 domains in dropdown
+43ec94f HEAD@{108}: commit: Update search mock response to reflect relevance philosophy
+6a68d0d HEAD@{109}: commit: Redesign dashboard with compact domain cards and health indicators
+9d3b067 HEAD@{110}: commit: Rename Knowledge Gaps to Investigacion Pendiente
+34982d8 HEAD@{111}: commit: Fix review page tabs and dynamic domain dropdown
+477e984 HEAD@{112}: commit: Refine dashboard UI with global metrics and health indicators
+3bd3c64 HEAD@{113}: commit: Rewrite review page to use legal discovery engine tables
+0a0b86c HEAD@{114}: commit: Fix syntax error in review page
+d8bd448 HEAD@{115}: commit: Remove legacy training exercise fields from review page
+53dc87a HEAD@{116}: commit: Add Activity page to showcase THOTH's background processing
+db238dc HEAD@{117}: commit: Fix syntax errors and apply report-style validation form
+29d3b7d HEAD@{118}: commit: Add living engine UI features and report-style validation
+7d44723 HEAD@{119}: commit: Add all domains to search page dropdown
+0b2363b HEAD@{120}: commit: Update UI terminology to professional legal standards
+6937914 HEAD@{121}: commit: Add more domains to dashboard fallback data
+b76c695 HEAD@{122}: commit: Refine login layout and add moving banner
+2a584ba HEAD@{123}: commit: Fix globals.css encoding corruption
+309d1ce HEAD@{124}: commit: Fix layout bug, login image visibility, and build errors
+d3bcf7a HEAD@{125}: commit: Fix layout bug and login image visibility
+9187fbe HEAD@{126}: commit: Revert to original color palette
+3127761 HEAD@{127}: commit: Fix build and update to cybernetic blue theme
+e9474a6 HEAD@{128}: commit: Add logout button and signout route
+4ce09bd HEAD@{129}: commit: Update login background image with new authoritative design
+6ecc485 HEAD@{130}: commit: Redesign login page with split-screen layout and cinematic Thoth image
+5ab48e8 HEAD@{131}: commit: Align UI copy with THOTH product vision
+9263ac4 HEAD@{132}: commit: Add validation tabs and sidebar layout
+7d529c2 HEAD@{133}: commit (amend): Fix navigation and login redirect
+052bf7f HEAD@{134}: commit: Fix navigation and login redirect
+309d538 HEAD@{135}: commit (amend): Initial commit with Phase 10
+0976e10 HEAD@{136}: commit (initial): Initial commit with Phase 10
