@@ -19,7 +19,7 @@ export const EscudoDigitalDownloadButton: React.FC<Props> = ({ nombreEmpresa, li
 
     if (!isClient) {
         return (
-            <button className="btn btn-primary" style={{ padding: '0.9rem 2rem', fontSize: '1rem', opacity: 0.7, cursor: 'not-allowed' }}>
+            <button style={{ padding: '1rem 2rem', backgroundColor: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '1rem', fontWeight: 600, opacity: 0.7, cursor: 'not-allowed' }}>
                 ⏳ Cargando motor PDF...
             </button>
         );
@@ -32,8 +32,7 @@ export const EscudoDigitalDownloadButton: React.FC<Props> = ({ nombreEmpresa, li
         >
             {({ blob, url, loading, error }) => (
                 <button
-                    className="btn btn-primary"
-                    style={{ padding: '0.9rem 2rem', fontSize: '1rem', whiteSpace: 'nowrap', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+                    style={{ padding: '1rem 2rem', backgroundColor: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '1rem', fontWeight: 600, whiteSpace: 'nowrap', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}
                     disabled={loading}
                 >
                     {loading ? '⏳ Generando PDF Premium...' : '⬇️ Descargar Escudo Digital (PDF Alta Calidad)'}

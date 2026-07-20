@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { EscudoDigitalPDF } from '@/components/EscudoDigitalPDF';
+import { DossierPDF } from '@/components/DossierPDF';
 
 // --- DATA ---
 const herramientas = [
@@ -495,7 +495,7 @@ Leído y conforme, firman el presente anexo.`;
 
             {/* Hidden PDF Content */}
             <div style={{ display: 'none' }}>
-                <EscudoDigitalPDF
+                <DossierPDF
                     nombreEmpresa={nombreEmpresa}
                     listaBlanca={allHerramientas.filter(h => herramientasSelected.includes(h.id)).map(h => h.label).join(', ')}
                     listaProhibida={datosProhibidos.filter(d => datosSelected.includes(d.id)).map(d => d.label).join('; ')}
