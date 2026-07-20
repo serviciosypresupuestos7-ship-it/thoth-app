@@ -18,10 +18,12 @@ export default function DashboardLayout({
 
     const menus = {
         worker: [
-            { href: '/worker/panel', icon: '🏠', label: 'Panel Principal' },
-            { href: '/worker/cualificacion', icon: '🎯', label: 'Mi Cualificación' },
-            { href: '/worker/biblioteca', icon: '📖', label: 'Biblioteca' },
-            { href: '/worker/competencias', icon: '🏆', label: 'Mis Logros' },
+            { href: '/worker/panel', icon: '🏠', label: 'Panel' },
+            { href: '/express', icon: '🧭', label: 'Ruta Formativa' },
+            { href: '/worker/misiones', icon: '🎯', label: 'Misiones' },
+            { href: '/worker/formacion', icon: '📖', label: 'Formación' },
+            { href: '/worker/competencias', icon: '🧠', label: 'Competencias' },
+            { href: '/worker/progreso', icon: '📊', label: 'Progreso' },
         ],
         hr: [
             { href: '/hr/panel', icon: '📊', label: 'Panel Principal' },
