@@ -3,112 +3,50 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 const diagnosticQuestions = [
     {
         id: 1,
-        question: '¿Qué es una "alucinación" en un modelo de Inteligencia Artificial Generativa (como ChatGPT, Copilot o Claude)?',
+        question: '¿Qué es un sistema de IA según el Art. 3 del AI Act europeo?',
         options: [
-            { id: 'a', text: 'Un error del sistema que hace que el ordenador se apague o se congele.' },
-            { id: 'b', text: 'Cuando la IA genera información que parece completamente coherente y real, pero que es inventada o tácticamente falsa.' },
-            { id: 'c', text: 'Un protocolo de seguridad que se activa cuando detecta un virus.' },
+            { id: 'a', text: 'Un software que sigue reglas fijas programadas por un desarrollador.' },
+            { id: 'b', text: 'Un sistema que aprende, infiere y genera salidas (contenido, decisiones) de forma autónoma.' },
+            { id: 'c', text: 'Cualquier programa informático que utilice internet.' },
+            { id: 'd', text: 'Un robot industrial con sensores físicos.' },
         ],
         correct: 'b',
     },
     {
         id: 2,
-        question: 'Si una herramienta de IA le proporciona un dato estadístico, una ley o un análisis de mercado para un informe corporativo, ¿qué debe hacer?',
+        question: 'Tu empresa usa ChatGPT para redactar correos. Según la ley española, ¿estás usando IA corporativa?',
         options: [
-            { id: 'a', text: 'Copiarlo y pegarlo directamente, ya que las IA procesan millones de datos y no se equivocan.' },
-            { id: 'b', text: 'Verificar la información y las fuentes de manera manual antes de usarla o enviarla a un cliente.' },
-            { id: 'c', text: 'Descartarlo por completo, ya que la IA nunca acierta en datos numéricos.' },
+            { id: 'a', text: 'No, ChatGPT es solo una herramienta de texto, no cuenta como IA.' },
+            { id: 'b', text: 'Solo si la empresa lo tiene instalado en sus servidores.' },
+            { id: 'c', text: 'Sí. Si el software infiere datos y genera contenido autónomamente, es IA corporativa según el Art. 3 del AI Act y la AESIA puede supervisarla.' },
+            { id: 'd', text: 'Depende del número de empleados de la empresa.' },
         ],
-        correct: 'b',
+        correct: 'c',
     },
     {
         id: 3,
-        question: '¿Qué es el "sesgo de automatización"?',
+        question: 'Un cliente te pide que subas su contrato a ChatGPT para extraer datos clave. ¿Qué harías?',
         options: [
-            { id: 'a', text: 'La velocidad a la que la IA automatiza las tareas de la oficina.' },
-            { id: 'b', text: 'La tendencia humana a confiar ciegamente en las decisiones o sugerencias de un sistema informático, dejando de lado el propio juicio crítico.' },
-            { id: 'c', text: 'Un fallo técnico que duplica los procesos en segundo plano.' },
+            { id: 'a', text: 'Lo subiría sin problema; la IA es confidencial.' },
+            { id: 'b', text: 'Anonimizaría los datos personales antes de introducirlos en la IA, ya que el RGPD prohíbe compartir datos de clientes sin consentimiento.' },
+            { id: 'c', text: 'Solo lo haría si el archivo pesa menos de 1MB.' },
+            { id: 'd', text: 'Le pediría permiso al cliente enviándole un correo automático.' },
         ],
         correct: 'b',
     },
     {
         id: 4,
-        question: 'Está redactando un informe financiero para un cliente importante. ¿Puede introducir los datos económicos reales de este cliente en una herramienta de IA de acceso público/gratuito para que los resuma?',
+        question: '¿Qué organismo en España supervisa el cumplimiento de la Ley de IA (AI Act)?',
         options: [
-            { id: 'a', text: 'Sí, siempre que el cliente no se entere.' },
-            { id: 'b', text: 'No, bajo ningún concepto. Introducir datos confidenciales o personales en modelos públicos vulnera la ley de protección de datos (RGPD) y el secreto comercial.' },
-            { id: 'c', text: 'Sí, porque las versiones gratuitas borran el historial cada 24 horas de forma automática.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 5,
-        question: '¿Qué significa que un sistema de IA tenga un "sesgo"?',
-        options: [
-            { id: 'a', text: 'Que el sistema funciona más lento de lo habitual debido a la conexión de red.' },
-            { id: 'b', text: 'Que el sistema ofrece resultados sistemáticamente distorsionados o discriminatorios debido a prejuicios presentes en los datos con los que fue entrenado.' },
-            { id: 'c', text: 'Que la herramienta requiere un pago de licencia obligatorio.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 6,
-        question: 'De acuerdo con la Política Interna de la empresa, ¿qué herramientas de IA está autorizado a utilizar en su puesto de trabajo?',
-        options: [
-            { id: 'a', text: 'Cualquier aplicación o extensión web que encuentre en internet y me ayude a ir más rápido.' },
-            { id: 'b', text: 'Exclusivamente aquellas herramientas que hayan sido auditadas, aprobadas e introducidas formalmente en la "Lista Blanca" por el departamento de IT de la empresa.' },
-            { id: 'c', text: 'Únicamente herramientas desarrolladas en España.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 7,
-        question: 'Si una IA le ayuda a programar un código de software o a redactar un texto creativo para un cliente, ¿quién es el responsable final del contenido si este infringe derechos de autor o contiene errores graves?',
-        options: [
-            { id: 'a', text: 'La empresa desarrolladora de la IA (por ejemplo, OpenAI o Microsoft).' },
-            { id: 'b', text: 'Nadie, porque los vacíos legales de la IA eximen de responsabilidad.' },
-            { id: 'c', text: 'Usted (como operador) y la empresa (como implementadora), ya que existe la obligación legal de supervisión humana.' },
+            { id: 'a', text: 'La Agencia Tributaria (AEAT).' },
+            { id: 'b', text: 'El Instituto Nacional de Estadística (INE).' },
+            { id: 'c', text: 'La Agencia Española de Supervisión de Inteligencia Artificial (AESIA).' },
+            { id: 'd', text: 'El Ministerio de Trabajo y Economía Social.' },
         ],
         correct: 'c',
-    },
-    {
-        id: 8,
-        question: '¿Cuál es el canal correcto si detecta que un sistema de IA de la empresa está arrojando resultados sospechosos, erróneos o potencialmente discriminatorios?',
-        options: [
-            { id: 'a', text: 'Ignorarlo y seguir trabajando de forma manual sin avisar a nadie.' },
-            { id: 'b', text: 'Notificarlo de inmediato al Responsable del Plan de IA / Departamento de IT para que registre el incidente y tome medidas.' },
-            { id: 'c', text: 'Publicar una queja en las redes sociales de la herramienta.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 9,
-        question: 'En relación con el Reglamento Europeo de IA (AI Act), la alfabetización de los empleados en materia de IA es:',
-        options: [
-            { id: 'a', text: 'Una recomendación opcional que las empresas pueden ignorar si son pequeñas.' },
-            { id: 'b', text: 'Una obligación legal estricta y exigible para todas las empresas que utilicen sistemas de IA.' },
-            { id: 'c', text: 'Un curso que solo deben realizar los ingenieros informáticos.' },
-        ],
-        correct: 'b',
-    },
-    {
-        id: 10,
-        question: 'Al redactar un "prompt" (instrucción de texto) en una IA corporativa, ¿cuál es la mejor práctica de seguridad?',
-        options: [
-            { id: 'a', text: 'Darle todos los nombres, DNI y teléfonos de los implicados para que el texto sea lo más preciso posible.' },
-            { id: 'b', text: 'Utilizar instrucciones claras y descriptivas utilizando variables genéricas (ej: "Cliente X", "Empresa Y"), anonimizando por completo cualquier dato sensible.' },
-            { id: 'c', text: 'Escribir frases muy cortas de menos de tres palabras para no saturar el servidor.' },
-        ],
-        correct: 'b',
     },
 ];
 
@@ -127,42 +65,15 @@ export default function AutoevaluacionPage() {
         setSelected(optId);
     };
 
-    const handleNext = async () => {
+    const handleNext = () => {
         if (!selected) return;
         const q = diagnosticQuestions[currentQ];
-        const newAnswers = { ...answers, [q.id]: selected };
-        setAnswers(newAnswers);
+        setAnswers(prev => ({ ...prev, [q.id]: selected }));
         setSelected(null);
         if (currentQ + 1 < diagnosticQuestions.length) {
             setCurrentQ(currentQ + 1);
         } else {
             setPhase('result');
-
-            // Calculate final score
-            const finalScore = diagnosticQuestions.filter(q => newAnswers[q.id] === q.correct).length;
-            const isPassed = (finalScore / totalQ) >= 0.75;
-
-            // Save to Supabase
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-                if (user) {
-                    // Get company id
-                    const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', user.id).single();
-
-                    if (profile) {
-                        const hashId = `EVID-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-                        await supabase.from('evidences').insert({
-                            user_id: user.id,
-                            company_id: profile.company_id,
-                            evidence_type: isPassed ? 'Examen Aprobado' : 'Examen Suspendido',
-                            detail: `Cuestionario de Evaluación (Nivel 1). Puntuación: ${finalScore}/${totalQ} (${Math.round((finalScore / totalQ) * 100)}%)`,
-                            hash_id: hashId
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error("Error saving evidence:", err);
-            }
         }
     };
 
