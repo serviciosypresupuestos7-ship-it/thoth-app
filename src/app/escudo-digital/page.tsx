@@ -7,7 +7,15 @@ export default function EscudoDigitalPage() {
     const [nombreEmpresa, setNombreEmpresa] = useState('');
     const [listaBlanca, setListaBlanca] = useState('ChatGPT (versión Enterprise), Microsoft Copilot (con protección de datos corporativos)');
     const [listaProhibida, setListaProhibida] = useState('Datos personales de clientes, código fuente propietario, información financiera no pública');
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [step, setStep] = useState(1);
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const filesArray = Array.from(e.target.files);
+            setUploadedFiles(prev => [...prev, ...filesArray]);
+        }
+    };
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'var(--font-sans)', padding: '4rem 2rem' }}>
@@ -57,6 +65,42 @@ export default function EscudoDigitalPage() {
                             />
                         </div>
 
+                        <div style={{ marginBottom: '2.5rem', padding: '1.5rem', backgroundColor: 'rgba(16, 185, 129, 0.05)', border: '1px dashed #10b981', borderRadius: '8px' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', color: '#10b981', fontWeight: 600 }}>📎 Subir Documentación Adicional (Opcional)</label>
+                            <p style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: '1rem' }}>Sube políticas previas, certificados ISO o normativas internas para que el Asistente Redactor Legal las integre en el dossier.</p>
+
+                            <input
+                                type="file"
+                                id="file-upload"
+                                multiple
+                                onChange={handleFileUpload}
+                                style={{ display: 'none' }}
+                            />
+                            <label
+                                htmlFor="file-upload"
+                                style={{ display: 'inline-block', padding: '0.75rem 1.5rem', backgroundColor: '#0f172a', color: '#ffffff', border: '1px solid #475569', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', transition: 'all 0.2s' }}
+                            >
+                                Seleccionar Archivos
+                            </label>
+
+                            {uploadedFiles.length > 0 && (
+                                <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    {uploadedFiles.map((file, idx) => (
+                                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#cbd5e1', backgroundColor: '#0f172a', padding: '0.5rem 1rem', borderRadius: '4px' }}>
+                                            <span>📄</span>
+                                            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</span>
+                                            <button
+                                                onClick={() => setUploadedFiles(prev => prev.filter((_, i) => i !== idx))}
+                                                style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.2rem' }}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             onClick={() => setStep(2)}
                             disabled={!nombreEmpresa}
@@ -74,6 +118,11 @@ export default function EscudoDigitalPage() {
                         <p style={{ color: '#94a3b8', marginBottom: '3rem', fontSize: '1.1rem', lineHeight: '1.6' }}>
                             El Escudo Digital para <strong style={{ color: '#10b981' }}>{nombreEmpresa}</strong> ha sido configurado.
                             Este documento incluye el marco jurídico, políticas de uso, anexos contractuales y cuestionarios de evaluación.
+                            {uploadedFiles.length > 0 && (
+                                <span style={{ display: 'block', marginTop: '0.5rem', color: '#10b981', fontSize: '0.9rem' }}>
+                                    (Incluyendo análisis de {uploadedFiles.length} documento(s) adjunto(s))
+                                </span>
+                            )}
                         </p>
 
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
