@@ -21,6 +21,8 @@ export default function DashboardLayout({
             { href: '/worker/panel', icon: '🏠', label: 'Mi Panel' },
             { href: '/worker/autoevaluacion', icon: '📋', label: 'Test Previo' },
             { href: '/worker/cualificacion', icon: '🎓', label: 'Mi Cualificación' },
+            { href: '/worker/cualificacion-continua', icon: '🔄', label: 'Cualificación Continua' },
+            { href: '/worker/biblioteca', icon: '📚', label: 'Biblioteca' },
             { href: '/worker/simulador', icon: '🤖', label: 'Simulador IA' },
             { href: '/worker/progreso', icon: '📊', label: 'Mi Progreso' },
             { href: '/worker/competencias', icon: '🧠', label: 'Competencias' },

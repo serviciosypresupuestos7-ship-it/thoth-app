@@ -20,6 +20,8 @@ export default function EscudoDigitalPage() {
         { id: 'alcance', title: '4. Alcance y Obligaciones de la Empresa' },
         { id: 'plan', title: '5. Plan Interno de Gobernanza y Control' },
         { id: 'formativo', title: '6. Plan Formativo e Itinerario por Perfiles' },
+        { id: 'resumen', title: '7. Resumen del Curso de Cualificación' },
+        { id: 'certificacion', title: '8. Certificados de Cualificación de Empleados' },
         { id: 'anexo1', title: 'ANEXO I: Cláusula Legal de Confidencialidad' }
     ];
 
@@ -51,7 +53,8 @@ export default function EscudoDigitalPage() {
 
                 {step === 1 && (
                     <div className="card" style={{ backgroundColor: '#1e293b', padding: '3rem', borderRadius: '16px', border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
-                        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}>Configuración del Dossier</h2>
+                        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}>Paso 1: Reglas y Políticas Internas</h2>
+                        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Define la información corporativa y las políticas de uso de IA de la empresa.</p>
 
                         <div style={{ marginBottom: '1.5rem' }}>
                             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#cbd5e1', fontWeight: 500 }}>Nombre de la Empresa Auditada</label>
@@ -132,8 +135,8 @@ export default function EscudoDigitalPage() {
 
                 {step === 2 && (
                     <div className="card" style={{ backgroundColor: '#1e293b', padding: '3rem', borderRadius: '16px', border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
-                        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}>Generador a la Carta: Selecciona los Capítulos</h2>
-                        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Selecciona qué secciones deseas incluir en el PDF corporativo.</p>
+                        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}>Paso 2: Partes del Curso y Certificación</h2>
+                        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Selecciona qué secciones, partes del curso y certificaciones deseas incluir en el PDF corporativo.</p>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem' }}>
                             {chaptersList.map(chapter => (

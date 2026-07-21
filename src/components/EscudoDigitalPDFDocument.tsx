@@ -231,6 +231,8 @@ export const EscudoDigitalPDFDocument: React.FC<Props> = ({ nombreEmpresa, lista
                         { id: 'alcance', text: '4. Alcance y Obligaciones de la Empresa (Rol de Implementador)' },
                         { id: 'plan', text: '5. Plan Interno de Gobernanza y Control de IA' },
                         { id: 'formativo', text: '6. Plan Formativo e Itinerario por Perfiles' },
+                        { id: 'resumen', text: '7. Resumen del Curso de Cualificación' },
+                        { id: 'certificacion', text: '8. Certificados de Cualificación de Empleados' },
                         { id: 'anexo1', text: 'ANEXO I: Cláusula Legal de Confidencialidad y Uso de IA' },
                     ].filter(item => selectedChapters.includes(item.id)).map((item, i) => (
                         <View key={i} style={{ flexDirection: 'row', marginBottom: 15, borderBottomWidth: 1, borderBottomColor: '#f1f5f9', borderBottomStyle: 'dashed', paddingBottom: 5 }}>
@@ -387,6 +389,53 @@ export const EscudoDigitalPDFDocument: React.FC<Props> = ({ nombreEmpresa, lista
                                 <Text style={styles.text}>Duración: 15 a 20 horas. Contenidos: Marco Regulatorio del AI Act, Gestión de Incidentes, auditoría algorítmica.</Text>
                             </View>
                         </>
+                    )}
+                    <Footer />
+                </Page>
+            )}
+
+            {/* SECCIÓN 7 Y 8 (NUEVAS) */}
+            {(selectedChapters.includes('resumen') || selectedChapters.includes('certificacion')) && (
+                <Page size="A4" style={styles.page}>
+                    <Header />
+                    {selectedChapters.includes('resumen') && (
+                        <>
+                            <Text style={styles.h1}>7. Resumen del Curso de Cualificación</Text>
+                            <Text style={styles.text}>
+                                El curso de cualificación impartido a los empleados de {empresa} abarca los siguientes módulos clave para asegurar la alfabetización en IA:
+                            </Text>
+                            <View style={styles.bulletPoint}>
+                                <Text style={styles.bullet}>•</Text>
+                                <Text style={styles.bulletText}><Text style={{ fontWeight: 700 }}>Módulo 1: Fundamentos de la IA.</Text> Conceptos básicos, diferencias entre IA generativa y predictiva, y casos de uso comunes.</Text>
+                            </View>
+                            <View style={styles.bulletPoint}>
+                                <Text style={styles.bullet}>•</Text>
+                                <Text style={styles.bulletText}><Text style={{ fontWeight: 700 }}>Módulo 2: Riesgos y Sesgos.</Text> Identificación de alucinaciones, sesgos algorítmicos y la importancia de la supervisión humana.</Text>
+                            </View>
+                            <View style={styles.bulletPoint}>
+                                <Text style={styles.bullet}>•</Text>
+                                <Text style={styles.bulletText}><Text style={{ fontWeight: 700 }}>Módulo 3: Privacidad y Seguridad.</Text> Manejo de datos sensibles, cumplimiento del RGPD y políticas internas de la empresa.</Text>
+                            </View>
+                            <View style={styles.bulletPoint}>
+                                <Text style={styles.bullet}>•</Text>
+                                <Text style={styles.bulletText}><Text style={{ fontWeight: 700 }}>Módulo 4: Casos Prácticos.</Text> Resolución de misiones y simulaciones en el entorno de trabajo diario.</Text>
+                            </View>
+                        </>
+                    )}
+
+                    {selectedChapters.includes('certificacion') && (
+                        <View style={{ marginTop: selectedChapters.includes('resumen') ? 30 : 0 }}>
+                            <Text style={styles.h1}>8. Certificados de Cualificación</Text>
+                            <Text style={styles.text}>
+                                La empresa {empresa} certifica que los empleados han superado satisfactoriamente las pruebas de evaluación continua y los casos prácticos requeridos por el plan formativo.
+                            </Text>
+                            <View style={styles.highlightBox}>
+                                <Text style={styles.h3}>Registro de Certificaciones</Text>
+                                <Text style={styles.text}>
+                                    Los certificados individuales de cada empleado, con sus respectivas calificaciones y fechas de expedición, se encuentran archivados digitalmente en la plataforma THOTH y están a disposición de las autoridades competentes en caso de auditoría.
+                                </Text>
+                            </View>
+                        </View>
                     )}
                     <Footer />
                 </Page>
