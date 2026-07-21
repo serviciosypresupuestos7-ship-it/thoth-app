@@ -65,7 +65,7 @@ export default function DashboardLayout({
 
                 <nav className="sidebar-nav" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem', padding: '0 0.5rem', overflowY: 'auto' }}>
                     {currentMenu.map((item) => {
-                        const isActive = pathname.startsWith(item.href);
+                        const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                         return (
                             <Link
                                 key={item.href}
