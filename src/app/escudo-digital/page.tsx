@@ -9,6 +9,25 @@ export default function EscudoDigitalPage() {
     const [listaProhibida, setListaProhibida] = useState('Datos personales de clientes, código fuente propietario, información financiera no pública');
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [step, setStep] = useState(1);
+    const [selectedChapters, setSelectedChapters] = useState<string[]>([
+        'intro', 'marco', 'calendario', 'alcance', 'plan', 'formativo', 'anexo1'
+    ]);
+
+    const chaptersList = [
+        { id: 'intro', title: '1. Introducción y Objeto del Dossier' },
+        { id: 'marco', title: '2. Marco Jurídico y Contexto Normativo' },
+        { id: 'calendario', title: '3. Calendario de Aplicación y Sanciones' },
+        { id: 'alcance', title: '4. Alcance y Obligaciones de la Empresa' },
+        { id: 'plan', title: '5. Plan Interno de Gobernanza y Control' },
+        { id: 'formativo', title: '6. Plan Formativo e Itinerario por Perfiles' },
+        { id: 'anexo1', title: 'ANEXO I: Cláusula Legal de Confidencialidad' }
+    ];
+
+    const toggleChapter = (id: string) => {
+        setSelectedChapters(prev =>
+            prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+        );
+    };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -106,12 +125,49 @@ export default function EscudoDigitalPage() {
                             disabled={!nombreEmpresa}
                             style={{ width: '100%', padding: '1.2rem', backgroundColor: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 600, cursor: nombreEmpresa ? 'pointer' : 'not-allowed', opacity: nombreEmpresa ? 1 : 0.5, transition: 'all 0.2s' }}
                         >
-                            Continuar a Emisión →
+                            Siguiente: Seleccionar Capítulos →
                         </button>
                     </div>
                 )}
 
                 {step === 2 && (
+                    <div className="card" style={{ backgroundColor: '#1e293b', padding: '3rem', borderRadius: '16px', border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
+                        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}>Generador a la Carta: Selecciona los Capítulos</h2>
+                        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Selecciona qué secciones deseas incluir en el PDF corporativo.</p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem' }}>
+                            {chaptersList.map(chapter => (
+                                <label key={chapter.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', backgroundColor: selectedChapters.includes(chapter.id) ? 'rgba(16, 185, 129, 0.1)' : '#0f172a', border: `1px solid ${selectedChapters.includes(chapter.id) ? '#10b981' : '#475569'}`, borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedChapters.includes(chapter.id)}
+                                        onChange={() => toggleChapter(chapter.id)}
+                                        style={{ width: '1.2rem', height: '1.2rem', accentColor: '#10b981' }}
+                                    />
+                                    <span style={{ color: selectedChapters.includes(chapter.id) ? '#ffffff' : '#cbd5e1', fontWeight: selectedChapters.includes(chapter.id) ? 600 : 400 }}>{chapter.title}</span>
+                                </label>
+                            ))}
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <button
+                                onClick={() => setStep(1)}
+                                style={{ flex: 1, padding: '1.2rem', backgroundColor: 'transparent', color: '#cbd5e1', border: '1px solid #475569', borderRadius: '8px', fontSize: '1.1rem', cursor: 'pointer' }}
+                            >
+                                ← Volver
+                            </button>
+                            <button
+                                onClick={() => setStep(3)}
+                                disabled={selectedChapters.length === 0}
+                                style={{ flex: 2, padding: '1.2rem', backgroundColor: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 600, cursor: selectedChapters.length > 0 ? 'pointer' : 'not-allowed', opacity: selectedChapters.length > 0 ? 1 : 0.5 }}
+                            >
+                                Continuar a Emisión →
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {step === 3 && (
                     <div className="card" style={{ backgroundColor: '#1e293b', padding: '4rem 3rem', borderRadius: '16px', border: '1px solid #334155', textAlign: 'center', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
                         <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>📄</div>
                         <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#ffffff' }}>Dossier Listo para Emisión</h2>
@@ -127,16 +183,17 @@ export default function EscudoDigitalPage() {
 
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                             <button
-                                onClick={() => setStep(1)}
+                                onClick={() => setStep(2)}
                                 style={{ padding: '1rem 2rem', backgroundColor: 'transparent', color: '#cbd5e1', border: '1px solid #475569', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer' }}
                             >
-                                ← Modificar Datos
+                                ← Modificar Capítulos
                             </button>
 
                             <EscudoDigitalDownloadButton
                                 nombreEmpresa={nombreEmpresa}
                                 listaBlanca={listaBlanca}
                                 listaProhibida={listaProhibida}
+                                selectedChapters={selectedChapters}
                             />
                         </div>
                     </div>

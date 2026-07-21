@@ -8,9 +8,10 @@ interface Props {
     nombreEmpresa: string;
     listaBlanca: string;
     listaProhibida: string;
+    selectedChapters: string[];
 }
 
-export const EscudoDigitalDownloadButton: React.FC<Props> = ({ nombreEmpresa, listaBlanca, listaProhibida }) => {
+export const EscudoDigitalDownloadButton: React.FC<Props> = ({ nombreEmpresa, listaBlanca, listaProhibida, selectedChapters }) => {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -27,7 +28,7 @@ export const EscudoDigitalDownloadButton: React.FC<Props> = ({ nombreEmpresa, li
 
     return (
         <PDFDownloadLink
-            document={<EscudoDigitalPDFDocument nombreEmpresa={nombreEmpresa} listaBlanca={listaBlanca} listaProhibida={listaProhibida} />}
+            document={<EscudoDigitalPDFDocument nombreEmpresa={nombreEmpresa} listaBlanca={listaBlanca} listaProhibida={listaProhibida} selectedChapters={selectedChapters} />}
             fileName={`Escudo_Digital_${nombreEmpresa || 'Empresa'}.pdf`}
         >
             {({ blob, url, loading, error }) => (
