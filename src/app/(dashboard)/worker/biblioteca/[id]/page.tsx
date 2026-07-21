@@ -1,36 +1,66 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-const mockDocs: Record<string, { title: string; content: string }> = {
-    '1': {
-        title: 'Guía Práctica AI Act',
-        content: `El AI Act (Reglamento UE 2024/1689) es la primera legislación global sobre Inteligencia Artificial. Clasifica los sistemas de IA en cuatro niveles de riesgo: inaceptable, alto, limitado y mínimo. Las empresas que usen sistemas de IA de alto riesgo deben mantener registros de uso, garantizar supervisión humana y formar a sus trabajadores. El incumplimiento puede suponer multas de hasta 35 millones de euros o el 7% de la facturación global anual.`,
-    },
-    '2': {
-        title: 'Política Interna de Datos (Q3)',
-        content: `Queda prohibido introducir datos personales de clientes (nombre, DNI, email, teléfono, dirección) en herramientas de IA públicas como ChatGPT, Gemini o Claude. Para el procesamiento de datos sensibles solo se permite el uso de la instancia privada corporativa de THOTH. El incumplimiento de esta política se considera una infracción grave y puede conllevar medidas disciplinarias.`,
-    },
-    '3': {
-        title: 'Uso de Copilot en RRHH',
-        content: `Microsoft Copilot puede usarse para redactar ofertas de empleo, generar plantillas de evaluación y resumir CVs anonimizados. No está permitido subir CVs con datos personales completos a Copilot sin anonimizar previamente. Las decisiones finales de contratación siempre deben ser tomadas por un humano. Copilot es una herramienta de apoyo, no de decisión.`,
-    },
-    '4': {
-        title: 'Reglamento General de Protección de Datos',
-        content: `El RGPD (Reglamento UE 2016/679) regula el tratamiento de datos personales. En el contexto de la IA, los titulares de datos tienen derecho a no ser objeto de decisiones automatizadas con efectos jurídicos significativos. Las empresas deben implementar el principio de "privacidad desde el diseño" en todos sus sistemas de IA.`,
-    },
-};
+import { supabase } from '@/lib/supabase';
 
 export default function FormacionDocPage({ params }: { params: { id: string } }) {
-    const doc = mockDocs[params.id] || { title: 'Documento', content: 'Contenido no disponible.' };
+    const [doc, setDoc] = useState<{ title: string; content: string } | null>(null);
+    const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'resumen' | 'test' | 'tutor'>('resumen');
     const [chatInput, setChatInput] = useState('');
-    const [chatHistory, setChatHistory] = useState<{ role: string; text: string }[]>([
-        { role: 'tutor', text: `Hola, soy tu Tutor IA. He procesado "${doc.title}". ¿Qué quieres saber?` },
-    ]);
+    const [chatHistory, setChatHistory] = useState<{ role: string; text: string }[]>([]);
     const [testScore, setTestScore] = useState<number | null>(null);
     const [testAnswers, setTestAnswers] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        const fetchDoc = async () => {
+            try {
+                const { data: courseData, error: courseError } = await supabase
+                    .from('courses')
+                    .select('title')
+                    .eq('id', params.id)
+                    .single();
+
+                if (courseError) throw courseError;
+
+                const { data: moduleData, error: moduleError } = await supabase
+                    .from('course_modules')
+                    .select('id')
+                    .eq('course_id', params.id)
+                    .single();
+
+                let contentText = 'Contenido no disponible.';
+                if (!moduleError && moduleData) {
+                    const { data: contentData, error: contentError } = await supabase
+                        .from('module_contents')
+                        .select('content_json')
+                        .eq('module_id', moduleData.id)
+                        .single();
+
+                    if (!contentError && contentData && contentData.content_json) {
+                        contentText = contentData.content_json.content || 'Contenido no disponible.';
+                    }
+                }
+
+                setDoc({
+                    title: courseData.title,
+                    content: contentText
+                });
+
+                setChatHistory([
+                    { role: 'tutor', text: `Hola, soy tu Tutor IA. He procesado "${courseData.title}". ¿Qué quieres saber?` }
+                ]);
+            } catch (err) {
+                console.error('Error fetching document:', err);
+                setDoc({ title: 'Error', content: 'No se pudo cargar el documento.' });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDoc();
+    }, [params.id]);
 
     const testQuestions = [
         { q: '¿Cuál es el objetivo principal del AI Act?', opts: ['Prohibir la IA', 'Regular la IA por niveles de riesgo', 'Fomentar el uso libre de la IA', 'Crear una IA europea'], correct: 'Regular la IA por niveles de riesgo' },
@@ -39,14 +69,14 @@ export default function FormacionDocPage({ params }: { params: { id: string } })
     ];
 
     const handleSendChat = () => {
-        if (!chatInput.trim()) return;
+        if (!chatInput.trim() || !doc) return;
         const userMsg = chatInput;
         setChatInput('');
         setChatHistory(prev => [...prev, { role: 'user', text: userMsg }]);
         setTimeout(() => {
             setChatHistory(prev => [...prev, {
                 role: 'tutor',
-                text: `Sobre tu pregunta: "${userMsg}" — Según el documento, la clave está en ${doc.content.split('.')[0]}. ¿Necesitas más detalle?`,
+                text: `Sobre tu pregunta: "${userMsg}" — Según el documento, la clave está en ${doc.content.substring(0, 50)}... ¿Necesitas más detalle?`,
             }]);
         }, 800);
     };
@@ -59,10 +89,18 @@ export default function FormacionDocPage({ params }: { params: { id: string } })
         setTestScore(Math.round((correct / testQuestions.length) * 100));
     };
 
+    if (loading) {
+        return <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando documento...</div>;
+    }
+
+    if (!doc) {
+        return <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Documento no encontrado.</div>;
+    }
+
     return (
         <div style={{ padding: '1rem', maxWidth: '900px' }}>
             <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Link href="/worker/formacion" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>← Biblioteca</Link>
+                <Link href="/worker/biblioteca" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>← Biblioteca</Link>
                 <h1 className="title-gradient" style={{ fontSize: '2rem', margin: 0 }}>{doc.title}</h1>
             </div>
 

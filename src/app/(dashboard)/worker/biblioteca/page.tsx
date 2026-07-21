@@ -1,17 +1,44 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function FormacionPage() {
     const [activeCategory, setActiveCategory] = useState('Todos');
+    const [documents, setDocuments] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const documents = [
-        { id: '1', title: 'Guía Práctica AI Act', type: 'PDF', category: 'Normativa', progress: 100, date: '12 Oct 2026' },
-        { id: '2', title: 'Política Interna de Datos (Q3)', type: 'Manual', category: 'Compliance', progress: 45, date: '05 Nov 2026' },
-        { id: '3', title: 'Uso de Copilot en RRHH', type: 'Guía', category: 'Herramientas', progress: 0, date: '18 Nov 2026' },
-        { id: '4', title: 'Reglamento General de Protección de Datos', type: 'PDF', category: 'Normativa', progress: 0, date: '01 Dic 2026' },
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('courses')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (data) {
+                    const formattedDocs = data.map(course => ({
+                        id: course.id,
+                        title: course.title,
+                        type: 'Curso IA',
+                        category: 'Normativa',
+                        progress: 0,
+                        date: new Date(course.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+                    }));
+                    setDocuments(formattedDocs);
+                }
+            } catch (err) {
+                console.error('Error fetching courses:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     const filteredDocuments = activeCategory === 'Todos'
         ? documents
@@ -77,7 +104,11 @@ export default function FormacionPage() {
 
             {/* Document Grid */}
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '0' }}>
-                {filteredDocuments.length === 0 ? (
+                {loading ? (
+                    <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                        Cargando biblioteca...
+                    </div>
+                ) : filteredDocuments.length === 0 ? (
                     <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                         No hay documentos en esta categoría.
                     </div>

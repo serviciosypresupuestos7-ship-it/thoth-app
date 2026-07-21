@@ -1,0 +1,44 @@
+﻿def upload_to_supabase(course_text: str, validation_result: dict):
+    supabase_url = os.environ.get("SUPABASE_URL", SUPABASE_URL)
+    supabase_key = os.environ.get("SUPABASE_KEY", SUPABASE_KEY)
+    
+    if not supabase_url or not supabase_key:
+        raise Exception("Faltan credenciales de Supabase en el .env.local")
+    
+    headers = {
+        "apikey": supabase_key,
+        "Authorization": f"Bearer {supabase_key}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+    
+    # 1. Crear el Curso
+    course_data = {
+        "title": "Alfabetizaci¾n IA (Auditado)",
+        "description": "Curso validado automßticamente con Regla de Oro."
+    }
+    r_course = requests.post(f"{supabase_url.rstrip('/')}/rest/v1/courses", headers=headers, json=course_data)
+    r_course.raise_for_status()
+    course_id = r_course.json()[0]["id"]
+    
+    # 2. Crear el M¾dulo
+    module_data = {
+        "course_id": course_id,
+        "title": "M¾dulo ┌nico",
+        "order_index": 1
+    }
+    r_module = requests.post(f"{supabase_url.rstrip('/')}/rest/v1/course_modules", headers=headers, json=module_data)
+    r_module.raise_for_status()
+    module_id = r_module.json()[0]["id"]
+    
+    # 3. Insertar el Contenido
+    content_data = {
+        "module_id": module_id,
+        "content_type": "text",
+        "content": course_text[:50000],
+        "order_index": 1
+    }
+    r_content = requests.post(f"{supabase_url.rstrip('/')}/rest/v1/module_contents", headers=headers, json=content_data)
+    r_content.raise_for_status()
+
+class ValidatorApp

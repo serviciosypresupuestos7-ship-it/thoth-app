@@ -38,6 +38,7 @@ export default function DashboardLayout({
             { href: '/admin/knowledge-studio', icon: '🧠', label: 'Generador de Temarios' },
             { href: '/admin/marcos', icon: '🧩', label: 'Marcos Competenciales' },
             { href: '/admin/normativa', icon: '⚖️', label: 'Normativa' },
+            { href: '/admin/auditoria-cursos', icon: '⚖️', label: 'Auditoría de Cursos' },
             { href: '/admin/modelos', icon: '🤖', label: 'IA' },
             { href: '/admin/planes', icon: '💳', label: 'Facturación' },
             { href: '/admin/informes', icon: '📊', label: 'Estadísticas' },
